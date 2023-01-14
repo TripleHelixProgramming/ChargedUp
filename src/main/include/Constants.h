@@ -1,9 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 #pragma once
 
+#include <array>
 #include <numbers>
 
 #include <frc/geometry/Translation2d.h>
@@ -24,21 +21,10 @@ namespace ElectricalConstants {
 
   constexpr int kRobotControllerPort = 0;
   constexpr int kPowerDistributionPort = 1;
-
-  constexpr int kRearRightDriveMotorPort = 10;
-  constexpr int kFrontRightDriveMotorPort = 12;
-  constexpr int kFrontLeftDriveMotorPort = 22;
-  constexpr int kRearLeftDriveMotorPort = 24;
-
-  constexpr int kRearRightSteerMotorPort = 11;  
-  constexpr int kFrontRightSteerMotorPort = 13;
-  constexpr int kFrontLeftSteerMotorPort = 23;
-  constexpr int kRearLeftSteerMotorPort = 25;
-
-  constexpr int kRearRightSteerEncoderPort = 31;
-  constexpr int kFrontRightSteerEncoderPort = 33;
-  constexpr int kFrontLeftSteerEncoderPort = 43;
-  constexpr int kRearLeftSteerEncoderPort = 45;
+  // ----------------------------------- {rear-right, front-right, front-left, rear-left};
+  constexpr std::array driveMotorPorts = {        10,          12,         22,        24};
+  constexpr std::array steerMotorPorts = {        11,          13,         23,        25};
+  constexpr std::array absEncoderPorts = {        31,          33,         43,        45};
 
 } // namespace ElectricalConstants
 
@@ -46,7 +32,7 @@ namespace DriveConstants {
 
   constexpr units::meter_t kWheelBase = 0.6223_m;
   constexpr units::meter_t kTrackWidth = 0.5715_m;
-
+  
 } // namespace DriveConstants
 
 namespace ModuleConstants {
@@ -67,4 +53,4 @@ namespace ModuleConstants {
 
   constexpr double kDriveGearRatio = 6.75;
   constexpr double kSteerGearRatio = 12.8;
-}
+} // namespace ModuleConstants
