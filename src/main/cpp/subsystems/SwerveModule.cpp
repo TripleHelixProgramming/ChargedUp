@@ -77,12 +77,12 @@ void SwerveModule::SetDesiredState(
 
   Rotation2d curAngle = radian_t{m_steerEncoder.GetPosition()};
 
-  double delta = std::fmod(std::fmod((state.angle.Radians() - curAngle.Radians() + pi), 2 * pi) + 2 * pi, 2 * pi) - pi;
+  double delta = std::fmod(std::fmod((state.angle.Radians().value() - curAngle.Radians().value() + pi), 2 * pi) + 2 * pi, 2 * pi) - pi;
 
   double adjustedAngle = delta + curAngle.Radians().value();
 
   m_steerController.SetReference(adjustedAngle, CANSparkMax::ControlType::kPosition);
-  m_driveController.SetReference(state.speed.value(), ControlType::kVelocity, 0, kDriveFF * state.speed.value());
+  m_driveController.SetReference(state.speed.value(), CANSparkMax::ControlType::kVelocity, 0, kDriveFF * state.speed.value());
 }
 
 // This method will be called once per scheduler run
@@ -97,4 +97,4 @@ void SwerveModule::ResetEncoders() {
   m_absEncoder.GetAllConfigs(curConfig);
   m_absEncoder.ConfigMagnetOffset(
       curConfig.magnetOffsetDegrees - m_absEncoder.GetAbsolutePosition());
-  }
+}
