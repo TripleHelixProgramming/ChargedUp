@@ -5,11 +5,12 @@
 
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Rotation2d.h>
-
-#include <units/angular_velocity.h>
-#include <units/velocity.h>
+#include <units/math.h>
 #include <units/time.h>
-#include <units/angular_acceleration.h>
+#include <units/velocity.h>
+#include <units/angular_velocity.h>
+
+using namespace units::literals;
 
 namespace OperatorConstants {
 
