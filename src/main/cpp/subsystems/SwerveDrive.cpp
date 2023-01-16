@@ -35,7 +35,7 @@ SwerveDrive::SwerveDrive()
     frc::Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
   }},
   m_odometry{m_driveKinematics,
-             Rotation2d(units::degree_t{m_gyro.GetYaw()}),
+             Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
              {m_modules[0].GetPosition(), m_modules[1].GetPosition(), 
               m_modules[2].GetPosition(), m_modules[3].GetPosition()}, 
              Pose2d()} {
@@ -46,7 +46,7 @@ Pose2d SwerveDrive::GetPose() const {
 }
 
 void SwerveDrive::ResetOdometry(const Pose2d& pose) {
-  m_odometry.ResetPosition(Rotation2d(units::degree_t{m_gyro.GetYaw()}), 
+  m_odometry.ResetPosition(Rotation2d(units::degree_t{-m_gyro.GetYaw()}), 
                            {m_modules[0].GetPosition(), 
                             m_modules[1].GetPosition(), 
                             m_modules[2].GetPosition(),
@@ -106,7 +106,7 @@ void SwerveDrive::Brake() {
 }
 
 void SwerveDrive::Periodic() {
-  m_odometry.Update(Rotation2d(units::degree_t{m_gyro.GetYaw()}), 
+  m_odometry.Update(Rotation2d(units::degree_t{-m_gyro.GetYaw()}), 
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(), 
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 }

@@ -4,6 +4,8 @@
 
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/FunctionalCommand.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc/geometry/Pose2d.h>
 
 #include "Constants.h"
 
@@ -17,7 +19,7 @@ RobotContainer::RobotContainer() {
     [this] {                           // onExecute
       return m_drive.JoystickDrive(m_driver.GetRawAxis(kXboxRightYAxis), 
                                    m_driver.GetRawAxis(kXboxRightXAxis), 
-                                   m_driver.GetRawAxis(kXboxLeftXAxis), 
+                                   -m_driver.GetRawAxis(kXboxLeftXAxis), 
                                    true);
     },
     [] (bool interrupted) {},      // onEnd
@@ -29,7 +31,9 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureBindings() {
+  JoystickButton A{&m_driver, kXboxA};
 
+  A.WhenPressed(InstantCommand([this]() { return m_drive.ResetOdometry(Pose2d()); }));
 }
 
 // frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
