@@ -45,11 +45,11 @@ namespace ModuleConstants {
   constexpr double kDriveP = 0.1;
   constexpr double kDriveI = 0.0;
   constexpr double kDriveD = 0.0;
-  constexpr double kDriveFF = 2.96;
+  constexpr double kDriveFF = 0.225;
 
-  constexpr double kSteerP = 0.01;
+  constexpr double kSteerP = 3.0;
   constexpr double kSteerI = 0.0;
-  constexpr double kSteerD = 0.005;
+  constexpr double kSteerD = 0.0;
   constexpr double kSteerFF = 0.0;
 
   constexpr auto kMaxSpeed = 4.0_mps;

@@ -9,6 +9,8 @@
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
@@ -65,6 +67,10 @@ void SwerveDrive::JoystickDrive(double joystickDrive,
                     joystickStrafe * kMaxVelocityY, 
                     joystickRotate * kMaxVelocityAngular};
   auto states = m_driveKinematics.ToSwerveModuleStates(speeds);
+
+  SmartDashboard::PutNumber("vx: ", speeds.vx.value());
+  SmartDashboard::PutNumber("vy: ", speeds.vy.value());
+  SmartDashboard::PutNumber("omega: ", speeds.omega.value());
 
   // use most extreme axis as scale factor
   double scale = std::max({joystickDrive, joystickStrafe, joystickRotate});
