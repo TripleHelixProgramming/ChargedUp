@@ -38,4 +38,6 @@ class SwerveModule : public frc2::SubsystemBase {
 
   rev::SparkMaxPIDController m_driveController;
   rev::SparkMaxPIDController m_steerController;
+
+  int id;
 };

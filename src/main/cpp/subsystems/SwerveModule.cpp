@@ -6,6 +6,7 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc2/command/SubsystemBase.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 #include <ctre/phoenix/sensors/CANCoder.h>
 
@@ -33,7 +34,8 @@ SwerveModule::SwerveModule(int driveMotorID,
     m_steerEncoder(m_steerMotor.GetEncoder()),
     m_absEncoder(absEncoderID),
     m_driveController(m_driveMotor.GetPIDController()),
-    m_steerController(m_steerMotor.GetPIDController()) {
+    m_steerController(m_steerMotor.GetPIDController()),
+    id{driveMotorID} {
 
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
@@ -81,8 +83,14 @@ void SwerveModule::SetDesiredState(
 
   double adjustedAngle = delta + curAngle.Radians().value();
 
+  SmartDashboard::PutNumber("Target velocity " + std::to_string(id) + ": ", state.speed.value());
+  SmartDashboard::PutNumber("Actual velocity " + std::to_string(id) + ": ", m_driveEncoder.GetVelocity());
+
+  SmartDashboard::PutNumber("Target angle " + std::to_string(id) + ": ", state.speed.value());
+  SmartDashboard::PutNumber("Actual angle " + std::to_string(id) + ": ", m_steerEncoder.GetPosition());
+
   m_steerController.SetReference(adjustedAngle, CANSparkMax::ControlType::kPosition);
-  m_driveController.SetReference(state.speed.value(), CANSparkMax::ControlType::kVelocity, 0, kDriveFF * state.speed.value());
+  m_driveController.SetReference(state.speed.value(), CANSparkMax::ControlType::kVelocity);
 }
 
 // This method will be called once per scheduler run
