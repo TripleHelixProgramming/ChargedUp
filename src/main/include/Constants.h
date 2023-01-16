@@ -22,10 +22,10 @@ namespace ElectricalConstants {
 
   constexpr int kRobotControllerPort = 0;
   constexpr int kPowerDistributionPort = 1;
-  // ------------------------------- {rear-right, front-right, front-left, rear-left};
-  constexpr int kDriveMotorPorts[] = {        10,          12,         22,        24};
-  constexpr int kSteerMotorPorts[] = {        11,          13,         23,        25};
-  constexpr int kAbsEncoderPorts[] = {        31,          33,         43,        45};
+  // ------------------------------- {front-left, front-right, rear-left, rear-right};
+  constexpr int kDriveMotorPorts[] = {        22,          12,         24,        10};
+  constexpr int kSteerMotorPorts[] = {        23,          13,         25,        11};
+  constexpr int kAbsEncoderPorts[] = {        43,          33,         45,        31};
 
 } // namespace ElectricalConstants
 
