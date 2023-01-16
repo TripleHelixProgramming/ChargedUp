@@ -27,18 +27,9 @@ Trajectory::State Trajectory::State::Interpolate(const Trajectory::State& other,
   return other;
 }
 
-// void from_json(const wpi::json& j, Trajectory::State& sample) {
-//   sample.t = second_t{j.at("timestamp")};
-// //   sample.pose = Pose2d(Translation2d(meter_t{j.at("x")}, meter_t{j.at("y")}),
-// //                        Rotation2d(radian_t{j.at("heading")}));
-// //   sample.vx = j.at("velocityX");
-// //   sample.vy = j.at("velocityY");
-// //   sample.omega = j.at("angularVelocity");
-// }
-
 Trajectory::Trajectory(std::vector<Trajectory::State> states) : m_states{states} {}
 
-Trajectory::State Trajectory::Sample(second_t t) {
+Trajectory::State Trajectory::Sample(second_t t) const {
   if (t.value() < m_states[0].t.value()) {
     return m_states[0];
   }
@@ -69,10 +60,20 @@ Trajectory::State Trajectory::Sample(second_t t) {
   return previousState.Interpolate(currentState, t);
 }
 
-second_t Trajectory::GetTotalTime() {
+second_t Trajectory::GetTotalTime() const {
   return m_states.back().t;
 }
 
-// void Trajectory::from_json(const wpi::json& j, Trajectory& traj) {
-  
-// }
+void from_json(const wpi::json& j, Trajectory::State& state) {
+  state.t = second_t{j.at("timestamp").get<double>()};
+  state.pose = Pose2d(Translation2d(meter_t{j.at("x").get<double>()},
+                                    meter_t{j.at("y").get<double>()}),
+                      Rotation2d(radian_t{j.at("heading").get<double>()}));
+  state.vx = meters_per_second_t{j.at("velocityX").get<double>()};
+  state.vy = meters_per_second_t{j.at("velocityY").get<double>()};
+  state.omega = radians_per_second_t{j.at("angularVelocity").get<double>()};
+}
+
+void from_json(const wpi::json& j, Trajectory& traj) {
+  traj = Trajectory(j.get<std::vector<Trajectory::State>>());
+}

@@ -1,23 +1,23 @@
-// #pragma once
+#pragma once
 
-// #include <filesystem>
-// #include <map>
-// #include <string_view>
-// #include <vector>
+#include <filesystem>
+#include <map>
+#include <vector>
 
-// #include <wpi/json.h>
+#include <wpi/json.h>
 
-// #include <frc/Filesystem.h>
+#include <frc/Filesystem.h>
 
-// #include "util/Trajectory.h"
+#include "util/Trajectory.h"
 
-// class TrajectoryManager {
-//  public:
-//   Trajectory& GetTrajectory(const std::string& name);
+class TrajectoryManager {
+ public:
+  Trajectory& GetTrajectory(const std::string& name);
 
-//   void LoadTrajectories();
+  void LoadTrajectories();
 
-//   void LoadTrajectory(const std::filesystem::path& trajPath);
-// private:
-//   std::map<std::string, Trajectory> m_trajectories;
-// };
+private:
+  static Trajectory LoadFile(const std::filesystem::path& trajPath);
+
+  std::map<std::string, Trajectory> m_trajectories;
+};

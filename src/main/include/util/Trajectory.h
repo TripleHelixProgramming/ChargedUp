@@ -24,17 +24,19 @@ class Trajectory {
 
     State Interpolate(const State& other, units::second_t newT) const;
   };
-
-  // void from_json(const wpi::json& j, State& sample);
   
+  Trajectory() = default;
+
   Trajectory(std::vector<State> states);
 
-  State Sample(units::second_t t);
+  State Sample(units::second_t t) const;
 
-  units::second_t GetTotalTime();
+  units::second_t GetTotalTime() const;
   
  private:
   std::vector<State> m_states; 
 };
 
-// void from_json(const wpi::json& j, Trajectory& traj);
+
+void from_json(const wpi::json& j, Trajectory::State& state);
+void from_json(const wpi::json& j, Trajectory& traj);
