@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 #include "subsystems/SwerveDrive.h"
 
 #include <cmath>
@@ -30,20 +26,18 @@ SwerveDrive::SwerveDrive()
     SwerveModule(kDriveMotorPorts[2], kSteerMotorPorts[2], kAbsEncoderPorts[2]),
     SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3], kAbsEncoderPorts[3])
   }},
-  m_kinematics{{
-    Translation2d(DriveConstants::kWheelBase / 2.0, DriveConstants::kTrackWidth / 2.0),
-    Translation2d(DriveConstants::kWheelBase / 2.0, -DriveConstants::kTrackWidth / 2.0),
-    Translation2d(-DriveConstants::kWheelBase / 2.0, DriveConstants::kTrackWidth / 2.0),
-    Translation2d(-DriveConstants::kWheelBase / 2.0, -DriveConstants::kTrackWidth / 2.0)}},
-  m_odometry{
-    m_kinematics,
-    Rotation2d(units::degree_t{m_gyro.GetYaw()}),
-              {m_modules[0].GetPosition(), m_modules[1].GetPosition(), 
-              m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-              Pose2d()} {
-  
-  
-  m_gyro.Calibrate();
+  m_gyro{frc::SPI::Port::kMXP},
+  m_driveKinematics{{
+    frc::Translation2d{kWheelBase / 2, kTrackWidth / 2},
+    frc::Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+    frc::Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+    frc::Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
+  }},
+  m_odometry{m_driveKinematics,
+             Rotation2d(units::degree_t{m_gyro.GetYaw()}),
+             {m_modules[0].GetPosition(), m_modules[1].GetPosition(), 
+              m_modules[2].GetPosition(), m_modules[3].GetPosition()}, 
+             Pose2d()} {
 }
 
 Pose2d SwerveDrive::GetPose() const {
@@ -51,7 +45,7 @@ Pose2d SwerveDrive::GetPose() const {
 }
 
 void SwerveDrive::ResetOdometry(const Pose2d& pose) {
-  m_odometry.ResetPosition(GetHeading(), 
+  m_odometry.ResetPosition(Rotation2d(units::degree_t{m_gyro.GetYaw()}), 
                            {m_modules[0].GetPosition(), 
                             m_modules[1].GetPosition(), 
                             m_modules[2].GetPosition(),
@@ -59,22 +53,19 @@ void SwerveDrive::ResetOdometry(const Pose2d& pose) {
                             pose);
 }
 
-Rotation2d SwerveDrive::GetHeading() {
-  return Rotation2d(degree_t{m_gyro.GetYaw()}) - m_fieldRelativeAngleOffset;
-}
-
-void SwerveDrive::ZeroHeading() {
-  m_fieldRelativeAngleOffset = Rotation2d(degree_t{m_gyro.GetYaw()});
-}
-
 void SwerveDrive::JoystickDrive(double joystickDrive, 
                                 double joystickStrafe,
                                 double joystickRotate, 
                                 bool fieldRelative) {
-  ChassisSpeeds speeds{joystickDrive * kMaxVelocityX, 
-                       joystickStrafe * kMaxVelocityY, 
-                       joystickRotate * kMaxVelocityAngular};
-  auto states = m_kinematics.ToSwerveModuleStates(speeds);
+  ChassisSpeeds speeds = fieldRelative ? 
+      ChassisSpeeds::FromFieldRelativeSpeeds(joystickDrive * kMaxVelocityX, 
+                                             joystickStrafe * kMaxVelocityY, 
+                                             joystickRotate * kMaxVelocityAngular,
+                                             GetPose().Rotation()) : 
+      ChassisSpeeds{joystickDrive * kMaxVelocityX,
+                    joystickStrafe * kMaxVelocityY, 
+                    joystickRotate * kMaxVelocityAngular};
+  auto states = m_driveKinematics.ToSwerveModuleStates(speeds);
 
   // use most extreme axis as scale factor
   double scale = std::max({joystickDrive, joystickStrafe, joystickRotate});
@@ -96,8 +87,8 @@ void SwerveDrive::JoystickDrive(double joystickDrive,
   }
 }
 
-void SwerveDrive::Drive(const frc::ChassisSpeeds& speeds, bool fieldRelative) {
-  auto moduleStates = m_kinematics.ToSwerveModuleStates(speeds);
+void SwerveDrive::Drive(const frc::ChassisSpeeds& speeds) {
+  auto moduleStates = m_driveKinematics.ToSwerveModuleStates(speeds);
   for (size_t i = 0; i < moduleStates.size(); ++i) {
     m_modules[i].SetDesiredState(moduleStates[i]);
   }
@@ -105,12 +96,12 @@ void SwerveDrive::Drive(const frc::ChassisSpeeds& speeds, bool fieldRelative) {
 
 void SwerveDrive::Brake() {
   for (auto& module : m_modules) {
-    module.SetDesiredState(SwerveModuleState(0.0_mps, module.GetState().angle));
+    module.SetDesiredState(SwerveModuleState{0.0_mps, module.GetState().angle});
   }
 }
 
 void SwerveDrive::Periodic() {
-  m_odometry.Update(GetHeading(), 
+  m_odometry.Update(Rotation2d(units::degree_t{m_gyro.GetYaw()}), 
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(), 
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 }

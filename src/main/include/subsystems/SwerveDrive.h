@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 #pragma once
 
 #include <array>
@@ -29,24 +25,15 @@ class SwerveDrive : public frc2::SubsystemBase {
   void ResetOdometry(const frc::Pose2d& pose);
 
   /**
-   * Get the heading of the robot from the gyro.
-   */
-  frc::Rotation2d GetHeading();
-
-  /**
-   * Zero the heading (GetHeading() will return 0.0 after).
-   */
-  void ZeroHeading();
-  
-  /**
    * @brief Command the robot to drive with the given joystick inputs.
+   * Each input is a value from -1 to 1, like 
    */
   void JoystickDrive(double joystickDrive, double joystickStrafe, double joystickRotate, bool fieldRelative);
 
   /**
    * @brief Command the robot to drive with the given speeds.
    */
-  void Drive(const frc::ChassisSpeeds& speeds, bool fieldRelative);
+  void Drive(const frc::ChassisSpeeds& speeds);
 
   /**
    * @brief Command the robot to brake, setting all motors to brake mode.
@@ -54,37 +41,32 @@ class SwerveDrive : public frc2::SubsystemBase {
   void Brake();
 
   /**
-   * 
+   * Update the current pose of the robot based on a combination of
+   * gyro, vision, and encoder sensor data.
    */
-  void Periodic() override;
+  virtual void Periodic() override;
 
  private:
   // Subsystems:
   /**
-   * The four swerve modules.
+   * @brief The four swerve modules.
    */
   std::array<SwerveModule, 4> m_modules;
 
+  // Properties:
   /**
-   * Calculates sweve module states from 
+   * @brief NAVX gyro sensor for heading
    */
-  frc::SwerveDriveKinematics<4> m_kinematics;
+  AHRS m_gyro;
+
+  /**
+   * @brief Swerve drive kinematics
+   */
+  frc::SwerveDriveKinematics<4> m_driveKinematics;
 
   // State:
   /**
    * @brief The current position state of the robot.
    */
   frc::SwerveDriveOdometry<4> m_odometry;
-
-  /**
-   * @brief The current angular offset between the field coordinate system
-   * and the robot coordinate system.
-   */
-  frc::Rotation2d m_fieldRelativeAngleOffset;
-
-  // Properties:
-  /**
-   * NAVX gyro sensor for heading
-   */
-  AHRS m_gyro{frc::SPI::Port::kMXP};
 };

@@ -13,15 +13,15 @@ using namespace OIConstants;
 
 RobotContainer::RobotContainer() {
   m_drive.SetDefaultCommand(FunctionalCommand(
-    [this] {},                         // onInit
+    [] {},                         // onInit
     [this] {                           // onExecute
       return m_drive.JoystickDrive(m_driver.GetRawAxis(kXboxRightYAxis), 
                                    m_driver.GetRawAxis(kXboxRightXAxis), 
                                    m_driver.GetRawAxis(kXboxLeftXAxis), 
                                    true);
     },
-    [this] (bool interrupted) {},      // onEnd
-    [this] { return false; },          // isFinished
+    [] (bool interrupted) {},      // onEnd
+    [] { return false; },          // isFinished
     {&m_drive} // requirements
   ));
 
