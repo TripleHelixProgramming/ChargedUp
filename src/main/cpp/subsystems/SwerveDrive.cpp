@@ -26,7 +26,6 @@ SwerveDrive::SwerveDrive()
     SwerveModule(kDriveMotorPorts[2], kSteerMotorPorts[2], kAbsEncoderPorts[2]),
     SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3], kAbsEncoderPorts[3])
   }},
-  m_gyro{frc::SPI::Port::kMXP},
   m_driveKinematics{{
     frc::Translation2d{kWheelBase / 2, kTrackWidth / 2},
     frc::Translation2d{kWheelBase / 2, -kTrackWidth / 2},

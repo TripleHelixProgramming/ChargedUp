@@ -57,7 +57,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   /**
    * @brief NAVX gyro sensor for heading
    */
-  AHRS m_gyro;
+  AHRS m_gyro{frc::SPI::Port::kMXP};
 
   /**
    * @brief Swerve drive kinematics

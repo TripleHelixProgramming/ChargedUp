@@ -15,16 +15,16 @@ namespace OperatorConstants {
 
   constexpr int kDriverControllerPort = 0;
 
-}  // namespace OperatorConstants
+} // namespace OperatorConstants
 
 namespace ElectricalConstants {
 
   constexpr int kRobotControllerPort = 0;
   constexpr int kPowerDistributionPort = 1;
-  // ----------------------------------- {rear-right, front-right, front-left, rear-left};
-  constexpr std::array kDriveMotorPorts = {        10,          12,         22,        24};
-  constexpr std::array kSteerMotorPorts = {        11,          13,         23,        25};
-  constexpr std::array kAbsEncoderPorts = {        31,          33,         43,        45};
+  // ------------------------------- {rear-right, front-right, front-left, rear-left};
+  constexpr int kDriveMotorPorts[] = {        10,          12,         22,        24};
+  constexpr int kSteerMotorPorts[] = {        11,          13,         23,        25};
+  constexpr int kAbsEncoderPorts[] = {        31,          33,         43,        45};
 
 } // namespace ElectricalConstants
 
