@@ -31,6 +31,8 @@ class Trajectory {
 
   State Sample(units::second_t t) const;
 
+  frc::Pose2d GetInitialPose() const;
+
   units::second_t GetTotalTime() const;
   
   std::vector<State> m_states; 

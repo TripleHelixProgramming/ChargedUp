@@ -3,6 +3,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc/Timer.h>
+#include <frc/controller/PIDController.h>
 
 #include "subsystems/SwerveDrive.h"
 #include "util/Trajectory.h"
@@ -25,4 +26,8 @@ class DriveTrajectory
   Trajectory m_trajectory;
 
   frc::Timer m_timer;
+
+  frc::PIDController controllerX{6.0, 0, 0};
+  frc::PIDController controllerY{6.0, 0, 0};
+  frc::PIDController controllerRotation{6.0, 0, 0};
 };

@@ -61,6 +61,10 @@ Trajectory::State Trajectory::Sample(second_t t) const {
   return previousState.Interpolate(currentState, t);
 }
 
+Pose2d Trajectory::GetInitialPose() const {
+  return m_states[0].pose;
+}
+
 second_t Trajectory::GetTotalTime() const {
   return m_states.back().t;
 }
