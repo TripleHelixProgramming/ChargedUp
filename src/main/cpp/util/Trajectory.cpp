@@ -14,6 +14,7 @@
 
 using namespace units;
 using namespace frc;
+using wpi::json;
 
 Trajectory::State Trajectory::State::Interpolate(const Trajectory::State& other, second_t newT) const {
   double scale = ((newT - t) / (other.t - t)).value();
@@ -60,11 +61,15 @@ Trajectory::State Trajectory::Sample(second_t t) const {
   return previousState.Interpolate(currentState, t);
 }
 
+Pose2d Trajectory::GetInitialPose() const {
+  return m_states[0].pose;
+}
+
 second_t Trajectory::GetTotalTime() const {
   return m_states.back().t;
 }
 
-void from_json(const wpi::json& j, Trajectory::State& state) {
+void from_json(const json& j, Trajectory::State& state) {
   state.t = second_t{j.at("timestamp").get<double>()};
   state.pose = Pose2d(Translation2d(meter_t{j.at("x").get<double>()},
                                     meter_t{j.at("y").get<double>()}),
@@ -74,6 +79,21 @@ void from_json(const wpi::json& j, Trajectory::State& state) {
   state.omega = radians_per_second_t{j.at("angularVelocity").get<double>()};
 }
 
-void from_json(const wpi::json& j, Trajectory& traj) {
+void to_json(json& j, const Trajectory::State& state) {
+  j = json{
+    {"timestamp", state.t.value()},
+    {"x", state.pose.X().value()},
+    {"y", state.pose.Y().value()},
+    {"heading", state.pose.Rotation().Radians().value()},
+    {"velocityX", state.vx.value()},
+    {"velocityY", state.vy.value()},
+    {"angularVelocity", state.omega.value()}};
+}
+
+void from_json(const json& j, Trajectory& traj) {
   traj = Trajectory(j.get<std::vector<Trajectory::State>>());
+}
+
+void to_json(json& j, const Trajectory& traj) {
+  j = json{traj.m_states};
 }

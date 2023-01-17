@@ -1,15 +1,25 @@
 {
+  "HALProvider": {
+    "RoboRIO": {
+      "window": {
+        "visible": true
+      }
+    }
+  },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/frc2::SubsystemBase": "Subsystem",
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro"
     }
   },
   "NetworkTables": {
-    "Transitory Values": {
-      "open": false
-    },
     "transitory": {
       "FMSInfo": {
+        "open": true
+      },
+      "SmartDashboard": {
         "open": true
       }
     }
