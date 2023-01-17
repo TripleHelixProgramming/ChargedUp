@@ -1,8 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 #pragma once
+
+#include <optional>
 
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
@@ -12,10 +10,13 @@
 #include "Constants.h"
 #include "subsystems/Gripper.h"
 #include "subsystems/SwerveDrive.h"
+#include "util/TrajectoryManager.h"
 
 class RobotContainer {
  public:
   RobotContainer();
+
+  std::optional<frc2::CommandPtr> GetAutonomousCommand();
 
  private:
   // Subsystems
@@ -26,7 +27,7 @@ class RobotContainer {
   frc::Joystick m_driver{0};
   frc2::CommandXboxController m_operator{1};
 
-  void ConfigureBindings();
+  TrajectoryManager m_trajManager;
 
-  // frc2::CommandPtr GetAutonomousCommand();
+  void ConfigureBindings();
 };

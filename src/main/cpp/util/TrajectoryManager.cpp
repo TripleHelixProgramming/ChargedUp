@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <string_view>
@@ -16,8 +17,8 @@
 using wpi::json;
 using namespace std::filesystem;
 
-Trajectory& TrajectoryManager::GetTrajectory(const std::string& pathName) {
-  return m_trajectories[pathName];
+Trajectory& TrajectoryManager::GetTrajectory(const std::string& name) {
+  return m_trajectories[name];
 }
 
 void TrajectoryManager::LoadTrajectories() {
@@ -38,4 +39,5 @@ Trajectory TrajectoryManager::LoadFile(const std::filesystem::path& trajPath) {
   std::stringstream buffer;
   buffer << fileStream.rdbuf();
   auto parsed = json::parse(buffer.str());
+  return json(parsed);
 }

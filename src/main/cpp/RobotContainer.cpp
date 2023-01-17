@@ -1,13 +1,21 @@
 #include "RobotContainer.h"
 
+#include <iostream>
+
+#include <wpi/json.h>
+
+#include <frc/geometry/Pose2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <frc2/command/button/JoystickButton.h>
 
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/InstantCommand.h>
-#include <frc/geometry/Pose2d.h>
+
 
 #include "Constants.h"
+#include "commands/DriveTrajectory.h"
 
 using namespace frc;
 using namespace frc2;
@@ -25,6 +33,8 @@ RobotContainer::RobotContainer() {
   ));
 
   ConfigureBindings();
+
+  m_trajManager.LoadTrajectories();
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -40,7 +50,8 @@ void RobotContainer::ConfigureBindings() {
   m_operator.B().OnFalse(InstantCommand([this]() { return m_gripper.SetWheelSpeeds(0.0); }).ToPtr());
 }
 
-// frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-//   // An example command will be run in autonomous
-//   return CommandPtr(&Command());
-// }
+std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
+  // SmartDashboard::PutNumber("Traj Total Time", m_trajManager.GetTrajectory("traj").GetTotalTime().value());
+  return CommandPtr(DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
+  // return std::nullopt;
+}

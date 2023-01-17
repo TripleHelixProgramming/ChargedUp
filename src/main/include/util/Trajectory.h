@@ -33,10 +33,10 @@ class Trajectory {
 
   units::second_t GetTotalTime() const;
   
- private:
   std::vector<State> m_states; 
 };
 
-
+void to_json(wpi::json& j, const Trajectory::State& state);
 void from_json(const wpi::json& j, Trajectory::State& state);
+void to_json(wpi::json& j, const Trajectory& traj);
 void from_json(const wpi::json& j, Trajectory& traj);
