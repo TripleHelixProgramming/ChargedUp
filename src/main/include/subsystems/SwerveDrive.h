@@ -47,7 +47,7 @@ class SwerveDrive : public frc2::SubsystemBase {
    * Update the current pose of the robot based on a combination of
    * gyro, vision, and encoder sensor data.
    */
-  virtual void Periodic() override;
+  void Periodic() override;
 
  private:
   // Subsystems:

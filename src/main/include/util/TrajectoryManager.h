@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <map>
+#include <string>
 #include <vector>
 
 #include <frc/Filesystem.h>

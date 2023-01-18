@@ -27,7 +27,7 @@ class Trajectory {
 
   Trajectory() = default;
 
-  Trajectory(std::vector<State> states);
+  explicit Trajectory(std::vector<State> states);
 
   State Sample(units::second_t t) const;
 
