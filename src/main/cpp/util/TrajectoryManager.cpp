@@ -16,7 +16,8 @@
 #include "util/Trajectory.h"
 
 using wpi::json;
-using namespace std::filesystem;
+using std::filesystem::path;
+using std::filesystem::directory_iterator;
 
 Trajectory& TrajectoryManager::GetTrajectory(const std::string& name) {
   return m_trajectories[name];
@@ -35,7 +36,7 @@ void TrajectoryManager::LoadTrajectories() {
   }
 }
 
-Trajectory TrajectoryManager::LoadFile(const std::filesystem::path& trajPath) {
+Trajectory TrajectoryManager::LoadFile(const path& trajPath) {
   std::ifstream fileStream(trajPath);
   std::stringstream buffer;
   buffer << fileStream.rdbuf();
