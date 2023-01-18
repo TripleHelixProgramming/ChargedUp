@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
-
 #include <frc/DoubleSolenoid.h>
+#include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
 class Gripper : public frc2::SubsystemBase {

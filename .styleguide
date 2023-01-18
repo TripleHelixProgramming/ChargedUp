@@ -19,6 +19,7 @@ includeOtherLibs {
   drake/
   fmt/
   frc/
+  frc2/
   gtest/
   hal/
   networktables/

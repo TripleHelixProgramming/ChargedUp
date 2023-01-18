@@ -2,15 +2,14 @@
 
 #include "RobotContainer.h"
 
-#include <frc2/command/InstantCommand.h>
-#include <frc2/command/RunCommand.h>
-#include <frc2/command/button/JoystickButton.h>
-#include <frc2/command/button/Trigger.h>
-
 #include <iostream>
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/RunCommand.h>
+#include <frc2/command/button/JoystickButton.h>
+#include <frc2/command/button/Trigger.h>
 #include <wpi/json.h>
 
 #include "Constants.h"
