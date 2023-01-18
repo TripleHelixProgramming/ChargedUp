@@ -1,15 +1,16 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #include "subsystems/SwerveModule.h"
+
+#include <ctre/phoenix/sensors/CANCoder.h>
+#include <frc2/command/SubsystemBase.h>
 
 #include <cmath>
 #include <numbers>
 
-#include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
-#include <frc2/command/SubsystemBase.h>
+#include <frc/kinematics/SwerveModuleState.h>
 #include <frc/smartdashboard/SmartDashboard.h>
-
-#include <ctre/phoenix/sensors/CANCoder.h>
-
 #include <rev/CANSparkMax.h>
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
@@ -25,18 +26,15 @@ using namespace ctre::phoenix::sensors;
 using namespace units;
 using std::numbers::pi;
 
-SwerveModule::SwerveModule(int driveMotorID,
-                           int steerMotorID,
-                           int absEncoderID)
+SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
     : m_driveMotor(driveMotorID, kBrushless),
-    m_steerMotor(steerMotorID, kBrushless),
-    m_driveEncoder(m_driveMotor.GetEncoder()),
-    m_steerEncoder(m_steerMotor.GetEncoder()),
-    m_absEncoder(absEncoderID),
-    m_driveController(m_driveMotor.GetPIDController()),
-    m_steerController(m_steerMotor.GetPIDController()),
-    id{driveMotorID} {
-
+      m_steerMotor(steerMotorID, kBrushless),
+      m_driveEncoder(m_driveMotor.GetEncoder()),
+      m_steerEncoder(m_steerMotor.GetEncoder()),
+      m_absEncoder(absEncoderID),
+      m_driveController(m_driveMotor.GetPIDController()),
+      m_steerController(m_steerMotor.GetPIDController()),
+      id{driveMotorID} {
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
   m_driveController.SetD(kDriveD);
@@ -50,11 +48,14 @@ SwerveModule::SwerveModule(int driveMotorID,
   m_driveMotor.SetIdleMode(CANSparkMax::IdleMode::kBrake);
   m_steerMotor.SetIdleMode(CANSparkMax::IdleMode::kBrake);
 
-  m_driveEncoder.SetPositionConversionFactor((2 * pi * kWheelRadius / kDriveGearRatio).value());
-  m_driveEncoder.SetVelocityConversionFactor((2 * pi * kWheelRadius / kDriveGearRatio / 60_s).value());
+  m_driveEncoder.SetPositionConversionFactor(
+      (2 * pi * kWheelRadius / kDriveGearRatio).value());
+  m_driveEncoder.SetVelocityConversionFactor(
+      (2 * pi * kWheelRadius / kDriveGearRatio / 60_s).value());
   m_steerEncoder.SetPositionConversionFactor(2 * pi / kSteerGearRatio);
 
-  m_steerEncoder.SetPosition(m_absEncoder.GetAbsolutePosition() * pi / 180); // convert to rad
+  m_steerEncoder.SetPosition(m_absEncoder.GetAbsolutePosition() * pi /
+                             180);  // convert to rad
 
   m_driveMotor.EnableVoltageCompensation(12.0);
   m_driveMotor.EnableVoltageCompensation(12.0);
@@ -72,25 +73,35 @@ frc::SwerveModulePosition SwerveModule::GetPosition() const {
 
 void SwerveModule::SetDesiredState(
     const frc::SwerveModuleState& referenceState) {
-
   // Optimize the reference state to avoid spinning further than 90 degrees
   const auto state = frc::SwerveModuleState::Optimize(
       referenceState, radian_t{m_steerEncoder.GetPosition()});
 
   Rotation2d curAngle = radian_t{m_steerEncoder.GetPosition()};
 
-  double delta = std::fmod(std::fmod((state.angle.Radians().value() - curAngle.Radians().value() + pi), 2 * pi) + 2 * pi, 2 * pi) - pi;
+  double delta = std::fmod(std::fmod((state.angle.Radians().value() -
+                                      curAngle.Radians().value() + pi),
+                                     2 * pi) +
+                               2 * pi,
+                           2 * pi) -
+                 pi;
 
   double adjustedAngle = delta + curAngle.Radians().value();
 
-  SmartDashboard::PutNumber("Target velocity " + std::to_string(id) + ": ", state.speed.value());
-  SmartDashboard::PutNumber("Actual velocity " + std::to_string(id) + ": ", m_driveEncoder.GetVelocity());
+  SmartDashboard::PutNumber("Target velocity " + std::to_string(id) + ": ",
+                            state.speed.value());
+  SmartDashboard::PutNumber("Actual velocity " + std::to_string(id) + ": ",
+                            m_driveEncoder.GetVelocity());
 
-  SmartDashboard::PutNumber("Target angle " + std::to_string(id) + ": ", adjustedAngle);
-  SmartDashboard::PutNumber("Actual angle " + std::to_string(id) + ": ", m_steerEncoder.GetPosition());
+  SmartDashboard::PutNumber("Target angle " + std::to_string(id) + ": ",
+                            adjustedAngle);
+  SmartDashboard::PutNumber("Actual angle " + std::to_string(id) + ": ",
+                            m_steerEncoder.GetPosition());
 
-  m_steerController.SetReference(adjustedAngle, CANSparkMax::ControlType::kPosition);
-  m_driveController.SetReference(state.speed.value(), CANSparkMax::ControlType::kVelocity);
+  m_steerController.SetReference(adjustedAngle,
+                                 CANSparkMax::ControlType::kPosition);
+  m_driveController.SetReference(state.speed.value(),
+                                 CANSparkMax::ControlType::kVelocity);
 }
 
 // This method will be called once per scheduler run
@@ -103,6 +114,6 @@ void SwerveModule::ResetEncoders() {
 
   CANCoderConfiguration curConfig;
   m_absEncoder.GetAllConfigs(curConfig);
-  m_absEncoder.ConfigMagnetOffset(
-      curConfig.magnetOffsetDegrees - m_absEncoder.GetAbsolutePosition());
+  m_absEncoder.ConfigMagnetOffset(curConfig.magnetOffsetDegrees -
+                                  m_absEncoder.GetAbsolutePosition());
 }

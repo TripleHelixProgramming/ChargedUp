@@ -1,19 +1,21 @@
-#pragma once
+// Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include <array>
+#pragma once
 
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc/kinematics/SwerveDriveOdometry.h>
-#include <frc/kinematics/SwerveDriveKinematics.h>
-#include <frc/kinematics/SwerveModuleState.h>
+#include <subsystems/SwerveModule.h>
+
+#include <array>
+
+#include <AHRS.h>
+#include <Constants.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
-#include <subsystems/SwerveModule.h>
-#include <Constants.h>
-#include <array>
-#include <AHRS.h>
+#include <frc/kinematics/SwerveDriveKinematics.h>
+#include <frc/kinematics/SwerveDriveOdometry.h>
+#include <frc/kinematics/SwerveModuleState.h>
 #include <units/angle.h>
 
 class SwerveDrive : public frc2::SubsystemBase {
@@ -26,9 +28,10 @@ class SwerveDrive : public frc2::SubsystemBase {
 
   /**
    * @brief Command the robot to drive with the given joystick inputs.
-   * Each input is a value from -1 to 1, like 
+   * Each input is a value from -1 to 1, like
    */
-  void JoystickDrive(double joystickDrive, double joystickStrafe, double joystickRotate, bool fieldRelative);
+  void JoystickDrive(double joystickDrive, double joystickStrafe,
+                     double joystickRotate, bool fieldRelative);
 
   /**
    * @brief Command the robot to drive with the given speeds.

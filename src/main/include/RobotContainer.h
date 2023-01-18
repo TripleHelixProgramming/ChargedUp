@@ -1,11 +1,13 @@
-#pragma once
+// Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include <optional>
+#pragma once
 
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
+
+#include <optional>
+
 #include <frc/Joystick.h>
-#include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.h"
 #include "subsystems/Gripper.h"

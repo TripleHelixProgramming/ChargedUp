@@ -1,26 +1,25 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
+#include <ctre/phoenix/sensors/CANCoder.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc/kinematics/SwerveModuleState.h>
-#include <frc/kinematics/SwerveModulePosition.h>
 
+#include <frc/kinematics/SwerveModulePosition.h>
+#include <frc/kinematics/SwerveModuleState.h>
 #include <rev/CANSparkMax.h>
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
 
-#include <ctre/phoenix/sensors/CANCoder.h>
-
 class SwerveModule : public frc2::SubsystemBase {
  public:
-  SwerveModule(int driveMotorID,
-               int steerMotorID,
-               int absEncoderID);
+  SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID);
 
   frc::SwerveModuleState GetState() const;
 
   frc::SwerveModulePosition GetPosition() const;
-  
+
   void SetDesiredState(const frc::SwerveModuleState& state);
 
   void Periodic() override;
