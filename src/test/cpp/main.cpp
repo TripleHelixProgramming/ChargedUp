@@ -1,6 +1,7 @@
-#include <hal/HAL.h>
+// Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
+#include <hal/HAL.h>
 
 int main(int argc, char** argv) {
   HAL_Initialize(500, 0);

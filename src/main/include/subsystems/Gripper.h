@@ -1,10 +1,11 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
-#include <rev/CANSparkMax.h>
+#include <frc2/command/SubsystemBase.h>
 
 #include <frc/DoubleSolenoid.h>
-
-#include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
 
 class Gripper : public frc2::SubsystemBase {
  public:

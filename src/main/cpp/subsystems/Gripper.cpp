@@ -1,8 +1,9 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #include "subsystems/Gripper.h"
 
-#include <rev/CANSparkMax.h>
-
 #include <frc/DoubleSolenoid.h>
+#include <rev/CANSparkMax.h>
 
 using namespace frc;
 using namespace rev;
