@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <frc2/command/CommandPtr.h>
-#include <frc2/command/SubsystemBase.h>
 #include <subsystems/SwerveModule.h>
 
 #include <array>
@@ -16,6 +14,8 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/SubsystemBase.h>
 #include <units/angle.h>
 
 class SwerveDrive : public frc2::SubsystemBase {
