@@ -12,8 +12,6 @@
 #include <units/time.h>
 #include <units/velocity.h>
 
-using namespace units::literals;
-
 namespace OperatorConstants {
 
 constexpr int kDriverControllerPort = 0;

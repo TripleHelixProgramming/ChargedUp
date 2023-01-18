@@ -15,9 +15,9 @@
 
 #include "util/Trajectory.h"
 
-using wpi::json;
-using std::filesystem::path;
 using std::filesystem::directory_iterator;
+using std::filesystem::path;
+using wpi::json;
 
 Trajectory& TrajectoryManager::GetTrajectory(const std::string& name) {
   return m_trajectories[name];
