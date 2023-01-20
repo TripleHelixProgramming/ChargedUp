@@ -2,26 +2,23 @@
 
 #include "subsystems/Vision.h"
 
-#include <frc/StateSpaceUtil.h>
-#include <frc/geometry/Pose2d.h>
-#include <frc/geometry/Pose3d.h>
-#include <frc/geometry/Rotation3d.h>
-#include <photonlib/PhotonCamera.h>
-#include <photonlib/PhotonPoseEstimator.h>
-
-#include <frc/apriltag/AprilTag.h>
-#include <frc/apriltag/AprilTagFieldLayout.h>
-#include <frc/apriltag/AprilTagFields.h>
-#include <wpi/json.h>
-
-#include <units/length.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-
 #include <memory>
 #include <optional>
 #include <vector>
 
+#include <frc/StateSpaceUtil.h>
 #include <frc/Timer.h>
+#include <frc/apriltag/AprilTag.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFields.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
+#include <frc/geometry/Rotation3d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <photonlib/PhotonCamera.h>
+#include <photonlib/PhotonPoseEstimator.h>
+#include <units/length.h>
+#include <wpi/json.h>
 
 #include "Constants.h"
 
@@ -32,11 +29,9 @@ using namespace VisionConstants;
 using enum photonlib::PoseStrategy;
 
 Vision::Vision()
-    : m_poseEstimator(
-        LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
-        CLOSEST_TO_REFERENCE_POSE,
-        photonlib::PhotonCamera{"photonvision"},
-        kRobotToCam) {
+    : m_poseEstimator(LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
+                      CLOSEST_TO_REFERENCE_POSE,
+                      photonlib::PhotonCamera{"photonvision"}, kRobotToCam) {
   json j = m_poseEstimator.GetFieldLayout();
   SmartDashboard::PutString("AprilTags", j.dump());
 }

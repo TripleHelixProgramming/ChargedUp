@@ -67,9 +67,9 @@ constexpr double kSteerGearRatio = 12.8;
 namespace VisionConstants {
 
 const frc::Transform3d kRobotToCam(frc::Translation3d(0.5_m, 0_m, 0.5_m),
-                      frc::Rotation3d(0_rad, 0_rad, 0_rad));
+                                   frc::Rotation3d(0_rad, 0_rad, 0_rad));
 
-} // namespace VisionConstants
+}  // namespace VisionConstants
 
 namespace OIConstants {
 
