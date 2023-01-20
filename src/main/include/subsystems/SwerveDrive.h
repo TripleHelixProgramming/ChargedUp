@@ -84,12 +84,5 @@ class SwerveDrive : public frc2::SubsystemBase {
    */
   frc::SwerveDriveOdometry<4> m_odometry;
 
-  frc::SwerveDrivePoseEstimator<4> m_poseEstimator{
-      m_driveKinematics,
-      frc::Rotation2d{},
-      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-      frc::Pose2d{},
-      {0.1, 0.1, 0.1},
-      {0.1, 0.1, 0.1}};
+  frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 };

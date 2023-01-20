@@ -4,9 +4,30 @@
 
 #include <frc/StateSpaceUtil.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
+#include <frc/geometry/Rotation3d.h>
 #include <photonlib/PhotonCamera.h>
 
-Vision::Vision() = default;
+#include <frc/apriltag/AprilTag.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFields.h>
+#include <wpi/json.h>
+
+#include <units/length.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
+#include <memory>
+#include <vector>
+
+using namespace frc;
+using namespace photonlib;
+using namespace wpi;
+
+Vision::Vision() {
+  auto aprilTagFieldLayout = LoadAprilTagLayoutField(AprilTagField::k2022RapidReact);
+  json j = aprilTagFieldLayout;
+  SmartDashboard::PutString("AprilTags", j.dump());
+}
 
 void Vision::Periodic() {}
 

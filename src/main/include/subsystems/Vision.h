@@ -16,4 +16,6 @@ class Vision : public frc2::SubsystemBase {
 
  private:
   photonlib::PhotonCamera m_camera{"photonvision"};
+
+  
 };

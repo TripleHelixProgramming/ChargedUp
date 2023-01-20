@@ -12,9 +12,12 @@
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
+
+#include "subsystems/Vision.h"
 
 using namespace frc;
 using namespace photonlib;
@@ -42,7 +45,14 @@ SwerveDrive::SwerveDrive()
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-                 Pose2d()} {}
+                 Pose2d()},
+      m_poseEstimator{m_driveKinematics,
+                      frc::Rotation2d{},
+                      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+                       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
+                      frc::Pose2d{},
+                      {0.1, 0.1, 0.1},
+                      {0.1, 0.1, 0.1}} {}
 
 Pose2d SwerveDrive::GetPose() const {
   return m_odometry.GetPose();
@@ -111,6 +121,10 @@ void SwerveDrive::Periodic() {
   m_odometry.Update(Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+  m_poseEstimator.Update(
+      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+       m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   m_poseEstimator.AddVisionMeasurement(
       m_vision.GetEstimatedGlobalPose(m_poseEstimator.GetEstimatedPosition()),
       frc::Timer::GetFPGATimestamp() - 0.3_s);
