@@ -4,6 +4,7 @@
 
 #include <cmath>
 
+#include <frc/Timer.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
@@ -14,7 +15,6 @@
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
-#include <frc/Timer.h>
 
 using namespace frc;
 using namespace photonlib;
@@ -112,8 +112,7 @@ void SwerveDrive::Periodic() {
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   m_poseEstimator.AddVisionMeasurement(
-      m_vision.GetEstimatedGlobalPose(
-          m_poseEstimator.GetEstimatedPosition()),
+      m_vision.GetEstimatedGlobalPose(m_poseEstimator.GetEstimatedPosition()),
       frc::Timer::GetFPGATimestamp() - 0.3_s);
 }
 

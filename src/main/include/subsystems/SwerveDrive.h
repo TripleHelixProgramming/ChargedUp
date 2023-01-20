@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "subsystems/SwerveModule.h"
-
 #include <array>
 
 #include <AHRS.h>
@@ -18,10 +16,10 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
+#include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 
-#include <photonlib/PhotonCamera.h>
-
+#include "subsystems/SwerveModule.h"
 #include "subsystems/Vision.h"
 
 class SwerveDrive : public frc2::SubsystemBase {
