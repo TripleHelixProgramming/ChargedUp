@@ -18,6 +18,7 @@
 using namespace frc;
 using namespace frc2;
 using namespace OIConstants;
+using namespace photonlib;
 
 RobotContainer::RobotContainer() {
   m_drive.SetDefaultCommand(RunCommand(
@@ -33,6 +34,23 @@ RobotContainer::RobotContainer() {
   ConfigureBindings();
 
   m_trajManager.LoadTrajectories();
+}
+
+std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
+  return CommandPtr(
+      DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
+}
+
+void RobotContainer::PrintPoseEstimate() {
+  auto result = m_camera.GetLatestResult();
+  bool hasTargets = result.HasTargets();
+  SmartDashboard::PutBoolean("Vision--Has Targets", hasTargets);
+  if (!hasTargets) return;
+  auto target = result.GetBestTarget();
+  int targetID = target.GetFiducialId();
+  double poseAmbiguity = target.GetPoseAmbiguity();
+  SmartDashboard::PutNumber("Vision--Target ID", targetID);
+  SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -58,12 +76,4 @@ void RobotContainer::ConfigureBindings() {
   m_operator.B().OnFalse(InstantCommand([this]() {
                            return m_gripper.SetWheelSpeeds(0.0);
                          }).ToPtr());
-}
-
-std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  // SmartDashboard::PutNumber("Traj Total Time",
-  // m_trajManager.GetTrajectory("traj").GetTotalTime().value());
-  return CommandPtr(
-      DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
-  // return std::nullopt;
 }

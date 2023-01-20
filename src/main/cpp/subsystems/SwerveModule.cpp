@@ -2,11 +2,10 @@
 
 #include "subsystems/SwerveModule.h"
 
-#include <ctre/phoenix/sensors/CANCoder.h>
-
 #include <cmath>
 #include <numbers>
 
+#include <ctre/phoenix/sensors/CANCoder.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/smartdashboard/SmartDashboard.h>

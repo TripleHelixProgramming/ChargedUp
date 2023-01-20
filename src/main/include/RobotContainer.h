@@ -7,6 +7,7 @@
 #include <frc/Joystick.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
+#include <photonlib/PhotonCamera.h>
 
 #include "Constants.h"
 #include "subsystems/Gripper.h"
@@ -19,6 +20,11 @@ class RobotContainer {
 
   std::optional<frc2::CommandPtr> GetAutonomousCommand();
 
+  /**
+   * This is a temporary method for testing pose estimation
+   */
+  void PrintPoseEstimate();
+
  private:
   // Subsystems
   SwerveDrive m_drive;
@@ -29,6 +35,8 @@ class RobotContainer {
   frc2::CommandXboxController m_operator{1};
 
   TrajectoryManager m_trajManager;
+
+  photonlib::PhotonCamera m_camera{"photonvision"};
 
   void ConfigureBindings();
 };
