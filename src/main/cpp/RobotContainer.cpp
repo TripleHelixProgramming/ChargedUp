@@ -18,7 +18,6 @@
 using namespace frc;
 using namespace frc2;
 using namespace OIConstants;
-using namespace photonlib;
 
 RobotContainer::RobotContainer() {
   m_drive.SetDefaultCommand(RunCommand(
@@ -39,18 +38,6 @@ RobotContainer::RobotContainer() {
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   return CommandPtr(
       DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
-}
-
-void RobotContainer::PrintPoseEstimate() {
-  auto result = m_camera.GetLatestResult();
-  bool hasTargets = result.HasTargets();
-  SmartDashboard::PutBoolean("Vision--Has Targets", hasTargets);
-  if (!hasTargets) return;
-  auto target = result.GetBestTarget();
-  int targetID = target.GetFiducialId();
-  double poseAmbiguity = target.GetPoseAmbiguity();
-  SmartDashboard::PutNumber("Vision--Target ID", targetID);
-  SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
 }
 
 void RobotContainer::ConfigureBindings() {

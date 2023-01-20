@@ -14,11 +14,14 @@
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
+#include <frc/Timer.h>
 
 using namespace frc;
+using namespace photonlib;
 using namespace units;
-using namespace ElectricalConstants;
+
 using namespace DriveConstants;
+using namespace ElectricalConstants;
 using namespace ModuleConstants;
 
 SwerveDrive::SwerveDrive()
@@ -108,4 +111,21 @@ void SwerveDrive::Periodic() {
   m_odometry.Update(Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+  m_poseEstimator.AddVisionMeasurement(
+      m_vision.GetEstimatedGlobalPose(
+          m_poseEstimator.GetEstimatedPosition()),
+      frc::Timer::GetFPGATimestamp() - 0.3_s);
+}
+
+void SwerveDrive::PrintPoseEstimate() {
+  auto result = m_camera.GetLatestResult();
+  bool hasTargets = result.HasTargets();
+  SmartDashboard::PutBoolean("Vision--Has Targets", hasTargets);
+  if (!hasTargets)
+    return;
+  auto target = result.GetBestTarget();
+  int targetID = target.GetFiducialId();
+  double poseAmbiguity = target.GetPoseAmbiguity();
+  SmartDashboard::PutNumber("Vision--Target ID", targetID);
+  SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
 }
