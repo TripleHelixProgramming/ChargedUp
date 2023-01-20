@@ -6,6 +6,8 @@
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
 
+#include <frc/apriltag/AprilTagFieldLayout.h>
+
 class Vision : public frc2::SubsystemBase {
  public:
   Vision();
@@ -17,5 +19,7 @@ class Vision : public frc2::SubsystemBase {
  private:
   photonlib::PhotonCamera m_camera{"photonvision"};
 
-  
+  frc::AprilTagFieldLayout m_aprilTagFieldLayout;
+
+
 };

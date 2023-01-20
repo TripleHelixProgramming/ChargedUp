@@ -6,6 +6,8 @@
 #include <numbers>
 
 #include <frc/geometry/Rotation2d.h>
+#include <frc/geometry/Rotation3d.h>
+#include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
 #include <units/angular_velocity.h>
 #include <units/math.h>
@@ -61,6 +63,13 @@ constexpr double kDriveGearRatio = 6.75;
 constexpr double kSteerGearRatio = 12.8;
 
 }  // namespace ModuleConstants
+
+namespace VisionConstants {
+
+const frc::Transform3d kRobotToCam(frc::Translation3d(0.5_m, 0_m, 0.5_m),
+                      frc::Rotation3d(0_rad, 0_rad, 0_rad));
+
+} // namespace VisionConstants
 
 namespace OIConstants {
 
