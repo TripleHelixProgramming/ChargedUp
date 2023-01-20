@@ -2,11 +2,16 @@
 
 #pragma once
 
-#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
 
 #include <frc/apriltag/AprilTagFieldLayout.h>
+#include <photonlib/PhotonPoseEstimator.h>
+
+#include <units/time.h>
+
+#include <optional>
 
 class Vision : public frc2::SubsystemBase {
  public:
@@ -14,12 +19,8 @@ class Vision : public frc2::SubsystemBase {
 
   void Periodic() override;
 
-  frc::Pose2d GetEstimatedGlobalPose(const frc::Pose2d& estimatedRobotPose);
+  std::optional<photonlib::EstimatedRobotPose> GetEstimatedGlobalPose(const frc::Pose3d& estimatedRobotPose);
 
  private:
-  photonlib::PhotonCamera m_camera{"photonvision"};
-
-  frc::AprilTagFieldLayout m_aprilTagFieldLayout;
-
-
+  photonlib::PhotonPoseEstimator m_poseEstimator;
 };

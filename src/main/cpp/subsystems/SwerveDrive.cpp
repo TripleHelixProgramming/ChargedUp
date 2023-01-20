@@ -125,9 +125,10 @@ void SwerveDrive::Periodic() {
       Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+  auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(Pose3d(m_poseEstimator.GetEstimatedPosition()));
   m_poseEstimator.AddVisionMeasurement(
-      m_vision.GetEstimatedGlobalPose(m_poseEstimator.GetEstimatedPosition()),
-      frc::Timer::GetFPGATimestamp() - 0.3_s);
+      visionEstimatedPose->estimatedPose.ToPose2d(),
+      visionEstimatedPose->timestamp);
 }
 
 void SwerveDrive::PrintPoseEstimate() {
