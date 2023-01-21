@@ -1,5 +1,49 @@
 {
   "HALProvider": {
+    "Other Devices": {
+      "Compressor[0]": {
+        "name": "Compressor"
+      },
+      "SPARK MAX [10]": {
+        "name": "Rear Right Drive"
+      },
+      "SPARK MAX [11]": {
+        "name": "Rear Right Drive"
+      },
+      "SPARK MAX [12]": {
+        "name": "Front Right Drive"
+      },
+      "SPARK MAX [13]": {
+        "name": "Front Right Steer"
+      },
+      "SPARK MAX [15]": {
+        "header": {
+          "open": true
+        },
+        "name": "Gripper Left Roller"
+      },
+      "SPARK MAX [16]": {
+        "name": "Gripper Right Roller"
+      },
+      "SPARK MAX [22]": {
+        "name": "Front Left Drive"
+      },
+      "SPARK MAX [23]": {
+        "name": "Front Left Steer"
+      },
+      "SPARK MAX [24]": {
+        "header": {
+          "open": true
+        },
+        "name": "Rear Left Drive"
+      },
+      "SPARK MAX [25]": {
+        "name": "Rear Left Steer"
+      },
+      "navX-Sensor[4]": {
+        "name": "navX"
+      }
+    },
     "RoboRIO": {
       "window": {
         "visible": true
