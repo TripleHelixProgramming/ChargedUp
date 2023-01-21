@@ -28,8 +28,13 @@ using namespace wpi;
 using namespace VisionConstants;
 using enum photonlib::PoseStrategy;
 
+AprilTagFieldLayout CustomFieldLayout() {
+  AprilTag tagOne{1, Pose3d(0_m, 0_m, 15.125_in, Rotation3d())};
+  return AprilTagFieldLayout({tagOne}, 10_m, 10_m);
+}
+
 Vision::Vision()
-    : m_poseEstimator(LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
+    : m_poseEstimator(/*LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp)*/CustomFieldLayout(),
                       CLOSEST_TO_REFERENCE_POSE,
                       photonlib::PhotonCamera{"OV5647"}, kRobotToCam) {
   json j = m_poseEstimator.GetFieldLayout();
@@ -43,3 +48,4 @@ std::optional<EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
   return m_poseEstimator.Update();
 }
+ 
