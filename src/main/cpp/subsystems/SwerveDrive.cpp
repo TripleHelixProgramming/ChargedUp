@@ -16,7 +16,9 @@
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
+#include <units/length.h>
 
+#include <frc/kinematics/SwerveModulePosition.h>
 #include "subsystems/Vision.h"
 
 using namespace frc;
@@ -47,12 +49,12 @@ SwerveDrive::SwerveDrive()
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d()},
       m_poseEstimator{m_driveKinematics,
-                      frc::Rotation2d{},
-                      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-                       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-                      frc::Pose2d{},
-                      {0.1, 0.1, 0.1},
-                      {0.1, 0.1, 0.1}} {}
+                 Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+                 {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+                  m_modules[2].GetPosition(), m_modules[3].GetPosition()},
+                 Pose2d(),
+                 {0.1, 0.1, 0.1},
+                 {0.1, 0.1, 0.1}} {}
 
 Pose2d SwerveDrive::GetPose() const {
   return m_odometry.GetPose();
@@ -121,15 +123,18 @@ void SwerveDrive::Periodic() {
   m_odometry.Update(Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+
   m_poseEstimator.Update(
       Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
       Pose3d(m_poseEstimator.GetEstimatedPosition()));
-  m_poseEstimator.AddVisionMeasurement(
-      visionEstimatedPose->estimatedPose.ToPose2d(),
-      visionEstimatedPose->timestamp);
+  if (visionEstimatedPose.has_value()) {
+    m_poseEstimator.AddVisionMeasurement(
+        visionEstimatedPose->estimatedPose.ToPose2d(),
+        visionEstimatedPose->timestamp);
+  }
 }
 
 void SwerveDrive::PrintPoseEstimate() {
