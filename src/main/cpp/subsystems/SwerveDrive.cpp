@@ -134,7 +134,14 @@ void SwerveDrive::Periodic() {
     m_poseEstimator.AddVisionMeasurement(
         visionEstimatedPose->estimatedPose.ToPose2d(),
         visionEstimatedPose->timestamp);
+    SmartDashboard::PutNumber("Vision/Pose Estimate/X", visionEstimatedPose->estimatedPose.X().value());
+    SmartDashboard::PutNumber("Vision/Pose Estimate/Y", visionEstimatedPose->estimatedPose.Y().value());
+    SmartDashboard::PutNumber("Vision/Pose Estimate/Theta", visionEstimatedPose->estimatedPose.ToPose2d().Rotation().Radians().value());
   }
+
+
+
+  PrintPoseEstimate();
 }
 
 void SwerveDrive::PrintPoseEstimate() {
@@ -148,4 +155,6 @@ void SwerveDrive::PrintPoseEstimate() {
   double poseAmbiguity = target.GetPoseAmbiguity();
   SmartDashboard::PutNumber("Vision--Target ID", targetID);
   SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
+
+  
 }

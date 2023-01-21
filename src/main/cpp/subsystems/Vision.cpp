@@ -31,7 +31,7 @@ using enum photonlib::PoseStrategy;
 Vision::Vision()
     : m_poseEstimator(LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
                       CLOSEST_TO_REFERENCE_POSE,
-                      photonlib::PhotonCamera{"photonvision"}, kRobotToCam) {
+                      photonlib::PhotonCamera{"OV5647"}, kRobotToCam) {
   json j = m_poseEstimator.GetFieldLayout();
   SmartDashboard::PutString("AprilTags", j.dump());
 }
