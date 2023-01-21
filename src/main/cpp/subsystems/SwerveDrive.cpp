@@ -4,6 +4,7 @@
 
 #include <cmath>
 
+#include <frc/Timer.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
@@ -11,14 +12,19 @@
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
 
+#include "subsystems/Vision.h"
+
 using namespace frc;
+using namespace photonlib;
 using namespace units;
-using namespace ElectricalConstants;
+
 using namespace DriveConstants;
+using namespace ElectricalConstants;
 using namespace ModuleConstants;
 
 SwerveDrive::SwerveDrive()
@@ -39,7 +45,14 @@ SwerveDrive::SwerveDrive()
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-                 Pose2d()} {}
+                 Pose2d()},
+      m_poseEstimator{m_driveKinematics,
+                      frc::Rotation2d{},
+                      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+                       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
+                      frc::Pose2d{},
+                      {0.1, 0.1, 0.1},
+                      {0.1, 0.1, 0.1}} {}
 
 Pose2d SwerveDrive::GetPose() const {
   return m_odometry.GetPose();
@@ -108,4 +121,26 @@ void SwerveDrive::Periodic() {
   m_odometry.Update(Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+  m_poseEstimator.Update(
+      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+       m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+  auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
+      Pose3d(m_poseEstimator.GetEstimatedPosition()));
+  m_poseEstimator.AddVisionMeasurement(
+      visionEstimatedPose->estimatedPose.ToPose2d(),
+      visionEstimatedPose->timestamp);
+}
+
+void SwerveDrive::PrintPoseEstimate() {
+  auto result = m_camera.GetLatestResult();
+  bool hasTargets = result.HasTargets();
+  SmartDashboard::PutBoolean("Vision--Has Targets", hasTargets);
+  if (!hasTargets)
+    return;
+  auto target = result.GetBestTarget();
+  int targetID = target.GetFiducialId();
+  double poseAmbiguity = target.GetPoseAmbiguity();
+  SmartDashboard::PutNumber("Vision--Target ID", targetID);
+  SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
 }

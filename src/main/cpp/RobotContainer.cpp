@@ -35,6 +35,11 @@ RobotContainer::RobotContainer() {
   m_trajManager.LoadTrajectories();
 }
 
+std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
+  return CommandPtr(
+      DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
+}
+
 void RobotContainer::ConfigureBindings() {
   JoystickButton zorroGIn{&m_driver, kZorroGIn};
   zorroGIn.OnTrue(InstantCommand([this]() {
@@ -58,12 +63,4 @@ void RobotContainer::ConfigureBindings() {
   m_operator.B().OnFalse(InstantCommand([this]() {
                            return m_gripper.SetWheelSpeeds(0.0);
                          }).ToPtr());
-}
-
-std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  // SmartDashboard::PutNumber("Traj Total Time",
-  // m_trajManager.GetTrajectory("traj").GetTotalTime().value());
-  return CommandPtr(
-      DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
-  // return std::nullopt;
 }
