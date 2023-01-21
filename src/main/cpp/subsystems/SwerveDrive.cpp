@@ -66,6 +66,11 @@ void SwerveDrive::ResetOdometry(const Pose2d& pose) {
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
+  m_poseEstimator.ResetPosition(
+      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
+      pose);
 }
 
 void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
@@ -80,9 +85,9 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
                           joystickRotate * kMaxVelocityAngular};
   auto states = m_driveKinematics.ToSwerveModuleStates(speeds);
 
-  SmartDashboard::PutNumber("vx: ", speeds.vx.value());
-  SmartDashboard::PutNumber("vy: ", speeds.vy.value());
-  SmartDashboard::PutNumber("omega: ", speeds.omega.value());
+  SmartDashboard::PutNumber("Drive/vx: ", speeds.vx.value());
+  SmartDashboard::PutNumber("Drive/vy: ", speeds.vy.value());
+  SmartDashboard::PutNumber("Drive/omega: ", speeds.omega.value());
 
   // use most extreme axis as scale factor
   double scale = std::max({joystickDrive, joystickStrafe, joystickRotate});
@@ -130,11 +135,21 @@ void SwerveDrive::Periodic() {
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
       Pose3d(m_poseEstimator.GetEstimatedPosition()));
+  SmartDashboard::PutNumber("Drive/Pose Estimate/X", m_poseEstimator.GetEstimatedPosition().X().value());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/Y", m_poseEstimator.GetEstimatedPosition().Y().value());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/Theta", m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
   if (visionEstimatedPose.has_value()) {
     m_poseEstimator.AddVisionMeasurement(
         visionEstimatedPose->estimatedPose.ToPose2d(),
         visionEstimatedPose->timestamp);
+    SmartDashboard::PutNumber("Vision/Pose Estimate/X", visionEstimatedPose->estimatedPose.X().value());
+    SmartDashboard::PutNumber("Vision/Pose Estimate/Y", visionEstimatedPose->estimatedPose.Y().value());
+    SmartDashboard::PutNumber("Vision/Pose Estimate/Theta", visionEstimatedPose->estimatedPose.ToPose2d().Rotation().Radians().value());
   }
+
+
+
+  PrintPoseEstimate();
 }
 
 void SwerveDrive::PrintPoseEstimate() {
@@ -148,4 +163,6 @@ void SwerveDrive::PrintPoseEstimate() {
   double poseAmbiguity = target.GetPoseAmbiguity();
   SmartDashboard::PutNumber("Vision--Target ID", targetID);
   SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
+
+  
 }

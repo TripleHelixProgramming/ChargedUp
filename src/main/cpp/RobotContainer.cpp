@@ -14,6 +14,8 @@
 
 #include "Constants.h"
 #include "commands/DriveTrajectory.h"
+#include "commands/IntakeCube.h"
+#include "commands/IntakeCone.h"
 
 using namespace frc;
 using namespace frc2;
@@ -46,21 +48,14 @@ void RobotContainer::ConfigureBindings() {
                     return m_drive.ResetOdometry(Pose2d());
                   }).ToPtr());
 
-  m_operator.X().OnTrue(
-      InstantCommand([this]() { return m_gripper.Extend(); }).ToPtr());
-  m_operator.Y().OnTrue(
-      InstantCommand([this]() { return m_gripper.Retract(); }).ToPtr());
-
-  m_operator.A().OnTrue(InstantCommand([this]() {
-                          return m_gripper.SetWheelSpeeds(0.5);
-                        }).ToPtr());
-  m_operator.B().OnTrue(InstantCommand([this]() {
-                          return m_gripper.SetWheelSpeeds(-0.5);
-                        }).ToPtr());
-  m_operator.A().OnFalse(InstantCommand([this]() {
-                           return m_gripper.SetWheelSpeeds(0.0);
-                         }).ToPtr());
-  m_operator.B().OnFalse(InstantCommand([this]() {
-                           return m_gripper.SetWheelSpeeds(0.0);
-                         }).ToPtr());
+  m_operator.X().OnTrue(IntakeCone(&m_gripper).ToPtr());
+  m_operator.X().OnFalse(
+      InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  m_operator.Y().OnTrue(IntakeCube(&m_gripper).ToPtr());
+  m_operator.Y().OnFalse(
+      InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  m_operator.A().OnTrue(
+      InstantCommand([this]() { return m_gripper.EjectGamePiece(); }, {&m_gripper}).ToPtr());
+  m_operator.A().OnFalse(
+      InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
 }
