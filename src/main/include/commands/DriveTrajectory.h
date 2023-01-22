@@ -30,7 +30,7 @@ class DriveTrajectory
 
   frc::Timer m_timer;
 
-  frc::PIDController controllerX{6.0, 0, 0};
-  frc::PIDController controllerY{6.0, 0, 0};
-  frc::PIDController controllerRotation{6.0, 0, 0};
+  frc::PIDController m_controllerX{6.0, 0, 0};
+  frc::PIDController m_controllerY{6.0, 0, 0};
+  frc::PIDController m_controllerRotation{6.0, 0, 0};
 };

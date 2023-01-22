@@ -39,7 +39,7 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       m_driveController(m_driveMotor.GetPIDController()),
       m_steerController(m_steerMotor.GetPIDController()),
       id{driveMotorID},
-      m_sim(std::make_unique<SimSwerveModule>()) {
+      m_sim(std::make_unique<SimSwerveModule>(id)) {
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
   m_driveController.SetD(kDriveD);

@@ -24,15 +24,15 @@ void DriveTrajectory::Execute() {
   auto state = m_trajectory.Sample(m_timer.Get());
   auto currentPose = m_drive->GetPose();
 
-  controllerX.SetSetpoint(state.pose.X().value());
-  controllerY.SetSetpoint(state.pose.Y().value());
-  controllerRotation.SetSetpoint(state.pose.Rotation().Radians().value());
+  m_controllerX.SetSetpoint(state.pose.X().value());
+  m_controllerY.SetSetpoint(state.pose.Y().value());
+  m_controllerRotation.SetSetpoint(state.pose.Rotation().Radians().value());
 
   auto vx = state.vx +
-            meters_per_second_t{controllerX.Calculate(currentPose.X().value())};
+            meters_per_second_t{m_controllerX.Calculate(currentPose.X().value())};
   auto vy = state.vy +
-            meters_per_second_t{controllerY.Calculate(currentPose.Y().value())};
-  auto omega = state.omega + radians_per_second_t{controllerRotation.Calculate(
+            meters_per_second_t{m_controllerY.Calculate(currentPose.Y().value())};
+  auto omega = state.omega + radians_per_second_t{m_controllerRotation.Calculate(
                                  currentPose.Rotation().Radians().value())};
 
   frc::SmartDashboard::PutNumber("Target x: ", state.pose.X().value());

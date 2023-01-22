@@ -114,8 +114,6 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
   for (size_t i = 0; i < states.size(); ++i) {
     m_modules[i].SetDesiredState(states[i]);
   }
-
-  m_gyro.SetRotationSpeed(m_driveKinematics.ToChassisSpeeds(states).omega);
 }
 
 void SwerveDrive::Drive(const frc::ChassisSpeeds& speeds) {
@@ -139,6 +137,12 @@ void SwerveDrive::Periodic() {
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
   m_field.SetRobotPose(m_odometry.GetPose());
+
+  m_gyro.SetRotationSpeed(m_driveKinematics.ToChassisSpeeds(
+      m_modules[0].GetState(),
+      m_modules[1].GetState(),
+      m_modules[2].GetState(),
+      m_modules[3].GetState()).omega);
 
   m_poseEstimator.Update(
       Rotation2d(m_gyro.GetYaw()),
