@@ -47,12 +47,12 @@ SwerveDrive::SwerveDrive()
            frc::Translation2d{-kWheelBase / 2, kTrackWidth / 2},
            frc::Translation2d{-kWheelBase / 2, -kTrackWidth / 2}}},
       m_odometry{m_driveKinematics,
-                 Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+                 Rotation2d(m_gyro.GetYaw()),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d()},
       m_poseEstimator{m_driveKinematics,
-                 Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+                 Rotation2d(m_gyro.GetYaw()),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d(),
@@ -67,12 +67,12 @@ Pose2d SwerveDrive::GetPose() const {
 
 void SwerveDrive::ResetOdometry(const Pose2d& pose) {
   m_odometry.ResetPosition(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      Rotation2d(m_gyro.GetYaw()),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
   m_poseEstimator.ResetPosition(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      Rotation2d(m_gyro.GetYaw()),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
@@ -114,6 +114,8 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
   for (size_t i = 0; i < states.size(); ++i) {
     m_modules[i].SetDesiredState(states[i]);
   }
+
+  m_gyro.SetRotationSpeed(m_driveKinematics.ToChassisSpeeds(states).omega);
 }
 
 void SwerveDrive::Drive(const frc::ChassisSpeeds& speeds) {
@@ -121,6 +123,8 @@ void SwerveDrive::Drive(const frc::ChassisSpeeds& speeds) {
   for (size_t i = 0; i < moduleStates.size(); ++i) {
     m_modules[i].SetDesiredState(moduleStates[i]);
   }
+
+  m_gyro.SetRotationSpeed(m_driveKinematics.ToChassisSpeeds(moduleStates).omega);
 }
 
 void SwerveDrive::Brake() {
@@ -130,14 +134,14 @@ void SwerveDrive::Brake() {
 }
 
 void SwerveDrive::Periodic() {
-  m_odometry.Update(Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+  m_odometry.Update(Rotation2d(m_gyro.GetYaw()),
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
   m_field.SetRobotPose(m_odometry.GetPose());
 
   m_poseEstimator.Update(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      Rotation2d(m_gyro.GetYaw()),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(

@@ -22,6 +22,7 @@
 
 #include "subsystems/SwerveModule.h"
 #include "subsystems/Vision.h"
+#include "util/SimGyro.h"
 
 class SwerveDrive : public frc2::SubsystemBase {
  public:
@@ -71,7 +72,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   /**
    * @brief NAVX gyro sensor for heading
    */
-  AHRS m_gyro{frc::SPI::Port::kMXP};
+  SimGyro m_gyro;
   photonlib::PhotonCamera m_camera{"OV5647"};
 
   /**
