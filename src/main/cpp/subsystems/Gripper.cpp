@@ -4,8 +4,8 @@
 
 #include <frc/DoubleSolenoid.h>
 #include <rev/CANSparkMax.h>
-#include "frc/smartdashboard/SmartDashboard.h"
-#include "rev/SparkMaxLimitSwitch.h"
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <rev/SparkMaxLimitSwitch.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 using namespace frc;

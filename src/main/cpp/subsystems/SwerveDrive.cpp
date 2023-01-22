@@ -6,8 +6,10 @@
 
 #include <frc/Timer.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/RobotBase.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
@@ -19,6 +21,7 @@
 #include <units/length.h>
 
 #include <frc/kinematics/SwerveModulePosition.h>
+#include "frc/RobotBase.h"
 #include "subsystems/Vision.h"
 
 using namespace frc;
@@ -54,7 +57,9 @@ SwerveDrive::SwerveDrive()
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d(),
                  {0.1, 0.1, 0.1},
-                 {0.1, 0.1, 0.1}} {}
+                 {0.1, 0.1, 0.1}} {
+  SmartDashboard::PutData("Field", &m_field);
+}
 
 Pose2d SwerveDrive::GetPose() const {
   return m_odometry.GetPose();
@@ -85,9 +90,9 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
                           joystickRotate * kMaxVelocityAngular};
   auto states = m_driveKinematics.ToSwerveModuleStates(speeds);
 
-  SmartDashboard::PutNumber("Drive/vx: ", speeds.vx.value());
-  SmartDashboard::PutNumber("Drive/vy: ", speeds.vy.value());
-  SmartDashboard::PutNumber("Drive/omega: ", speeds.omega.value());
+  SmartDashboard::PutNumber("Drive/Commanded Velocity/vx", speeds.vx.value());
+  SmartDashboard::PutNumber("Drive/Commanded Velocity/vy", speeds.vy.value());
+  SmartDashboard::PutNumber("Drive/Commanded Velocity/omega", speeds.omega.value());
 
   // use most extreme axis as scale factor
   double scale = std::max({joystickDrive, joystickStrafe, joystickRotate});
@@ -129,6 +134,8 @@ void SwerveDrive::Periodic() {
                     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
+  m_field.SetRobotPose(m_odometry.GetPose());
+
   m_poseEstimator.Update(
       Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
@@ -155,14 +162,14 @@ void SwerveDrive::Periodic() {
 void SwerveDrive::PrintPoseEstimate() {
   auto result = m_camera.GetLatestResult();
   bool hasTargets = result.HasTargets();
-  SmartDashboard::PutBoolean("Vision--Has Targets", hasTargets);
+  SmartDashboard::PutBoolean("Vision/Has Targets", hasTargets);
   if (!hasTargets)
     return;
   auto target = result.GetBestTarget();
   int targetID = target.GetFiducialId();
   double poseAmbiguity = target.GetPoseAmbiguity();
-  SmartDashboard::PutNumber("Vision--Target ID", targetID);
-  SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
+  SmartDashboard::PutNumber("Vision/Target ID", targetID);
+  SmartDashboard::PutNumber("Vision/Pose Ambiguity", poseAmbiguity);
 
   
 }

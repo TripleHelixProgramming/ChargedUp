@@ -87,14 +87,14 @@ void SwerveModule::SetDesiredState(
 
   double adjustedAngle = delta + curAngle.Radians().value();
 
-  SmartDashboard::PutNumber("Target velocity " + std::to_string(id) + ": ",
+  SmartDashboard::PutNumber("Modules/" + std::to_string(id) + "/Target Velocity",
                             state.speed.value());
-  SmartDashboard::PutNumber("Actual velocity " + std::to_string(id) + ": ",
+  SmartDashboard::PutNumber("Modules/" + std::to_string(id) + "/Actual Velocity",
                             m_driveEncoder.GetVelocity());
 
-  SmartDashboard::PutNumber("Target angle " + std::to_string(id) + ": ",
+  SmartDashboard::PutNumber("Modules/" + std::to_string(id) + "/Target Angle",
                             adjustedAngle);
-  SmartDashboard::PutNumber("Actual angle " + std::to_string(id) + ": ",
+  SmartDashboard::PutNumber("Modules/" + std::to_string(id) + "/Actual Angle",
                             m_steerEncoder.GetPosition());
 
   m_steerController.SetReference(adjustedAngle,

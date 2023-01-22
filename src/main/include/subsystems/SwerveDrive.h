@@ -8,6 +8,7 @@
 #include <Constants.h>
 #include <frc/StateSpaceUtil.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
@@ -85,4 +86,6 @@ class SwerveDrive : public frc2::SubsystemBase {
   frc::SwerveDriveOdometry<4> m_odometry;
 
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
+
+  frc::Field2d m_field;
 };
