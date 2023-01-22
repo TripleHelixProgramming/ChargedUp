@@ -11,6 +11,8 @@
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
 
+#include "util/SimSwerveModule.h"
+
 class SwerveModule : public frc2::SubsystemBase {
  public:
   SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID);
@@ -38,4 +40,6 @@ class SwerveModule : public frc2::SubsystemBase {
   rev::SparkMaxPIDController m_steerController;
 
   int id;
+
+  std::unique_ptr<SimSwerveModule> m_sim;
 };

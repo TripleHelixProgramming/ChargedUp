@@ -17,9 +17,6 @@
         "name": "Front Right Steer"
       },
       "SPARK MAX [15]": {
-        "header": {
-          "open": true
-        },
         "name": "Gripper Left Roller"
       },
       "SPARK MAX [16]": {
@@ -32,9 +29,6 @@
         "name": "Front Left Steer"
       },
       "SPARK MAX [24]": {
-        "header": {
-          "open": true
-        },
         "name": "Rear Left Drive"
       },
       "SPARK MAX [25]": {
@@ -55,7 +49,15 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/frc2::SubsystemBase": "Subsystem",
-      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro"
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -64,6 +66,15 @@
         "open": true
       },
       "SmartDashboard": {
+        "Drive": {
+          "Pose Estimate": {
+            "open": true
+          },
+          "open": true
+        },
+        "Modules": {
+          "open": true
+        },
         "open": true
       }
     }

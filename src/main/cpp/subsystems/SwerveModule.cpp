@@ -15,7 +15,12 @@
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
 
+#include <frc/RobotBase.h>
+
 #include "Constants.h"
+#include "units/angle.h"
+#include "units/velocity.h"
+#include "util/SimSwerveModule.h"
 
 using namespace frc;
 using namespace rev;
@@ -33,7 +38,8 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       m_absEncoder(absEncoderID),
       m_driveController(m_driveMotor.GetPIDController()),
       m_steerController(m_steerMotor.GetPIDController()),
-      id{driveMotorID} {
+      id{driveMotorID},
+      m_sim(std::make_unique<SimSwerveModule>()) {
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
   m_driveController.SetD(kDriveD);
@@ -61,11 +67,17 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
 }
 
 frc::SwerveModuleState SwerveModule::GetState() const {
+  if (RobotBase::IsSimulation()) {
+    return m_sim->GetState();
+  }
   return {meters_per_second_t{m_driveEncoder.GetVelocity()},
           radian_t{m_steerEncoder.GetPosition()}};
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition() const {
+  if (RobotBase::IsSimulation()) {
+    return m_sim->GetPosition();
+  }
   return {meter_t{m_driveEncoder.GetPosition()},
           radian_t{m_steerEncoder.GetPosition()}};
 }
@@ -101,6 +113,10 @@ void SwerveModule::SetDesiredState(
                                  CANSparkMax::ControlType::kPosition);
   m_driveController.SetReference(state.speed.value(),
                                  CANSparkMax::ControlType::kVelocity);
+
+  SwerveModuleState adjustedState = {state.speed, units::radian_t{adjustedAngle}};
+
+  m_sim->SetDesiredState(adjustedState);
 }
 
 // This method will be called once per scheduler run
