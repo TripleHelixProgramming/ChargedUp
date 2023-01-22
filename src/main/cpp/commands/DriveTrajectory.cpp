@@ -7,7 +7,6 @@
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
 
-using namespace frc;
 using namespace units;
 
 DriveTrajectory::DriveTrajectory(SwerveDrive* drive, Trajectory& trajectory)
@@ -36,17 +35,17 @@ void DriveTrajectory::Execute() {
   auto omega = state.omega + radians_per_second_t{controllerRotation.Calculate(
                                  currentPose.Rotation().Radians().value())};
 
-  SmartDashboard::PutNumber("Target x: ", state.pose.X().value());
-  SmartDashboard::PutNumber("Target y: ", state.pose.Y().value());
-  SmartDashboard::PutNumber("Target rotation: ",
+  frc::SmartDashboard::PutNumber("Target x: ", state.pose.X().value());
+  frc::SmartDashboard::PutNumber("Target y: ", state.pose.Y().value());
+  frc::SmartDashboard::PutNumber("Target rotation: ",
                             state.pose.Rotation().Radians().value());
 
-  SmartDashboard::PutNumber("Real x: ", currentPose.X().value());
-  SmartDashboard::PutNumber("Real y: ", currentPose.Y().value());
-  SmartDashboard::PutNumber("Real rotation: ",
+  frc::SmartDashboard::PutNumber("Real x: ", currentPose.X().value());
+  frc::SmartDashboard::PutNumber("Real y: ", currentPose.Y().value());
+  frc::SmartDashboard::PutNumber("Real rotation: ",
                             currentPose.Rotation().Radians().value());
 
-  m_drive->Drive(ChassisSpeeds::FromFieldRelativeSpeeds(
+  m_drive->Drive(frc::ChassisSpeeds::FromFieldRelativeSpeeds(
       vx, vy, omega, m_drive->GetPose().Rotation()));
 }
 
