@@ -17,6 +17,8 @@
 #include "commands/IntakeCube.h"
 #include "commands/IntakeCone.h"
 
+#include "commands/ResetAbsoluteEncoders.h"
+
 using namespace frc;
 using namespace frc2;
 using namespace OIConstants;
@@ -35,6 +37,8 @@ RobotContainer::RobotContainer() {
   ConfigureBindings();
 
   m_trajManager.LoadTrajectories();
+
+  SmartDashboard::PutData("Reset Encoders", new ResetAbsoluteEncoders(&m_drive));
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {

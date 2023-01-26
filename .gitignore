@@ -163,3 +163,6 @@ bin/
 *-window.json
 
 .cache
+
+# Ignore clangd compile_commands file
+compile_commands.json

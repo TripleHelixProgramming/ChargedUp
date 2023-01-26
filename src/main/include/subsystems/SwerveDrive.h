@@ -58,6 +58,8 @@ class SwerveDrive : public frc2::SubsystemBase {
    */
   void PrintPoseEstimate();
 
+  void ResetAbsoluteEncoders();
+
  private:
   // Subsystems:
   /**

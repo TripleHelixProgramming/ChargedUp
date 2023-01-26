@@ -124,9 +124,9 @@ void SwerveModule::Periodic() {
 }
 
 void SwerveModule::ResetEncoders() {
-  m_steerEncoder.SetPosition(0.0);
+  SmartDashboard::PutBoolean("did we do a dumb", false);
 
-  m_absEncoder.SetPosition(0.0);
+  m_steerEncoder.SetPosition(0.0);
 
   CANCoderConfiguration curConfig;
   m_absEncoder.GetAllConfigs(curConfig);
