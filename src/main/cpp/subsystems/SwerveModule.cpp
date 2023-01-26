@@ -89,13 +89,10 @@ void SwerveModule::SetDesiredState(
 
   SmartDashboard::PutNumber("Target velocity " + std::to_string(id) + ": ",
                             state.speed.value());
-  SmartDashboard::PutNumber("Actual velocity " + std::to_string(id) + ": ",
-                            m_driveEncoder.GetVelocity());
 
   SmartDashboard::PutNumber("Target angle " + std::to_string(id) + ": ",
                             adjustedAngle);
-  SmartDashboard::PutNumber("Actual angle " + std::to_string(id) + ": ",
-                            m_steerEncoder.GetPosition());
+  
 
   m_steerController.SetReference(adjustedAngle,
                                  CANSparkMax::ControlType::kPosition);
@@ -104,12 +101,17 @@ void SwerveModule::SetDesiredState(
 }
 
 // This method will be called once per scheduler run
-void SwerveModule::Periodic() {}
+void SwerveModule::Periodic() {
+  SmartDashboard::PutNumber("Actual angle " + std::to_string(id) + ": ",
+                            m_steerEncoder.GetPosition());
+  SmartDashboard::PutNumber("Actual velocity " + std::to_string(id) + ": ",
+                            m_driveEncoder.GetVelocity());
+}
 
 void SwerveModule::ResetEncoders() {
-  m_steerEncoder.SetPosition(0.0);
+  SmartDashboard::PutBoolean("did we do a dumb", false);
 
-  m_absEncoder.SetPosition(0.0);
+  m_steerEncoder.SetPosition(0.0);
 
   CANCoderConfiguration curConfig;
   m_absEncoder.GetAllConfigs(curConfig);

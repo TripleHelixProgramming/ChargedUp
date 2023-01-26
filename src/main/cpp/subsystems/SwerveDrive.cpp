@@ -17,11 +17,13 @@
 #include <units/base.h>
 #include <units/time.h>
 #include <units/length.h>
+#include <frc2/command/InstantCommand.h>
 
 #include <frc/kinematics/SwerveModulePosition.h>
 #include "subsystems/Vision.h"
 
 using namespace frc;
+using namespace frc2;
 using namespace photonlib;
 using namespace units;
 
@@ -39,10 +41,10 @@ SwerveDrive::SwerveDrive()
                  SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3],
                               kAbsEncoderPorts[3])}},
       m_driveKinematics{
-          {frc::Translation2d{kWheelBase / 2, kTrackWidth / 2},
-           frc::Translation2d{kWheelBase / 2, -kTrackWidth / 2},
-           frc::Translation2d{-kWheelBase / 2, kTrackWidth / 2},
-           frc::Translation2d{-kWheelBase / 2, -kTrackWidth / 2}}},
+          {Translation2d{kWheelBase / 2, kTrackWidth / 2},
+           Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+           Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+           Translation2d{-kWheelBase / 2, -kTrackWidth / 2}}},
       m_odometry{m_driveKinematics,
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
@@ -54,7 +56,8 @@ SwerveDrive::SwerveDrive()
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d(),
                  {0.1, 0.1, 0.1},
-                 {0.1, 0.1, 0.1}} {}
+                 {0.1, 0.1, 0.1}} {
+}
 
 Pose2d SwerveDrive::GetPose() const {
   return m_odometry.GetPose();
@@ -89,6 +92,10 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
   SmartDashboard::PutNumber("Drive/vy: ", speeds.vy.value());
   SmartDashboard::PutNumber("Drive/omega: ", speeds.omega.value());
 
+  SmartDashboard::PutNumber("IO/Joystick X: ", joystickDrive);
+  SmartDashboard::PutNumber("IO/Joystick Y: ", joystickStrafe);
+  SmartDashboard::PutNumber("IO/Joystick Theta: ", joystickRotate);
+
   // use most extreme axis as scale factor
   double scale = std::max({joystickDrive, joystickStrafe, joystickRotate});
 
@@ -111,7 +118,7 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
   }
 }
 
-void SwerveDrive::Drive(const frc::ChassisSpeeds& speeds) {
+void SwerveDrive::Drive(const ChassisSpeeds& speeds) {
   auto moduleStates = m_driveKinematics.ToSwerveModuleStates(speeds);
   for (size_t i = 0; i < moduleStates.size(); ++i) {
     m_modules[i].SetDesiredState(moduleStates[i]);
@@ -165,4 +172,10 @@ void SwerveDrive::PrintPoseEstimate() {
   SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
 
   
+}
+
+void SwerveDrive::ResetAbsoluteEncoders() {
+  for (auto& _module : m_modules) {
+    _module.ResetEncoders();
+  }
 }
