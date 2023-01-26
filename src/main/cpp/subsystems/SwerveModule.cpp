@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <numbers>
+#include <string>
 
 #include <ctre/phoenix/sensors/CANCoder.h>
 #include <frc/kinematics/SwerveModulePosition.h>
@@ -24,6 +25,22 @@ using namespace ModuleConstants;
 using namespace ctre::phoenix::sensors;
 using namespace units;
 using std::numbers::pi;
+using namespace ElectricalConstants;
+
+std::string _GetModuleName(int driveMotorID) {
+  switch (driveMotorID) {
+    case kDriveMotorPorts[0]:
+      return "Front Left";
+    case kDriveMotorPorts[1]:
+      return "Front Right";
+    case kDriveMotorPorts[2]:
+      return "Rear Left";
+    case kDriveMotorPorts[3]:
+      return "Rear Right";
+    default:
+      return std::to_string(driveMotorID);
+  }
+}
 
 SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
     : m_driveMotor(driveMotorID, kBrushless),
@@ -33,7 +50,7 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       m_absEncoder(absEncoderID),
       m_driveController(m_driveMotor.GetPIDController()),
       m_steerController(m_steerMotor.GetPIDController()),
-      id{driveMotorID} {
+      m_name(_GetModuleName(driveMotorID)) {
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
   m_driveController.SetD(kDriveD);
@@ -87,15 +104,10 @@ void SwerveModule::SetDesiredState(
 
   double adjustedAngle = delta + curAngle.Radians().value();
 
-  SmartDashboard::PutNumber("Target velocity " + std::to_string(id) + ": ",
+  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Setpoint Velocity (mps)",
                             state.speed.value());
-  SmartDashboard::PutNumber("Actual velocity " + std::to_string(id) + ": ",
-                            m_driveEncoder.GetVelocity());
-
-  SmartDashboard::PutNumber("Target angle " + std::to_string(id) + ": ",
+  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Setpoint Angle (rad)",
                             adjustedAngle);
-  SmartDashboard::PutNumber("Actual angle " + std::to_string(id) + ": ",
-                            m_steerEncoder.GetPosition());
 
   m_steerController.SetReference(adjustedAngle,
                                  CANSparkMax::ControlType::kPosition);
@@ -104,7 +116,12 @@ void SwerveModule::SetDesiredState(
 }
 
 // This method will be called once per scheduler run
-void SwerveModule::Periodic() {}
+void SwerveModule::Periodic() {
+  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Drive Velocity (mps)",
+                            m_driveEncoder.GetVelocity());
+  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Steer Angle (rad)",
+                            m_steerEncoder.GetPosition());
+}
 
 void SwerveModule::ResetEncoders() {
   m_steerEncoder.SetPosition(0.0);
