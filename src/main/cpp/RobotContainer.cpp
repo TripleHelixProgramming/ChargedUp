@@ -26,8 +26,11 @@ using namespace OIConstants;
 RobotContainer::RobotContainer() {
   m_drive.SetDefaultCommand(RunCommand(
       [this] {  // onExecute
-        return m_drive.JoystickDrive(m_driver.GetRawAxis(kZorroRightYAxis),
-                                     m_driver.GetRawAxis(kZorroRightXAxis),
+        // Right stick up on xbox is negative, right stick down is postive.
+        // Right stick right on xbox is negative, right stick left is postive.
+        // Left stick right is positive, left stick left is negative.
+        return m_drive.JoystickDrive(-m_driver.GetRawAxis(kZorroRightYAxis),
+                                     -m_driver.GetRawAxis(kZorroRightXAxis),
                                      -m_driver.GetRawAxis(kZorroLeftXAxis),
                                      true);
       },
@@ -44,6 +47,12 @@ RobotContainer::RobotContainer() {
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   return CommandPtr(
       DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
+}
+
+void RobotContainer::UpdateTelemetry() const {
+  SmartDashboard::PutNumber("OI/Driver/Left X", m_driver.GetRawAxis(kZorroLeftXAxis));
+  SmartDashboard::PutNumber("OI/Driver/Right X", m_driver.GetRawAxis(kZorroRightXAxis));
+  SmartDashboard::PutNumber("OI/Driver/Right Y", m_driver.GetRawAxis(kZorroRightYAxis));
 }
 
 void RobotContainer::ConfigureBindings() {

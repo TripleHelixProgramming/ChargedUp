@@ -92,10 +92,6 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
   SmartDashboard::PutNumber("Drive/vy: ", speeds.vy.value());
   SmartDashboard::PutNumber("Drive/omega: ", speeds.omega.value());
 
-  SmartDashboard::PutNumber("IO/Joystick X: ", joystickDrive);
-  SmartDashboard::PutNumber("IO/Joystick Y: ", joystickStrafe);
-  SmartDashboard::PutNumber("IO/Joystick Theta: ", joystickRotate);
-
   // use most extreme axis as scale factor
   double scale = std::max({joystickDrive, joystickStrafe, joystickRotate});
 
