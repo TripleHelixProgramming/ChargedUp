@@ -19,6 +19,8 @@ class RobotContainer {
 
   std::optional<frc2::CommandPtr> GetAutonomousCommand();
 
+  void UpdateTelemetry() const;
+
  private:
   // Subsystems
   SwerveDrive m_drive;

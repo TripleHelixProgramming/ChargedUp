@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <ctre/phoenix/sensors/CANCoder.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
@@ -37,5 +39,5 @@ class SwerveModule : public frc2::SubsystemBase {
   rev::SparkMaxPIDController m_driveController;
   rev::SparkMaxPIDController m_steerController;
 
-  int id;
+  std::string m_name;
 };
