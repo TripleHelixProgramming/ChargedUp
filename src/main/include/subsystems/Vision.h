@@ -8,8 +8,9 @@
 #include <frc/geometry/Pose3d.h>
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
-#include <photonlib/PhotonPoseEstimator.h>
 #include <units/time.h>
+
+#include "util/photonlib2/PhotonPoseEstimator.h"
 
 class Vision : public frc2::SubsystemBase {
  public:
@@ -17,9 +18,9 @@ class Vision : public frc2::SubsystemBase {
 
   void Periodic() override;
 
-  std::optional<photonlib::EstimatedRobotPose> GetEstimatedGlobalPose(
+  std::optional<photonlib2::EstimatedRobotPose> GetEstimatedGlobalPose(
       const frc::Pose3d& estimatedRobotPose);
 
  private:
-  photonlib::PhotonPoseEstimator m_poseEstimator;
+  photonlib2::PhotonPoseEstimator m_poseEstimator;
 };

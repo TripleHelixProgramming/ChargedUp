@@ -16,17 +16,17 @@
 #include <frc/geometry/Rotation3d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <photonlib/PhotonCamera.h>
-#include <photonlib/PhotonPoseEstimator.h>
 #include <units/length.h>
 #include <wpi/json.h>
 
+#include "util/photonlib2/PhotonPoseEstimator.h"
 #include "Constants.h"
 
 using namespace frc;
 using namespace photonlib;
 using namespace wpi;
 using namespace VisionConstants;
-using enum photonlib::PoseStrategy;
+using enum photonlib2::PoseStrategy;
 
 AprilTagFieldLayout CustomFieldLayout() {
   AprilTag tagOne{1, Pose3d(0_m, 0_m, 15.125_in, Rotation3d())};
@@ -43,7 +43,7 @@ Vision::Vision()
 
 void Vision::Periodic() {}
 
-std::optional<EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
+std::optional<photonlib2::EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
     const frc::Pose3d& prevEstimatedRobotPose) {
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
   return m_poseEstimator.Update();
