@@ -15,8 +15,11 @@
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
+#include <frc/DataLogManager.h>
+#include <wpi/DataLog.h>
 
 #include "Constants.h"
+#include "frc/DataLogManager.h"
 
 using namespace frc;
 using namespace rev;
@@ -50,7 +53,10 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       m_absEncoder(absEncoderID),
       m_driveController(m_driveMotor.GetPIDController()),
       m_steerController(m_steerMotor.GetPIDController()),
-      m_name(_GetModuleName(driveMotorID)) {
+      m_name(_GetModuleName(driveMotorID)),
+      m_drivePositionLog(frc::DataLogManager::GetLog(), "Drive/Modules/" + m_name + "/Drive Position (m)"),
+      m_driveVelocityLog(frc::DataLogManager::GetLog(), "Drive/Modules/" + m_name + "/Drive Velocity (mps)"),
+      m_steerPositionLog(frc::DataLogManager::GetLog(), "Drive/Modules/" + m_name + "/Steer Angle (rad)") {
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
   m_driveController.SetD(kDriveD);
@@ -121,6 +127,10 @@ void SwerveModule::Periodic() {
                             m_driveEncoder.GetVelocity());
   SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Steer Angle (rad)",
                             m_steerEncoder.GetPosition());
+
+  m_drivePositionLog.Append(m_driveEncoder.GetPosition());
+  m_driveVelocityLog.Append(m_driveEncoder.GetVelocity());
+  m_steerPositionLog.Append(m_steerEncoder.GetPosition());
 }
 
 void SwerveModule::ResetEncoders() {

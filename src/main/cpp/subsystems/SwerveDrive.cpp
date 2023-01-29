@@ -18,6 +18,8 @@
 #include <units/time.h>
 #include <units/length.h>
 #include <frc2/command/InstantCommand.h>
+#include <wpi/DataLog.h>
+#include <frc/DataLogManager.h>
 
 #include <frc/kinematics/SwerveModulePosition.h>
 #include "subsystems/Vision.h"
@@ -56,7 +58,10 @@ SwerveDrive::SwerveDrive()
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d(),
                  {0.1, 0.1, 0.1},
-                 {0.1, 0.1, 0.1}} {
+                 {0.1, 0.1, 0.1}},
+      m_poseEstimateXLog(frc::DataLogManager::GetLog(), "Drive/Pose Estimate/X"),
+      m_poseEstimateYLog(frc::DataLogManager::GetLog(), "Drive/Pose Estimate/Y"),
+      m_poseEstimateThetaLog(frc::DataLogManager::GetLog(), "Drive/Pose Estimate/Theta") {
 }
 
 Pose2d SwerveDrive::GetPose() const {
@@ -150,24 +155,9 @@ void SwerveDrive::Periodic() {
     SmartDashboard::PutNumber("Vision/Pose Estimate/Theta", visionEstimatedPose->estimatedPose.ToPose2d().Rotation().Radians().value());
   }
 
-
-
-  PrintPoseEstimate();
-}
-
-void SwerveDrive::PrintPoseEstimate() {
-  auto result = m_camera.GetLatestResult();
-  bool hasTargets = result.HasTargets();
-  SmartDashboard::PutBoolean("Vision--Has Targets", hasTargets);
-  if (!hasTargets)
-    return;
-  auto target = result.GetBestTarget();
-  int targetID = target.GetFiducialId();
-  double poseAmbiguity = target.GetPoseAmbiguity();
-  SmartDashboard::PutNumber("Vision--Target ID", targetID);
-  SmartDashboard::PutNumber("Vision--Pose Ambiguity", poseAmbiguity);
-
-  
+  m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());
+  m_poseEstimateYLog.Append(m_poseEstimator.GetEstimatedPosition().Y().value());
+  m_poseEstimateThetaLog.Append(m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
 }
 
 void SwerveDrive::ResetAbsoluteEncoders() {
