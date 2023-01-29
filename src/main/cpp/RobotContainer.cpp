@@ -19,11 +19,16 @@
 
 #include "commands/ResetAbsoluteEncoders.h"
 
+#include "util/log/DoubleTelemetryEntry.h"
+
 using namespace frc;
 using namespace frc2;
 using namespace OIConstants;
 
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer()
+    : m_oiDriverLeftXLog("OI/Driver/Left X"),
+    m_oiDriverRightXLog("OI/Driver/Right X"),
+    m_oiDriverRightYLog("OI/Driver/Right Y") {
   m_drive.SetDefaultCommand(RunCommand(
       [this] {  // onExecute
         // Right stick up on xbox is negative, right stick down is postive.
@@ -46,13 +51,13 @@ RobotContainer::RobotContainer() {
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   return CommandPtr(
-      DriveTrajectory(&m_drive, m_trajManager.GetTrajectory("traj")));
+      DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("traj")));
 }
 
-void RobotContainer::UpdateTelemetry() const {
-  SmartDashboard::PutNumber("OI/Driver/Left X", m_driver.GetRawAxis(kZorroLeftXAxis));
-  SmartDashboard::PutNumber("OI/Driver/Right X", m_driver.GetRawAxis(kZorroRightXAxis));
-  SmartDashboard::PutNumber("OI/Driver/Right Y", m_driver.GetRawAxis(kZorroRightYAxis));
+void RobotContainer::UpdateTelemetry() {
+  m_oiDriverLeftXLog.Append(m_driver.GetRawAxis(kZorroLeftXAxis));
+  m_oiDriverRightXLog.Append(m_driver.GetRawAxis(kZorroRightXAxis));
+  m_oiDriverRightYLog.Append(m_driver.GetRawAxis(kZorroRightYAxis));
 }
 
 void RobotContainer::ConfigureBindings() {

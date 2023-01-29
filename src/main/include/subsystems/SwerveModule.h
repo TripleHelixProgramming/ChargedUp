@@ -12,8 +12,7 @@
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
-#include <frc/DataLogManager.h>
-#include <wpi/DataLog.h>
+#include "util/log/DoubleTelemetryEntry.h"
 
 class SwerveModule : public frc2::SubsystemBase {
  public:
@@ -43,7 +42,9 @@ class SwerveModule : public frc2::SubsystemBase {
 
   std::string m_name;
 
-  wpi::log::DoubleLogEntry m_drivePositionLog;
-  wpi::log::DoubleLogEntry m_driveVelocityLog;
-  wpi::log::DoubleLogEntry m_steerPositionLog;
+  DoubleTelemetryEntry m_drivePositionLog;
+  DoubleTelemetryEntry m_driveVelocityLog;
+  DoubleTelemetryEntry m_steerPositionLog;
+  DoubleTelemetryEntry m_driveVelocitySetpointLog;
+  DoubleTelemetryEntry m_steerPositionSetpointLog;
 };

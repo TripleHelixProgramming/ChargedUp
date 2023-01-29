@@ -4,6 +4,7 @@
 
 #include <array>
 #include <numbers>
+#include "frc/RobotBase.h"
 #include "util/log/TelemetryEntry.h"
 
 #include <frc/geometry/Rotation2d.h>

@@ -18,8 +18,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
-#include <wpi/DataLog.h>
-#include <frc/DataLogManager.h>
+#include "util/log/DoubleTelemetryEntry.h"
 
 #include "subsystems/SwerveModule.h"
 #include "subsystems/Vision.h"
@@ -85,7 +84,11 @@ class SwerveDrive : public frc2::SubsystemBase {
 
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
-  wpi::log::DoubleLogEntry m_poseEstimateXLog;
-  wpi::log::DoubleLogEntry m_poseEstimateYLog;
-  wpi::log::DoubleLogEntry m_poseEstimateThetaLog;
+  DoubleTelemetryEntry m_poseEstimateXLog;
+  DoubleTelemetryEntry m_poseEstimateYLog;
+  DoubleTelemetryEntry m_poseEstimateThetaLog;
+
+  DoubleTelemetryEntry m_visionPoseEstimateXLog;
+  DoubleTelemetryEntry m_visionPoseEstimateYLog;
+  DoubleTelemetryEntry m_visionPoseEstimateThetaLog;
 };

@@ -11,18 +11,17 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
 #include <units/length.h>
 #include <frc2/command/InstantCommand.h>
-#include <wpi/DataLog.h>
-#include <frc/DataLogManager.h>
+#include "util/log/DoubleTelemetryEntry.h"
 
 #include <frc/kinematics/SwerveModulePosition.h>
 #include "subsystems/Vision.h"
+#include "util/log/TelemetryEntry.h"
 
 using namespace frc;
 using namespace frc2;
@@ -59,9 +58,12 @@ SwerveDrive::SwerveDrive()
                  Pose2d(),
                  {0.1, 0.1, 0.1},
                  {0.1, 0.1, 0.1}},
-      m_poseEstimateXLog(frc::DataLogManager::GetLog(), "Drive/Pose Estimate/X"),
-      m_poseEstimateYLog(frc::DataLogManager::GetLog(), "Drive/Pose Estimate/Y"),
-      m_poseEstimateThetaLog(frc::DataLogManager::GetLog(), "Drive/Pose Estimate/Theta") {
+      m_poseEstimateXLog("Drive/Pose Estimate/X", TelemetryLevel::kCompetition),
+      m_poseEstimateYLog("Drive/Pose Estimate/Y", TelemetryLevel::kCompetition),
+      m_poseEstimateThetaLog("Drive/Pose Estimate/Theta", TelemetryLevel::kCompetition),
+      m_visionPoseEstimateXLog("Vision/Pose Estimate/X", TelemetryLevel::kCompetition),
+      m_visionPoseEstimateYLog("Vision/Pose Estimate/Y", TelemetryLevel::kCompetition),
+      m_visionPoseEstimateThetaLog("Vision/Pose Estimate/Theta", TelemetryLevel::kCompetition) {
 }
 
 Pose2d SwerveDrive::GetPose() const {
@@ -93,20 +95,18 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
                           joystickRotate * kMaxVelocityAngular};
   auto states = m_driveKinematics.ToSwerveModuleStates(speeds);
 
-  SmartDashboard::PutNumber("Drive/vx: ", speeds.vx.value());
-  SmartDashboard::PutNumber("Drive/vy: ", speeds.vy.value());
-  SmartDashboard::PutNumber("Drive/omega: ", speeds.omega.value());
-
   // use most extreme axis as scale factor
   double scale = std::max({joystickDrive, joystickStrafe, joystickRotate});
 
-  // identify fastest motor's speed
+  // desaturate wheel speeds
+  // first identify fastest motor's speed
   auto largestWheelSpeed = 0.0_mps;
   for (auto& moduleState : states) {
     largestWheelSpeed = meters_per_second_t{std::max(
         largestWheelSpeed.value(), std::abs(moduleState.speed.value()))};
   }
 
+  // scale speeds
   if (largestWheelSpeed.value() != 0.0 &&
       (largestWheelSpeed / scale).value() > kMaxSpeed.value()) {
     for (auto moduleState : states) {
@@ -114,6 +114,7 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
     }
   }
 
+  // apply setpoints
   for (size_t i = 0; i < states.size(); ++i) {
     m_modules[i].SetDesiredState(states[i]);
   }
@@ -133,26 +134,24 @@ void SwerveDrive::Brake() {
 }
 
 void SwerveDrive::Periodic() {
-  m_odometry.Update(Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
-                    {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-                     m_modules[2].GetPosition(), m_modules[3].GetPosition()});
-
+  m_odometry.Update( // TODO: Remove odometry
+      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+       m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   m_poseEstimator.Update(
       Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+
   auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
       Pose3d(m_poseEstimator.GetEstimatedPosition()));
-  SmartDashboard::PutNumber("Drive/Pose Estimate/X", m_poseEstimator.GetEstimatedPosition().X().value());
-  SmartDashboard::PutNumber("Drive/Pose Estimate/Y", m_poseEstimator.GetEstimatedPosition().Y().value());
-  SmartDashboard::PutNumber("Drive/Pose Estimate/Theta", m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
   if (visionEstimatedPose.has_value()) {
     m_poseEstimator.AddVisionMeasurement(
         visionEstimatedPose->estimatedPose.ToPose2d(),
         visionEstimatedPose->timestamp);
-    SmartDashboard::PutNumber("Vision/Pose Estimate/X", visionEstimatedPose->estimatedPose.X().value());
-    SmartDashboard::PutNumber("Vision/Pose Estimate/Y", visionEstimatedPose->estimatedPose.Y().value());
-    SmartDashboard::PutNumber("Vision/Pose Estimate/Theta", visionEstimatedPose->estimatedPose.ToPose2d().Rotation().Radians().value());
+    m_visionPoseEstimateXLog.Append(visionEstimatedPose->estimatedPose.X().value()); // TODO: add timestamp to this (additional param)
+    m_visionPoseEstimateYLog.Append(visionEstimatedPose->estimatedPose.Y().value());
+    m_visionPoseEstimateThetaLog.Append(visionEstimatedPose->estimatedPose.ToPose2d().Rotation().Radians().value());
   }
 
   m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());

@@ -7,9 +7,9 @@
 
 class DoubleTelemetryEntry {
  public:
-  DoubleTelemetryEntry(std::string_view name, TelemetryLevel level = TelemetryLevel::kCompetition);
+  DoubleTelemetryEntry(std::string_view name, TelemetryLevel level = TelemetryLevel::kDebug);
 
-  void Append(double value);
+  void Append(double value, int64_t timestamp = 0);
 
  private:
   std::string_view m_name;
