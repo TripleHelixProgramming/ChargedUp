@@ -14,7 +14,6 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Pose3d.h>
 #include <frc/geometry/Rotation3d.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
 #include <units/length.h>
@@ -38,7 +37,6 @@ Vision::Vision()
                       CLOSEST_TO_REFERENCE_POSE,
                       photonlib::PhotonCamera{"OV5647"}, kRobotToCam) {
   json j = m_poseEstimator.GetFieldLayout();
-  SmartDashboard::PutString("AprilTags", j.dump());
 }
 
 void Vision::Periodic() {}

@@ -18,6 +18,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
+#include "util/log/DoubleTelemetryEntry.h"
 
 #include "subsystems/SwerveModule.h"
 #include "subsystems/Vision.h"
@@ -53,11 +54,6 @@ class SwerveDrive : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
-  /**
-   * This is a temporary method for testing pose estimation
-   */
-  void PrintPoseEstimate();
-
   void ResetAbsoluteEncoders();
 
  private:
@@ -87,4 +83,12 @@ class SwerveDrive : public frc2::SubsystemBase {
   frc::SwerveDriveOdometry<4> m_odometry;
 
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
+
+  DoubleTelemetryEntry m_poseEstimateXLog;
+  DoubleTelemetryEntry m_poseEstimateYLog;
+  DoubleTelemetryEntry m_poseEstimateThetaLog;
+
+  DoubleTelemetryEntry m_visionPoseEstimateXLog;
+  DoubleTelemetryEntry m_visionPoseEstimateYLog;
+  DoubleTelemetryEntry m_visionPoseEstimateThetaLog;
 };

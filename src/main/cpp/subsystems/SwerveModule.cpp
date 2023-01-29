@@ -9,14 +9,17 @@
 #include <ctre/phoenix/sensors/CANCoder.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
+#include <frc/DataLogManager.h>
+#include <wpi/DataLog.h>
 
 #include "Constants.h"
+#include "frc/DataLogManager.h"
+#include "util/log/TelemetryEntry.h"
 
 using namespace frc;
 using namespace rev;
@@ -50,7 +53,12 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       m_absEncoder(absEncoderID),
       m_driveController(m_driveMotor.GetPIDController()),
       m_steerController(m_steerMotor.GetPIDController()),
-      m_name(_GetModuleName(driveMotorID)) {
+      m_name(_GetModuleName(driveMotorID)),
+      m_drivePositionLog("Drive/Modules/" + m_name + "/Drive Position (m)"),
+      m_driveVelocityLog("Drive/Modules/" + m_name + "/Drive Velocity (mps)"),
+      m_steerPositionLog("Drive/Modules/" + m_name + "/Steer Angle (rad)"),
+      m_driveVelocitySetpointLog("Drive/Modules/" + m_name + "/Drive Velocity Setpoint (mps)"),
+      m_steerPositionSetpointLog("Drive/Modules/" + m_name + "/Steer Angle Setpoint (rad)") {
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
   m_driveController.SetD(kDriveD);
@@ -95,19 +103,15 @@ void SwerveModule::SetDesiredState(
 
   Rotation2d curAngle = radian_t{m_steerEncoder.GetPosition()};
 
-  double delta = std::fmod(std::fmod((state.angle.Radians().value() -
-                                      curAngle.Radians().value() + pi),
-                                     2 * pi) +
-                               2 * pi,
-                           2 * pi) -
-                 pi;
+  // Since we use relative encoder of steer motor, it is a field (doesn't wrap from 2pi to 0 for example).
+  // We need to calculate delta to avoid taking a longer route
+  // This is analagous to the EnableContinuousInput() function of WPILib's PIDController classes
+  double delta = std::fmod(std::fmod((state.angle.Radians().value() - curAngle.Radians().value() + pi), 2 * pi) + 2 * pi, 2 * pi) - pi; // NOLINT
 
   double adjustedAngle = delta + curAngle.Radians().value();
 
-  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Setpoint Velocity (mps)",
-                            state.speed.value());
-  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Setpoint Angle (rad)",
-                            adjustedAngle);
+  m_driveVelocitySetpointLog.Append(state.speed.value());
+  m_steerPositionSetpointLog.Append(adjustedAngle);
 
   m_steerController.SetReference(adjustedAngle,
                                  CANSparkMax::ControlType::kPosition);
@@ -115,17 +119,13 @@ void SwerveModule::SetDesiredState(
                                  CANSparkMax::ControlType::kVelocity);
 }
 
-// This method will be called once per scheduler run
 void SwerveModule::Periodic() {
-  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Drive Velocity (mps)",
-                            m_driveEncoder.GetVelocity());
-  SmartDashboard::PutNumber("Drive/Modules/" + m_name + "/Steer Angle (rad)",
-                            m_steerEncoder.GetPosition());
+  m_drivePositionLog.Append(m_driveEncoder.GetPosition());
+  m_driveVelocityLog.Append(m_driveEncoder.GetVelocity());
+  m_steerPositionLog.Append(m_steerEncoder.GetPosition());
 }
 
 void SwerveModule::ResetEncoders() {
-  SmartDashboard::PutBoolean("did we do a dumb", false);
-
   m_steerEncoder.SetPosition(0.0);
 
   CANCoderConfiguration curConfig;

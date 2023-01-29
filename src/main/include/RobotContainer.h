@@ -12,6 +12,7 @@
 #include "subsystems/Gripper.h"
 #include "subsystems/SwerveDrive.h"
 #include "util/TrajectoryManager.h"
+#include "util/log/DoubleTelemetryEntry.h"
 
 class RobotContainer {
  public:
@@ -19,7 +20,7 @@ class RobotContainer {
 
   std::optional<frc2::CommandPtr> GetAutonomousCommand();
 
-  void UpdateTelemetry() const;
+  void UpdateTelemetry();
 
  private:
   // Subsystems
@@ -33,4 +34,8 @@ class RobotContainer {
   TrajectoryManager m_trajManager;
 
   void ConfigureBindings();
+
+  DoubleTelemetryEntry m_oiDriverLeftXLog;
+  DoubleTelemetryEntry m_oiDriverRightXLog;
+  DoubleTelemetryEntry m_oiDriverRightYLog;
 };

@@ -10,10 +10,12 @@
 #include "subsystems/SwerveDrive.h"
 #include "util/Trajectory.h"
 
+#include "util/log/DoubleTelemetryEntry.h"
+
 class DriveTrajectory
     : public frc2::CommandHelper<frc2::CommandBase, DriveTrajectory> {
  public:
-  DriveTrajectory(SwerveDrive* drive, Trajectory& trajectory);
+  DriveTrajectory(SwerveDrive* drive, const Trajectory* trajectory);
 
   void Initialize() override;
 
@@ -26,11 +28,17 @@ class DriveTrajectory
  private:
   SwerveDrive* m_drive;
 
-  Trajectory m_trajectory;
+  const Trajectory* m_trajectory;
 
-  frc::Timer m_timer;
+  frc::Timer m_timestamp;
 
-  frc::PIDController controllerX{6.0, 0, 0};
-  frc::PIDController controllerY{6.0, 0, 0};
-  frc::PIDController controllerRotation{6.0, 0, 0};
+  frc::PIDController m_controllerX{6.0, 0, 0};
+  frc::PIDController m_controllerY{6.0, 0, 0};
+  frc::PIDController m_controllerRotation{6.0, 0, 0};
+
+  DoubleTelemetryEntry m_timestampLog;
+
+  DoubleTelemetryEntry m_xSetpointLog;
+  DoubleTelemetryEntry m_ySetpointLog;
+  DoubleTelemetryEntry m_thetaSetpointLog;
 };
