@@ -101,12 +101,7 @@ void SwerveModule::SetDesiredState(
 
   Rotation2d curAngle = radian_t{m_steerEncoder.GetPosition()};
 
-  double delta = std::fmod(std::fmod((state.angle.Radians().value() -
-                                      curAngle.Radians().value() + pi),
-                                     2 * pi) +
-                               2 * pi,
-                           2 * pi) -
-                 pi;
+  double delta = std::fmod(std::fmod((state.angle.Radians().value() - curAngle.Radians().value() + pi), 2 * pi) + 2 * pi, 2 * pi) - pi; // NOLINT
 
   double adjustedAngle = delta + curAngle.Radians().value();
 

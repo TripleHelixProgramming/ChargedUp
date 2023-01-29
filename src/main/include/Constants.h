@@ -4,6 +4,7 @@
 
 #include <array>
 #include <numbers>
+#include "util/log/TelemetryEntry.h"
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Rotation3d.h>
@@ -117,3 +118,5 @@ constexpr int kZorroDIn = 13;
 constexpr int kZorroHIn = 14;
 
 }  // namespace OIConstants
+
+constexpr TelemetryLevel kTelemetryLevel = TelemetryLevel::kDebug;
