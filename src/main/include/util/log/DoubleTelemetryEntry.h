@@ -12,7 +12,7 @@ class DoubleTelemetryEntry {
   void Append(double value, int64_t timestamp = 0);
 
  private:
-  std::string_view m_name;
+  const std::string m_name;
   wpi::log::DoubleLogEntry m_logEntry;
   TelemetryLevel m_level;
 };
