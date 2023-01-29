@@ -19,6 +19,7 @@
 #include <units/length.h>
 #include <wpi/json.h>
 
+#include "opencv2/core/mat.hpp"
 #include "util/photonlib2/PhotonPoseEstimator.h"
 #include "Constants.h"
 
@@ -26,7 +27,6 @@ using namespace frc;
 using namespace photonlib;
 using namespace wpi;
 using namespace VisionConstants;
-using enum photonlib2::PoseStrategy;
 
 AprilTagFieldLayout CustomFieldLayout() {
   AprilTag tagOne{1, Pose3d(0_m, 0_m, 15.125_in, Rotation3d())};
@@ -34,9 +34,12 @@ AprilTagFieldLayout CustomFieldLayout() {
 }
 
 Vision::Vision()
-    : m_poseEstimator(/*LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp)*/CustomFieldLayout(),
-                      CLOSEST_TO_REFERENCE_POSE,
-                      photonlib::PhotonCamera{"OV5647"}, kRobotToCam) {
+    : m_poseEstimator(/*LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp)*/
+                      CustomFieldLayout(),
+                      cv::InputArray{m_cameraMatrix},
+                      cv::InputArray{m_distortionCoefficients},
+                      photonlib::PhotonCamera{"OV5647"}, 
+                      kRobotToCam) {
   json j = m_poseEstimator.GetFieldLayout();
   SmartDashboard::PutString("AprilTags", j.dump());
 }
@@ -48,4 +51,3 @@ std::optional<photonlib2::EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
   return m_poseEstimator.Update();
 }
- 

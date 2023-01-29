@@ -22,5 +22,24 @@ class Vision : public frc2::SubsystemBase {
       const frc::Pose3d& estimatedRobotPose);
 
  private:
+  // Swiped from photonvision JSON config file
+  std::vector<double> m_cameraMatrix{
+    
+                                    //  735.0038676061282,  0.0,                666.4393853583332, 
+                                    //  0.0,                734.0230911175827,  388.3489253256961, 
+                                    //  0.0,                0.0,                1.0              
+                                     527.5798454437585, 0.0, 311.5337325176784, 0.0, 527.4487505192909, 244.79944837215717, 0.0, 0.0, 1.0
+                                     
+                                     };
+  std::vector<double> m_distortionCoefficients{
+    
+    // 0.10407329380796507,
+    //                                            -0.07442029959264967,
+    //                                            -4.0143549811508955e-4,
+    //                                            -5.79173576686874e-4,
+    //                                            -0.10751011668818884
+                                               0.288184500781687, -1.03063206816648, -0.0044067255497647895, -0.0013635121873952262, 1.2849267796860973
+                                               };
+
   photonlib2::PhotonPoseEstimator m_poseEstimator;
 };
