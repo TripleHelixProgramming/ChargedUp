@@ -17,11 +17,14 @@
 #include <units/time.h>
 #include <units/length.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include "util/log/DoubleTelemetryEntry.h"
 
 #include <frc/kinematics/SwerveModulePosition.h>
 #include "subsystems/Vision.h"
 #include "util/log/TelemetryEntry.h"
+
+#include <frc/smartdashboard/Field2d.h>
 
 using namespace frc;
 using namespace frc2;
@@ -64,6 +67,7 @@ SwerveDrive::SwerveDrive()
       m_visionPoseEstimateXLog("Vision/Pose Estimate/X", TelemetryLevel::kCompetition),
       m_visionPoseEstimateYLog("Vision/Pose Estimate/Y", TelemetryLevel::kCompetition),
       m_visionPoseEstimateThetaLog("Vision/Pose Estimate/Theta", TelemetryLevel::kCompetition) {
+  SmartDashboard::PutData("Field", &m_field);
 }
 
 Pose2d SwerveDrive::GetPose() const {
@@ -157,6 +161,8 @@ void SwerveDrive::Periodic() {
   m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());
   m_poseEstimateYLog.Append(m_poseEstimator.GetEstimatedPosition().Y().value());
   m_poseEstimateThetaLog.Append(m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
+
+  m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
 }
 
 void SwerveDrive::ResetAbsoluteEncoders() {

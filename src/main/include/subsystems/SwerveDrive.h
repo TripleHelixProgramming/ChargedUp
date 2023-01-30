@@ -18,6 +18,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
+#include <frc/smartdashboard/Field2d.h>
 #include "util/log/DoubleTelemetryEntry.h"
 
 #include "subsystems/SwerveModule.h"
@@ -91,4 +92,6 @@ class SwerveDrive : public frc2::SubsystemBase {
   DoubleTelemetryEntry m_visionPoseEstimateXLog;
   DoubleTelemetryEntry m_visionPoseEstimateYLog;
   DoubleTelemetryEntry m_visionPoseEstimateThetaLog;
+
+  frc::Field2d m_field;
 };

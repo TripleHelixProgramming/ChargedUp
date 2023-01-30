@@ -20,10 +20,9 @@
 #include <frc/simulation/SimDeviceSim.h>
 
 #include "Constants.h"
-#include "frc/DataLogManager.h"
+#include <frc/DataLogManager.h>
 #include <units/time.h>
 #include <frc/RobotBase.h>
-#include <frc/smartdashboard/SmartDashboard.h> // remove
 #include "util/log/TelemetryEntry.h"
 
 using namespace frc;
@@ -144,9 +143,6 @@ void SwerveModule::SimulationPeriodic() {
   units::second_t dt = m_simTimer.Get();
   m_simTimer.Reset();
   m_driveSimPosition.Set(m_driveSimPosition.Get() + m_driveSimVelocity.Get() * dt.value());
-  SmartDashboard::PutNumber("Sim/Modules/" + m_name + "/dt", dt.value());
-  SmartDashboard::PutNumber("Sim/Modules/" + m_name + "/Drive Velocity", m_driveSimVelocity.Get());
-  SmartDashboard::PutNumber("Sim/Modules/" + m_name + "/Drive Position", m_driveSimPosition.Get());
 }
 
 void SwerveModule::ResetEncoders() {
