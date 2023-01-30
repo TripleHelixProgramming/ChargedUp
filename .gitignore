@@ -166,3 +166,6 @@ bin/
 
 # Ignore clangd compile_commands file
 compile_commands.json
+
+# Ignore pycache
+/src/main/python/__pycache__
