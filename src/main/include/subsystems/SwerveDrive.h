@@ -19,7 +19,10 @@
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 #include <frc/smartdashboard/Field2d.h>
+#include <frc/simulation/SimDeviceSim.h>
+#include <frc/Timer.h>
 #include "util/log/DoubleTelemetryEntry.h"
+#include <frc/kinematics/SwerveModulePosition.h>
 
 #include "subsystems/SwerveModule.h"
 #include "subsystems/Vision.h"
@@ -54,6 +57,8 @@ class SwerveDrive : public frc2::SubsystemBase {
    * gyro, vision, and encoder sensor data.
    */
   void Periodic() override;
+
+  void SimulationPeriodic() override;
 
   void ResetAbsoluteEncoders();
 
@@ -94,4 +99,13 @@ class SwerveDrive : public frc2::SubsystemBase {
   DoubleTelemetryEntry m_visionPoseEstimateThetaLog;
 
   frc::Field2d m_field;
+
+  // Simulation
+  // frc::Timer m_simTimer;
+
+  frc::sim::SimDeviceSim m_gyroSim;
+  hal::SimDouble m_gyroSimYaw;
+
+  std::array<frc::SwerveModulePosition, 4> m_previousModulePositions{};
+
 };

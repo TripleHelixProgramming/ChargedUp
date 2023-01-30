@@ -41,6 +41,9 @@
         "name": "Rear Left Steer"
       },
       "navX-Sensor[4]": {
+        "header": {
+          "open": true
+        },
         "name": "navX"
       }
     },

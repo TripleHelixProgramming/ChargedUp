@@ -92,6 +92,10 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
 
   m_driveMotor.EnableVoltageCompensation(12.0);
   m_driveMotor.EnableVoltageCompensation(12.0);
+
+  if constexpr (RobotBase::IsSimulation()) {
+    m_simTimer.Start();
+  }
 }
 
 frc::SwerveModuleState SwerveModule::GetState() const {
@@ -128,7 +132,6 @@ void SwerveModule::SetDesiredState(
                                  CANSparkMax::ControlType::kVelocity);
   
   if constexpr (RobotBase::IsSimulation()) {
-    m_simTimer.Start();
     m_steerSimPosition.Set(adjustedAngle);
   }
 }
