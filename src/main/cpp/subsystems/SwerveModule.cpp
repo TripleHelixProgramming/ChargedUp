@@ -17,8 +17,13 @@
 #include <frc/DataLogManager.h>
 #include <wpi/DataLog.h>
 
+#include <frc/simulation/SimDeviceSim.h>
+
 #include "Constants.h"
 #include "frc/DataLogManager.h"
+#include <units/time.h>
+#include <frc/RobotBase.h>
+#include <frc/smartdashboard/SmartDashboard.h> // remove
 #include "util/log/TelemetryEntry.h"
 
 using namespace frc;
@@ -58,7 +63,12 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       m_driveVelocityLog("Drive/Modules/" + m_name + "/Drive Velocity (mps)"),
       m_steerPositionLog("Drive/Modules/" + m_name + "/Steer Angle (rad)"),
       m_driveVelocitySetpointLog("Drive/Modules/" + m_name + "/Drive Velocity Setpoint (mps)"),
-      m_steerPositionSetpointLog("Drive/Modules/" + m_name + "/Steer Angle Setpoint (rad)") {
+      m_steerPositionSetpointLog("Drive/Modules/" + m_name + "/Steer Angle Setpoint (rad)"),
+      m_driveSim("SPARK MAX ", driveMotorID),
+      m_steerSim("SPARK MAX ", steerMotorID),
+      m_driveSimVelocity(m_driveSim.GetDouble("Velocity")),
+      m_driveSimPosition(m_driveSim.GetDouble("Position")),
+      m_steerSimPosition(m_steerSim.GetDouble("Position")) {
   m_driveController.SetP(kDriveP);
   m_driveController.SetI(kDriveI);
   m_driveController.SetD(kDriveD);
@@ -117,12 +127,26 @@ void SwerveModule::SetDesiredState(
                                  CANSparkMax::ControlType::kPosition);
   m_driveController.SetReference(state.speed.value(),
                                  CANSparkMax::ControlType::kVelocity);
+  
+  if constexpr (RobotBase::IsSimulation()) {
+    m_simTimer.Start();
+    m_steerSimPosition.Set(adjustedAngle);
+  }
 }
 
 void SwerveModule::Periodic() {
   m_drivePositionLog.Append(m_driveEncoder.GetPosition());
   m_driveVelocityLog.Append(m_driveEncoder.GetVelocity());
   m_steerPositionLog.Append(m_steerEncoder.GetPosition());
+}
+
+void SwerveModule::SimulationPeriodic() {
+  units::second_t dt = m_simTimer.Get();
+  m_simTimer.Reset();
+  m_driveSimPosition.Set(m_driveSimPosition.Get() + m_driveSimVelocity.Get() * dt.value());
+  SmartDashboard::PutNumber("Sim/Modules/" + m_name + "/dt", dt.value());
+  SmartDashboard::PutNumber("Sim/Modules/" + m_name + "/Drive Velocity", m_driveSimVelocity.Get());
+  SmartDashboard::PutNumber("Sim/Modules/" + m_name + "/Drive Position", m_driveSimPosition.Get());
 }
 
 void SwerveModule::ResetEncoders() {
