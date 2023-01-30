@@ -41,6 +41,9 @@
         "name": "Rear Left Steer"
       },
       "navX-Sensor[4]": {
+        "header": {
+          "open": true
+        },
         "name": "navX"
       }
     },
@@ -55,7 +58,16 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/frc2::SubsystemBase": "Subsystem",
-      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro"
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Reset Encoders": "Command"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -64,6 +76,15 @@
         "open": true
       },
       "SmartDashboard": {
+        "Sim": {
+          "Modules": {
+            "Front Left": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
         "open": true
       }
     }
