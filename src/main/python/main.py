@@ -1,14 +1,21 @@
 from single_jointed_arm import single_jointed_arm
+from arm_sim import animate_arm_trajectory
+from math import *
 
-arm = single_jointed_arm(1)
-dt = 0.005
+fps = 60
+dt = 1.0 / fps
+
+initialState = [0, 0]
+
+arm = single_jointed_arm(2, 50, 1, 1)
 
 def main():
-    timestamps = [0]
 
-    for iterate in range(1000):
-        timestamps.append[timestamps[-1] + dt]
+    states = [initialState]
 
-    print(arm.length)
+    for iterate in range(fps):
+        states.append([states[-1][0] + 2 * pi / fps, 0])
+
+    animate_arm_trajectory(fps, dt, states, arm)
 
 main()
