@@ -36,9 +36,9 @@ AprilTagFieldLayout CustomFieldLayout() {
 Vision::Vision()
     : m_poseEstimator(/*LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp)*/
                       CustomFieldLayout(),
-                      cv::InputArray{m_cameraMatrix},
-                      cv::InputArray{m_distortionCoefficients},
-                      photonlib::PhotonCamera{"OV5647"}, 
+                      m_cameraMatrix,
+                      m_distortionCoefficients,
+                      photonlib::PhotonCamera{"front"}, 
                       kRobotToCam) {
   json j = m_poseEstimator.GetFieldLayout();
   SmartDashboard::PutString("AprilTags", j.dump());

@@ -31,8 +31,8 @@ using namespace units;
 namespace photonlib2 {
 
 PhotonPoseEstimator::PhotonPoseEstimator(frc::AprilTagFieldLayout tags,
-                                         cv::InputArray cameraMatrix, 
-                                         cv::InputArray distortionCoefficients,
+                                         cv::Mat cameraMatrix, 
+                                         cv::Mat distortionCoefficients,
                                          photonlib::PhotonCamera&& cam,
                                          frc::Transform3d robotToCamera)
     : m_aprilTags(tags),
@@ -69,12 +69,12 @@ std::optional<EstimatedRobotPose> PhotonPoseEstimator::Update() {
       for (auto& corner : targetCorners) {
         imagePoints.emplace_back(corner.first, corner.second);
       }
-      objectPoints.push_back(translationToPoint3d(Translation3d(0_m, 0_m, 0_m), tagPose.value()));
-      objectPoints.push_back(translationToPoint3d(Translation3d(0_m, 0_m, 0_m), tagPose.value()));
-      objectPoints.push_back(translationToPoint3d(Translation3d(0_m, 0_m, 0_m), tagPose.value()));
-      objectPoints.push_back(translationToPoint3d(Translation3d(0_m, 0_m, 0_m), tagPose.value()));
+      objectPoints.push_back(translationToPoint3d(Translation3d(1_m, -1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(translationToPoint3d(Translation3d(1_m, 1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(translationToPoint3d(Translation3d(-1_m, 1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(translationToPoint3d(Translation3d(-1_m, -1_m, 0_m), tagPose.value()));
     }
-  } 
+  }
 
   if (imagePoints.empty()) {
     return std::nullopt;

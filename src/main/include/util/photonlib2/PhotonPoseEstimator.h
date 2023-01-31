@@ -41,8 +41,8 @@ class PhotonPoseEstimator {
    * mount positions (ie, robot ➔ camera).
    */
   explicit PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTags,
-                               cv::InputArray cameraMatrix, 
-                               cv::InputArray distortionCoefficients,
+                               cv::Mat cameraMatrix, 
+                               cv::Mat distortionCoefficients,
                                photonlib::PhotonCamera&& camera,
                                frc::Transform3d robotToCamera);
 
@@ -81,8 +81,8 @@ class PhotonPoseEstimator {
  private:
   frc::AprilTagFieldLayout m_aprilTags;
 
-  cv::InputArray m_cameraMatrix;
-  cv::InputArray m_distortionCoefficients;
+  cv::Mat m_cameraMatrix;
+  cv::Mat m_distortionCoefficients;
 
   photonlib::PhotonCamera m_camera;
 
