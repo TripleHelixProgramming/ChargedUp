@@ -56,23 +56,23 @@ std::optional<EstimatedRobotPose> PhotonPoseEstimator::Update() {
   std::vector<cv::Point2f> imagePoints;
   
   // Add all target corners to main list of corners
-  auto translationToPoint3d = [](Translation3d corner, Pose3d tagPose) {
+  auto tagCornerToObjectPoint = [](Translation3d corner, Pose3d tagPose) {
     Translation3d point = corner.RotateBy(tagPose.Rotation()) + tagPose.Translation();
     return cv::Point3f(point.X().value(), point.Y().value(), point.Z().value());
   };
 
-  for (auto& target : targets) {
+  for (auto target : targets) {
     int id = target.GetFiducialId();
     std::optional<Pose3d> tagPose = m_aprilTags.GetTagPose(id);
     if (tagPose) {
-      wpi::SmallVector<std::pair<double, double>, 4> targetCorners = target.GetMinAreaRectCorners();
+      std::vector<std::pair<double, double>> targetCorners = target.GetDetectedCorners();
       for (auto& corner : targetCorners) {
         imagePoints.emplace_back(corner.first, corner.second);
       }
-      objectPoints.push_back(translationToPoint3d(Translation3d(1_m, -1_m, 0_m), tagPose.value()));
-      objectPoints.push_back(translationToPoint3d(Translation3d(1_m, 1_m, 0_m), tagPose.value()));
-      objectPoints.push_back(translationToPoint3d(Translation3d(-1_m, 1_m, 0_m), tagPose.value()));
-      objectPoints.push_back(translationToPoint3d(Translation3d(-1_m, -1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(-1_m, +1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(+1_m, +1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(+1_m, -1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(-1_m, -1_m, 0_m), tagPose.value()));
     }
   }
 
