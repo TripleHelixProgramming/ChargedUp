@@ -7,9 +7,9 @@
 #include <rev/CANSparkMax.h>
 #include "rev/SparkMaxLimitSwitch.h"
 
-class Gripper : public frc2::SubsystemBase {
+class Superstructure : public frc2::SubsystemBase {
  public:
-  Gripper();
+  Superstructure();
 
   void IntakeCube();
   void IntakeCone();
@@ -23,6 +23,9 @@ class Gripper : public frc2::SubsystemBase {
  private:
   rev::CANSparkMax m_leftWheel{15, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightWheel{16, rev::CANSparkMax::MotorType::kBrushless};
+
+  rev::CANSparkMax m_arm{4, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_armFollower{5, rev::CANSparkMax::MotorType::kBrushless};
 
   rev::SparkMaxLimitSwitch m_beamBreak;
 

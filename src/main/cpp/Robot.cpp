@@ -15,6 +15,13 @@ void Robot::RobotInit() {
 
   // Record both DS control and joystick data
   DriverStation::StartDataLog(DataLogManager::GetLog());
+
+  // Schedule periodic functions
+  Schedule(
+    [this]() {
+      m_container.GetAutonomousCommand();
+    }, 
+    1.7_ms);
 }
 
 /**

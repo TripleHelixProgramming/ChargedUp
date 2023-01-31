@@ -9,7 +9,7 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.h"
-#include "subsystems/Gripper.h"
+#include "subsystems/Superstructure.h"
 #include "subsystems/SwerveDrive.h"
 #include "util/TrajectoryManager.h"
 #include "util/log/DoubleTelemetryEntry.h"
@@ -25,7 +25,7 @@ class RobotContainer {
  private:
   // Subsystems
   SwerveDrive m_drive;
-  Gripper m_gripper;
+  Superstructure m_superstructure;
 
   // Operator Interface (OI)
   frc::Joystick m_driver{0};

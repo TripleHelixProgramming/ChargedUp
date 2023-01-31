@@ -4,12 +4,12 @@
 
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/Gripper.h"
+#include "subsystems/Superstructure.h"
 
-class IntakeCube
-    : public frc2::CommandHelper<frc2::CommandBase, IntakeCube> {
+class ArmIntakeCone
+    : public frc2::CommandHelper<frc2::CommandBase, ArmIntakeCone> {
  public:
-  IntakeCube(Gripper* drive);
+  ArmIntakeCone(Superstructure* drive);
 
   void Initialize() override;
 
@@ -20,5 +20,5 @@ class IntakeCube
   bool IsFinished() override;
 
  private:
-  Gripper* m_gripper;
+  Superstructure* m_superstructure;
 };

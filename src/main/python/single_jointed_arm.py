@@ -44,12 +44,13 @@ class single_jointed_arm(object):
     #   V = kᵥω + kₜτᵤ
     #   τᵤ = kₜ⁻¹(V - kᵥω)
     def dynamics(self, x, u):
-        theta = x(0)
-        omega = x(1)
-        voltage = u(0)
+        theta = x[0]
+        omega = x[1]
+        voltage = max(-12, min(12, u[0]))
 
         tau_u = (voltage - self.kv * omega) / self.kt
         tau_g = self.g * self.m * cos(theta)
+        # tau_g = 0
         return np.array([
             omega,
             (tau_u + tau_g) / self.M
