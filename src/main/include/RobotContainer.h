@@ -22,6 +22,8 @@ class RobotContainer {
 
   void UpdateTelemetry();
 
+  void ArmPeriodic();
+
  private:
   // Subsystems
   SwerveDrive m_drive;
