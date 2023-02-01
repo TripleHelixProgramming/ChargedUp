@@ -35,6 +35,9 @@ constexpr int kAbsEncoderPorts[] = {43, 33, 45, 31};
 constexpr int kArmLeaderPort = 4;
 constexpr int kArmFollowerPort = 5;
 
+constexpr int kIntakeLeftWheelPort = 15;
+constexpr int kIntakeRightWheelPort = 16;
+
 constexpr int kArmEncoderPort = 0;
 
 }  // namespace ElectricalConstants

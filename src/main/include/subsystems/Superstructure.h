@@ -41,8 +41,8 @@ class Superstructure : public frc2::SubsystemBase {
                                       SuperstructureConstants::kArmD};
 
   // Hardware modules
-  rev::CANSparkMax m_leftWheel{15, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightWheel{16, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftWheel{kIntakeLeftWheelPort, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightWheel{kIntakeRightWheelPort, rev::CANSparkMax::MotorType::kBrushless};
 
   rev::CANSparkMax m_armLeader{kArmLeaderPort, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_armFollower{kArmFollowerPort, rev::CANSparkMax::MotorType::kBrushless};
