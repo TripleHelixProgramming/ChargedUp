@@ -63,7 +63,7 @@ void Superstructure::SuperstructurePeriodic() {
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece()) {
     intakeWheelSpeed = std::min(intakeWheelSpeed, 0.0);
-    armPosition = radian_t{std::max(armPosition.value(), kMinArmPickupPosition.value())};
+    armPosition = units::math::max(armPosition, kMinArmPickupPosition);
   }
 
   // Ensure arm position bounds are not violated.
