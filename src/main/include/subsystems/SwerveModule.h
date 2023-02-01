@@ -12,7 +12,10 @@
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
+#include <frc/Timer.h>
 #include "util/log/DoubleTelemetryEntry.h"
+
+#include <frc/simulation/SimDeviceSim.h>
 
 class SwerveModule : public frc2::SubsystemBase {
  public:
@@ -25,6 +28,8 @@ class SwerveModule : public frc2::SubsystemBase {
   void SetDesiredState(const frc::SwerveModuleState& state);
 
   void Periodic() override;
+
+  void SimulationPeriodic() override;
 
   void ResetEncoders();
 
@@ -47,4 +52,14 @@ class SwerveModule : public frc2::SubsystemBase {
   DoubleTelemetryEntry m_steerPositionLog;
   DoubleTelemetryEntry m_driveVelocitySetpointLog;
   DoubleTelemetryEntry m_steerPositionSetpointLog;
+
+  // Simulation
+  frc::Timer m_simTimer;
+
+  frc::sim::SimDeviceSim m_driveSim;
+  frc::sim::SimDeviceSim m_steerSim;
+
+  hal::SimDouble m_driveSimVelocity;
+  hal::SimDouble m_driveSimPosition;
+  hal::SimDouble m_steerSimPosition;
 };

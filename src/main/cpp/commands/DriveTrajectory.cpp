@@ -6,7 +6,6 @@
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
 
-using namespace frc;
 using namespace units;
 
 DriveTrajectory::DriveTrajectory(SwerveDrive* drive, const Trajectory* trajectory)
@@ -44,7 +43,7 @@ void DriveTrajectory::Execute() {
   m_ySetpointLog.Append(state.pose.Y().value());
   m_thetaSetpointLog.Append(state.pose.Rotation().Radians().value());
 
-  m_drive->Drive(ChassisSpeeds::FromFieldRelativeSpeeds(
+  m_drive->Drive(frc::ChassisSpeeds::FromFieldRelativeSpeeds(
       vx, vy, omega, m_drive->GetPose().Rotation()));
 }
 
