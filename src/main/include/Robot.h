@@ -5,12 +5,14 @@
 #include <optional>
 
 #include <frc/TimedRobot.h>
+#include <frc/TimesliceRobot.h>
 #include <frc2/command/CommandPtr.h>
 
 #include "RobotContainer.h"
 
-class Robot : public frc::TimedRobot {
+class Robot : public frc::TimesliceRobot {
  public:
+  Robot();
   void RobotInit() override;
   void RobotPeriodic() override;
   void DisabledInit() override;

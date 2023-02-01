@@ -4,36 +4,33 @@
 
 #include <cmath>
 
+#include <Eigen/src/Core/Matrix.h>
+#include <frc/RobotBase.h>
 #include <frc/Timer.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
-#include <frc/geometry/Twist2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/geometry/Twist2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
-#include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
+#include <frc/kinematics/SwerveModuleState.h>
+#include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/InstantCommand.h>
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
-#include <units/base.h>
-#include <units/time.h>
-#include <units/length.h>
-#include <frc2/command/InstantCommand.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include "Constants.h"
-#include <Eigen/src/Core/Matrix.h>
-#include <frc/RobotBase.h>
 #include <units/angular_velocity.h>
+#include <units/base.h>
+#include <units/length.h>
+#include <units/time.h>
 #include <units/velocity.h>
-#include "util/log/DoubleTelemetryEntry.h"
 #include <wpi/array.h>
 
-#include <frc/kinematics/SwerveModulePosition.h>
+#include "Constants.h"
 #include "subsystems/Vision.h"
+#include "util/log/DoubleTelemetryEntry.h"
 #include "util/log/TelemetryEntry.h"
-#include "wpi/array.h"
-
-#include <frc/smartdashboard/Field2d.h>
 
 using namespace frc;
 using namespace frc2;

@@ -166,3 +166,12 @@ bin/
 
 # Ignore clangd compile_commands file
 compile_commands.json
+
+# Ignore pycache
+/python/__pycache__
+
+# Ignore setup.py generated dependencies
+my_package.egg-info
+
+# Ignore animations
+/python/animations

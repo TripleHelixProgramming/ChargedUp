@@ -46,4 +46,3 @@ std::optional<EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
   return m_poseEstimator.Update();
 }
- 

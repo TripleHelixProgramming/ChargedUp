@@ -1,3 +1,5 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
 /**

@@ -14,11 +14,7 @@
 
 #include "Constants.h"
 #include "commands/DriveTrajectory.h"
-#include "commands/IntakeCube.h"
-#include "commands/IntakeCone.h"
-
 #include "commands/ResetAbsoluteEncoders.h"
-
 #include "util/log/DoubleTelemetryEntry.h"
 
 using namespace frc;
@@ -66,14 +62,18 @@ void RobotContainer::ConfigureBindings() {
                     return m_drive.ResetOdometry(Pose2d());
                   }).ToPtr());
 
-  m_operator.X().OnTrue(IntakeCone(&m_gripper).ToPtr());
-  m_operator.X().OnFalse(
-      InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
-  m_operator.Y().OnTrue(IntakeCube(&m_gripper).ToPtr());
-  m_operator.Y().OnFalse(
-      InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
-  m_operator.A().OnTrue(
-      InstantCommand([this]() { return m_gripper.EjectGamePiece(); }, {&m_gripper}).ToPtr());
-  m_operator.A().OnFalse(
-      InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  // m_operator.X().OnTrue(IntakeCone(&m_gripper).ToPtr());
+  // m_operator.X().OnFalse(
+  //     InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  // m_operator.Y().OnTrue(IntakeCube(&m_gripper).ToPtr());
+  // m_operator.Y().OnFalse(
+  //     InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  // m_operator.A().OnTrue(
+  //     InstantCommand([this]() { return m_gripper.EjectGamePiece(); }, {&m_gripper}).ToPtr());
+  // m_operator.A().OnFalse(
+  //     InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+}
+
+void RobotContainer::SuperstructurePeriodic() {
+  m_superstructure.SuperstructurePeriodic();
 }

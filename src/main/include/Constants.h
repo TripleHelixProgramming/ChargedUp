@@ -4,17 +4,19 @@
 
 #include <array>
 #include <numbers>
-#include "frc/RobotBase.h"
-#include "util/log/TelemetryEntry.h"
 
+#include <frc/RobotBase.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Rotation3d.h>
 #include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
+#include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <units/math.h>
 #include <units/time.h>
 #include <units/velocity.h>
+
+#include "util/log/TelemetryEntry.h"
 
 namespace OperatorConstants {
 
@@ -30,6 +32,14 @@ constexpr int kPowerDistributionPort = 1;
 constexpr int kDriveMotorPorts[] = {22, 12, 24, 10};
 constexpr int kSteerMotorPorts[] = {23, 13, 25, 11};
 constexpr int kAbsEncoderPorts[] = {43, 33, 45, 31};
+
+constexpr int kArmLeaderPort = 4;
+constexpr int kArmFollowerPort = 5;
+
+constexpr int kIntakeLeftWheelPort = 15;
+constexpr int kIntakeRightWheelPort = 16;
+
+constexpr int kArmEncoderPort = 0;
 
 }  // namespace ElectricalConstants
 
@@ -64,6 +74,22 @@ constexpr double kDriveGearRatio = 6.75;
 constexpr double kSteerGearRatio = 12.8;
 
 }  // namespace ModuleConstants
+
+namespace SuperstructureConstants {
+
+constexpr auto kMinArmPosition = 0.0_rad;
+constexpr auto kMinArmPickupPosition = 0.1_rad;
+constexpr auto kMaxArmPosition = 1.0_rad;
+
+constexpr double kArmFF = 0;
+constexpr double kArmP = 0;
+constexpr double kArmI = 0;
+constexpr double kArmD = 0;
+
+constexpr double kArmEncoderOffset = 0;
+constexpr double kArmEncoderGearRatio = 0;
+
+}  // namespace SuperstructureConstants
 
 namespace VisionConstants {
 
