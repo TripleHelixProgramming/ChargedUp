@@ -15,7 +15,7 @@ Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms} {
   Schedule(
     [=] {
       if (IsEnabled()) {
-          m_container.ArmPeriodic();
+          m_container.SuperstructurePeriodic();
       }
     },
     1.5_ms);

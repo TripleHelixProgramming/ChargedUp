@@ -76,6 +76,6 @@ void RobotContainer::ConfigureBindings() {
   //     InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
 }
 
-void RobotContainer::ArmPeriodic() {
+void RobotContainer::SuperstructurePeriodic() {
   m_superstructure.SuperstructurePeriodic();
 }

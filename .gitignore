@@ -168,4 +168,7 @@ bin/
 compile_commands.json
 
 # Ignore pycache
-/src/main/python/__pycache__
+/python/__pycache__
+
+# Ignore setup.py generated dependencies
+my_package.egg-info

@@ -22,7 +22,7 @@ class RobotContainer {
 
   void UpdateTelemetry();
 
-  void ArmPeriodic();
+  void SuperstructurePeriodic();
 
  private:
   // Subsystems
