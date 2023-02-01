@@ -14,7 +14,7 @@ using namespace frc;
 Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms} {
   // Schedule periodic functions
   Schedule(
-    [=] {
+    [=, this] {
       if (IsEnabled()) {
           m_container.SuperstructurePeriodic();
       }
