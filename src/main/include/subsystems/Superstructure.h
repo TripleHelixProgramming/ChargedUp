@@ -5,22 +5,32 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
-#include "rev/SparkMaxLimitSwitch.h"
+#include <rev/SparkMaxLimitSwitch.h>
+#include <units/angle.h>
+
+#include "Constants.h"
 
 class Superstructure : public frc2::SubsystemBase {
  public:
   Superstructure();
 
-  void IntakeCube();
-  void IntakeCone();
-  void EjectGamePiece();
-  void Retract();
+  void SetIntakeWheelSpeed(double speed);
 
-  bool BeamBreakTriggered();
+  void SetArmPosition(units::radian_t position);
 
-  void Periodic() override;
+  units::radian_t GetArmPosition();
+
+  bool HasGamePiece();
+
+  void SuperstructurePeriodic();
 
  private:
+  // State variables
+  double m_intakeWheelSpeed = 0.0;
+  units::radian_t m_armPosition = 0.0_rad;
+  bool m_expanded = false;
+
+  // Hardware modules
   rev::CANSparkMax m_leftWheel{15, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightWheel{16, rev::CANSparkMax::MotorType::kBrushless};
 

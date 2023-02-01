@@ -22,6 +22,11 @@ void Robot::RobotInit() {
       m_container.GetAutonomousCommand();
     }, 
     1.7_ms);
+  Schedule(
+    [this]() {
+      m_container.GetAutonomousCommand();
+    }, 
+    1.7_ms);
 }
 
 /**

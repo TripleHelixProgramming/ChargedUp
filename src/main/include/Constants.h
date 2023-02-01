@@ -5,6 +5,7 @@
 #include <array>
 #include <numbers>
 #include "frc/RobotBase.h"
+#include "units/angle.h"
 #include "util/log/TelemetryEntry.h"
 
 #include <frc/geometry/Rotation2d.h>
@@ -62,6 +63,14 @@ constexpr auto kWheelRadius = 0.049_m;
 
 constexpr double kDriveGearRatio = 6.75;
 constexpr double kSteerGearRatio = 12.8;
+
+}  // namespace ModuleConstants
+
+namespace SuperstructureConstants {
+
+constexpr auto kMinArmPosition = 0.1_rad;
+constexpr auto kMinArmPickupPosition = 0.1_rad;
+constexpr auto kMaxArmPosition = 0.0_rad;
 
 }  // namespace ModuleConstants
 

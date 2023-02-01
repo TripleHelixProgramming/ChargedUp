@@ -5,11 +5,16 @@
 #include <frc/DoubleSolenoid.h>
 #include <rev/CANSparkMax.h>
 #include "frc/smartdashboard/SmartDashboard.h"
+#include "Constants.h"
 #include "rev/SparkMaxLimitSwitch.h"
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <units/angle.h>
 
 using namespace frc;
 using namespace rev;
+using namespace units;
+
+using namespace SuperstructureConstants;
 
 Superstructure::Superstructure() : m_beamBreak{m_leftWheel.GetForwardLimitSwitch(SparkMaxLimitSwitch::Type::kNormallyOpen)} {
   // Initialize intake wheel motors
@@ -25,42 +30,44 @@ Superstructure::Superstructure() : m_beamBreak{m_leftWheel.GetForwardLimitSwitch
 
   m_armFollower.Follow(m_arm, true);
 
-  m_arm.SetSmartCurrentLimit(60);
-  m_armFollower.SetSmartCurrentLimit(60);
+  m_arm.SetSmartCurrentLimit(20);
+  m_armFollower.SetSmartCurrentLimit(20);
 
   m_arm.SetIdleMode(CANSparkMax::IdleMode::kBrake);
   m_armFollower.SetIdleMode(CANSparkMax::IdleMode::kBrake);
 }
 
-void Superstructure::IntakeCube() {
-  m_leftWheel.Set(0.5);
-  m_rightWheel.Set(-0.5);
-  m_expander.Set(DoubleSolenoid::kReverse);
+void Superstructure::SetIntakeWheelSpeed(double speed) {
+  m_intakeWheelSpeed = speed;
 }
 
-void Superstructure::IntakeCone() {
-  m_leftWheel.Set(0.5);
-  m_rightWheel.Set(-0.5);
-  m_expander.Set(DoubleSolenoid::kForward);
+void Superstructure::SetArmPosition(radian_t position) {
+  m_armPosition = position;
 }
 
-void Superstructure::EjectGamePiece() {
-  m_leftWheel.Set(-0.5);
-  m_rightWheel.Set(0.5);
+radian_t Superstructure::GetArmPosition() {
+  return radian_t{};
 }
 
-void Superstructure::Retract() {
-  m_leftWheel.Set(0);
-  m_rightWheel.Set(0);
-  m_lifter.Set(DoubleSolenoid::kReverse);
+bool Superstructure::HasGamePiece() {
+  return m_beamBreak.Get();
 }
 
-bool Superstructure::BeamBreakTriggered() {
-  bool data = m_beamBreak.Get();
-  SmartDashboard::PutBoolean("Limit switch", data);
-  return data;
-}
+void Superstructure::SuperstructurePeriodic() {
+  double intakeWheelSpeed = m_intakeWheelSpeed;
+  radian_t armPosition = m_armPosition;
 
-void Superstructure::Periodic() {
-  BeamBreakTriggered();
+  // If we have game piece, don't spin wheels and lift intake off the ground.
+  if (HasGamePiece()) {
+    intakeWheelSpeed = std::min(intakeWheelSpeed, 0.0);
+    armPosition = radian_t{std::max(armPosition.value(), kMinArmPickupPosition.value())};
+  }
+
+  // Ensure arm position bounds are not violated.
+  armPosition = radian_t{std::min(kMaxArmPosition.value(), std::max(kMinArmPosition.value(), armPosition.value()))};
+
+  // Set intake wheels and pnuematic expander.
+  m_leftWheel.Set(intakeWheelSpeed);
+  m_leftWheel.Set(-intakeWheelSpeed);
+  m_expander.Set(m_expanded ? DoubleSolenoid::kReverse : DoubleSolenoid::kForward);
 }

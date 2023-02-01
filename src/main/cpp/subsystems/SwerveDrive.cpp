@@ -11,17 +11,17 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/kinematics/SwerveModulePosition.h>
+#include <frc2/command/InstantCommand.h>
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/time.h>
 #include <units/length.h>
-#include <frc2/command/InstantCommand.h>
-#include "util/log/DoubleTelemetryEntry.h"
 
-#include <frc/kinematics/SwerveModulePosition.h>
-#include "subsystems/Vision.h"
+#include "util/log/DoubleTelemetryEntry.h"
 #include "util/log/TelemetryEntry.h"
+#include "subsystems/Vision.h"
 
 using namespace frc;
 using namespace frc2;
