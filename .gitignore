@@ -172,3 +172,6 @@ compile_commands.json
 
 # Ignore setup.py generated dependencies
 my_package.egg-info
+
+# Ignore animations
+/python/animations
