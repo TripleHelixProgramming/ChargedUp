@@ -5,17 +5,17 @@
 #include <string>
 
 #include <ctre/phoenix/sensors/CANCoder.h>
+#include <frc/Timer.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/simulation/SimDeviceSim.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
-#include <frc/Timer.h>
-#include "util/log/DoubleTelemetryEntry.h"
 
-#include <frc/simulation/SimDeviceSim.h>
+#include "util/log/DoubleTelemetryEntry.h"
 
 class SwerveModule : public frc2::SubsystemBase {
  public:

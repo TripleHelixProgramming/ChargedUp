@@ -7,22 +7,20 @@
 #include <string>
 
 #include <ctre/phoenix/sensors/CANCoder.h>
+#include <frc/DataLogManager.h>
+#include <frc/RobotBase.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/simulation/SimDeviceSim.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include <rev/CANSparkMaxLowLevel.h>
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
-#include <frc/DataLogManager.h>
+#include <units/time.h>
 #include <wpi/DataLog.h>
 
-#include <frc/simulation/SimDeviceSim.h>
-
 #include "Constants.h"
-#include <frc/DataLogManager.h>
-#include <units/time.h>
-#include <frc/RobotBase.h>
 #include "util/log/TelemetryEntry.h"
 
 using namespace frc;
@@ -130,7 +128,7 @@ void SwerveModule::SetDesiredState(
                                  CANSparkMax::ControlType::kPosition);
   m_driveController.SetReference(state.speed.value(),
                                  CANSparkMax::ControlType::kVelocity);
-  
+
   if constexpr (RobotBase::IsSimulation()) {
     m_steerSimPosition.Set(adjustedAngle);
   }

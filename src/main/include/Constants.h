@@ -4,18 +4,19 @@
 
 #include <array>
 #include <numbers>
-#include "frc/RobotBase.h"
-#include "units/angle.h"
-#include "util/log/TelemetryEntry.h"
 
+#include <frc/RobotBase.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Rotation3d.h>
 #include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
+#include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <units/math.h>
 #include <units/time.h>
 #include <units/velocity.h>
+
+#include "util/log/TelemetryEntry.h"
 
 namespace OperatorConstants {
 
@@ -88,7 +89,7 @@ constexpr double kArmD = 0;
 constexpr double kArmEncoderOffset = 0;
 constexpr double kArmEncoderGearRatio = 0;
 
-}  // namespace ModuleConstants
+}  // namespace SuperstructureConstants
 
 namespace VisionConstants {
 

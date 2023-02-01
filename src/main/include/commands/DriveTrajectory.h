@@ -9,7 +9,6 @@
 
 #include "subsystems/SwerveDrive.h"
 #include "util/Trajectory.h"
-
 #include "util/log/DoubleTelemetryEntry.h"
 
 class DriveTrajectory

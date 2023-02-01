@@ -3,13 +3,14 @@
 #include "subsystems/Superstructure.h"
 
 #include <frc/DoubleSolenoid.h>
-#include <rev/CANSparkMax.h>
-#include "frc/smartdashboard/SmartDashboard.h"
-#include "Constants.h"
-#include "rev/SparkMaxLimitSwitch.h"
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <rev/CANSparkMax.h>
+#include <rev/SparkMaxLimitSwitch.h>
 #include <units/angle.h>
 #include <units/energy.h>
+#include <units/math.h>
+
+#include "Constants.h"
 
 using namespace frc;
 using namespace rev;
@@ -62,12 +63,12 @@ void Superstructure::SuperstructurePeriodic() {
 
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece()) {
-    intakeWheelSpeed = std::min(intakeWheelSpeed, 0.0);
-    armPosition = units::math::max(armPosition, kMinArmPickupPosition);
+    intakeWheelSpeed = units::math::min(intakeWheelSpeed, 0.0);
+    armPosition = max(armPosition, kMinArmPickupPosition);
   }
 
   // Ensure arm position bounds are not violated.
-  armPosition = radian_t{std::min(kMaxArmPosition.value(), std::max(kMinArmPosition.value(), armPosition.value()))};
+  armPosition = units::math::min(kMaxArmPosition, units::math::max(kMinArmPosition, armPosition));
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
@@ -75,7 +76,7 @@ void Superstructure::SuperstructurePeriodic() {
   m_expander.Set(m_expanded ? DoubleSolenoid::kReverse : DoubleSolenoid::kForward);
 
   m_armController.SetSetpoint(armPosition.value());
-  volt_t commandedVoltage = volt_t{m_armController.Calculate(GetArmPosition().value()) + 
+  volt_t commandedVoltage = volt_t{m_armController.Calculate(GetArmPosition().value()) +
                                    kArmFF * GetArmPosition().value()};
   m_armLeader.SetVoltage(commandedVoltage);
 }

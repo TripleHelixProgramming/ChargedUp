@@ -31,9 +31,9 @@ def animate_arm_trajectory(fps, dt, states, arm, reference, save):
         ref_line.set_data([0, arm.l * cos(reference[0])], [0, arm.l * sin(reference[0])])
         return [arm_line]
 
-    
+
     anim = FuncAnimation(fig,
-                        animate, 
+                        animate,
                         frames = len(states),
                         interval = int(dt * 1000),
                         blit = True)

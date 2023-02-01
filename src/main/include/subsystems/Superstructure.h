@@ -3,15 +3,14 @@
 #pragma once
 
 #include <frc/DoubleSolenoid.h>
-#include <frc/controller/PIDController.h>
 #include <frc/DutyCycleEncoder.h>
+#include <frc/controller/PIDController.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include <rev/SparkMaxLimitSwitch.h>
 #include <units/angle.h>
 
 #include "Constants.h"
-#include "frc/DutyCycleEncoder.h"
 
 using namespace ElectricalConstants;
 

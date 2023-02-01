@@ -1,7 +1,9 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
-#include <frc2/command/CommandHelper.h>
 #include <frc2/command/CommandBase.h>
+#include <frc2/command/CommandHelper.h>
 
 #include "subsystems/SwerveDrive.h"
 

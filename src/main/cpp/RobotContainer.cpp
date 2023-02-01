@@ -14,9 +14,7 @@
 
 #include "Constants.h"
 #include "commands/DriveTrajectory.h"
-
 #include "commands/ResetAbsoluteEncoders.h"
-
 #include "util/log/DoubleTelemetryEntry.h"
 
 using namespace frc;

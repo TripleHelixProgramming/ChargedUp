@@ -1,12 +1,13 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
 #include "Robot.h"
-#include "RobotContainer.h"
-#include "frc/TimesliceRobot.h"
 
-#include <frc2/command/CommandScheduler.h>
 #include <frc/DataLogManager.h>
 #include <frc/DriverStation.h>
+#include <frc/TimesliceRobot.h>
+#include <frc2/command/CommandScheduler.h>
+
+#include "RobotContainer.h"
 
 using namespace frc;
 

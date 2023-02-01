@@ -1,13 +1,15 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #include "util/log/DoubleTelemetryEntry.h"
 
 #include <string_view>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include "util/log/TelemetryEntry.h"
 
-#include <wpi/DataLog.h>
 #include <frc/DataLogManager.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <wpi/DataLog.h>
 
 #include "Constants.h"
+#include "util/log/TelemetryEntry.h"
 
 DoubleTelemetryEntry::DoubleTelemetryEntry(std::string_view name, TelemetryLevel level)
     : m_name(name), m_logEntry(frc::DataLogManager::GetLog(), m_name), m_level(level) {

@@ -1,9 +1,12 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
-#include "util/log/TelemetryEntry.h"
-
 #include <string_view>
+
 #include <wpi/DataLog.h>
+
+#include "util/log/TelemetryEntry.h"
 
 class DoubleTelemetryEntry {
  public:
