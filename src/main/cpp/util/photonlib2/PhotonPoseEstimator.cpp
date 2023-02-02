@@ -69,10 +69,10 @@ std::optional<EstimatedRobotPose> PhotonPoseEstimator::Update() {
       for (auto& corner : targetCorners) {
         imagePoints.emplace_back(corner.first, corner.second);
       }
-      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(-1_m, +1_m, 0_m), tagPose.value()));
-      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(+1_m, +1_m, 0_m), tagPose.value()));
-      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(+1_m, -1_m, 0_m), tagPose.value()));
-      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(-1_m, -1_m, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(-3_in, -3_in, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(+3_in, -3_in, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(+3_in, +3_in, 0_m), tagPose.value()));
+      objectPoints.push_back(tagCornerToObjectPoint(Translation3d(-3_in, +3_in, 0_m), tagPose.value()));
     }
   }
 
@@ -92,12 +92,15 @@ std::optional<EstimatedRobotPose> PhotonPoseEstimator::Update() {
                tvec, 
                cv::SOLVEPNP_SQPNP);
 
+  Vectord<3> rotationVector;
+  rotationVector[0] = rvec.at<double>(0, 0); 
+  rotationVector[1] = rvec.at<double>(1, 0); 
+  rotationVector[2] = rvec.at<double>(2, 0); 
+
   return EstimatedRobotPose(Pose3d(Translation3d(meter_t{tvec.at<double>(0, 0)},
                                                  meter_t{tvec.at<double>(1, 0)},
                                                  meter_t{tvec.at<double>(2, 0)}), 
-                                   Rotation3d(radian_t{rvec.at<double>(0, 0)},
-                                              radian_t{rvec.at<double>(1, 0)},
-                                              radian_t{rvec.at<double>(2, 0)})), 
+                                   Rotation3d(rotationVector, radian_t{rotationVector.norm()})), 
                             result.GetTimestamp());
 }
 
