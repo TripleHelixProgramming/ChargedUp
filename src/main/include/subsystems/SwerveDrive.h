@@ -75,7 +75,7 @@ class SwerveDrive : public frc2::SubsystemBase {
    * @brief NAVX gyro sensor for heading
    */
   AHRS m_gyro{frc::SPI::Port::kMXP};
-  photonlib::PhotonCamera m_camera{"OV5647"};
+  photonlib::PhotonCamera m_camera{"front"};
 
   /**
    * @brief Swerve drive kinematics
