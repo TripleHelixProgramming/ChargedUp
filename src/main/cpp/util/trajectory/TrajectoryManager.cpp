@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "util/TrajectoryManager.h"
+#include "util/trajectory/TrajectoryManager.h"
 
 #include <filesystem>
 #include <fstream>
@@ -13,7 +13,7 @@
 #include <frc/Filesystem.h>
 #include <wpi/json.h>
 
-#include "util/Trajectory.h"
+#include "util/trajectory/Trajectory.h"
 
 using std::filesystem::directory_iterator;
 using std::filesystem::path;
