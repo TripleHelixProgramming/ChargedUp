@@ -35,6 +35,11 @@ AprilTagFieldLayout CustomFieldLayout() {
   return AprilTagFieldLayout({tagTwo, tagSix}, 10_m, 10_m);
 }
 
+// AprilTagFieldLayout CustomFieldLayout() {
+//   AprilTag tagOne{1, Pose3d(0_m, 0_m, 0_m, Rotation3d())};
+//   return AprilTagFieldLayout({tagOne}, 10_m, 10_m);
+// }
+
 Vision::Vision()
     : m_poseEstimator(/*LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp)*/
                       CustomFieldLayout(), m_cameraMatrix,

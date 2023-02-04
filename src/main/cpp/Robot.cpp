@@ -25,7 +25,7 @@ Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms} {
   if constexpr (RobotBase::IsSimulation()) {
     auto inst = nt::NetworkTableInstance::GetDefault();
     inst.StopServer();
-    inst.SetServer("photonvision.local");
+    inst.SetServer("localhost");
     inst.StartClient4("Robot Simulation");
   }
 }
