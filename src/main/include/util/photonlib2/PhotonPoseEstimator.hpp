@@ -2,57 +2,44 @@
 
 #pragma once
 
+#include <array>
 #include <map>
-#include <memory>
-#include <utility>
-#include <vector>
 
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/geometry/Pose3d.h>
 #include <frc/geometry/Transform3d.h>
 #include <opencv2/core/mat.hpp>
+#include <opencv2/core/types.hpp>
+#include "frc/geometry/Translation2d.h"
+#include "frc/geometry/Translation3d.h"
 #include <photonlib/PhotonCamera.h>
+#include <photonlib/PhotonPoseEstimator.h>
 
 namespace photonlib2 {
 
-struct EstimatedRobotPose {
-  /** The estimated pose */
-  frc::Pose3d estimatedPose;
-  /** The estimated time the frame used to derive the robot pose was taken, in
-   * the same timebase as the RoboRIO FPGA Timestamp */
-  units::second_t timestamp;
-
-  EstimatedRobotPose(frc::Pose3d pose_, units::second_t time_)
-      : estimatedPose(pose_), timestamp(time_) {}
-};
-
 class PhotonPoseEstimator {
  public:
-  using map_value_type =
-      std::pair<std::shared_ptr<photonlib::PhotonCamera>, frc::Transform3d>;
-  using size_type = std::vector<map_value_type>::size_type;
-
   /**
    * Create a new PhotonPoseEstimator.
    *
-   * @param aprilTags A AprilTagFieldLayout linking AprilTag IDs to Pose3ds with
+   * @param aprilTagLayout A AprilTagFieldLayout linking AprilTag IDs to Pose3ds with
    * respect to the FIRST field.
-   * @param camera PhotonCameras and
+   * @param cameraMatrix PhotonCameras and
    * @param robotToCamera Transform3d from the center of the robot to the camera
    * mount positions (ie, robot ➔ camera).
    */
-  explicit PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTags,
-                               cv::Mat cameraMatrix,
-                               cv::Mat distortionCoefficients,
-                               photonlib::PhotonCamera&& camera,
-                               frc::Transform3d robotToCamera);
+  PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTagLayout,
+                      cv::Mat cameraMatrix,
+                      cv::Mat distortionCoefficients,
+                      photonlib::PhotonCamera&& camera,
+                      frc::Transform3d robotToCamera);
 
   /**
    * Get the AprilTagFieldLayout being used by the PositionEstimator.
    *
    * @return the AprilTagFieldLayout
    */
-  frc::AprilTagFieldLayout GetFieldLayout() const { return m_aprilTags; }
+  frc::AprilTagFieldLayout GetFieldLayout() const { return m_aprilTagLayout; }
 
   /**
    * Return the reference position that is being used by the estimator.
@@ -67,20 +54,20 @@ class PhotonPoseEstimator {
    *
    * @param referencePose the referencePose to set
    */
-  inline void SetReferencePose(frc::Pose3d referencePose) {
-    this->m_referencePose = referencePose;
+  void SetReferencePose(frc::Pose3d referencePose) {
+    m_referencePose = referencePose;
   }
 
   /**
    * Update the pose estimator. Internally grabs a new PhotonPipelineResult from
    * the camera and process it.
    */
-  std::optional<EstimatedRobotPose> Update();
+  std::optional<photonlib::EstimatedRobotPose> Update();
 
-  inline photonlib::PhotonCamera& GetCamera() { return m_camera; }
+  photonlib::PhotonCamera& GetCamera() { return m_camera; }
 
  private:
-  frc::AprilTagFieldLayout m_aprilTags;
+  frc::AprilTagFieldLayout m_aprilTagLayout;
 
   cv::Mat m_cameraMatrix;
   cv::Mat m_distortionCoefficients;
@@ -90,6 +77,42 @@ class PhotonPoseEstimator {
   frc::Transform3d m_robotToCamera;
 
   frc::Pose3d m_referencePose;
+
+  /**
+   * Converts a Translation3d in the field coordinate system to an OpenCV Point3d
+   * in OpenCV space.
+   * 
+   * @param translation the position in the field coordinate system
+   * @return the position in OpenCV space
+  */
+  static inline cv::Point3d ToPoint3d(const frc::Translation3d& translation);
+
+  static inline frc::Pose3d ToPose3d(const cv::Mat& tvec, const cv::Mat& rvec);
+
+  /**
+   * Transforms an AprilTag corner position (specified relative to the tag's
+   * 2d coordinate system) to a point in OpenCV space.
+   * 
+   * In the tag's coordinate system, the center is the origin, +x is right,
+   * and +y is up.
+   * 
+   * @param cornerX x-coordinate of AprilTag corner
+   * @param cornerY y-coordinate of AprilTag corner
+   * @param position position of AprilTag corner relative to the center of the
+   *                 tag (origin center, x right, y up).
+  */
+  static inline cv::Point3d TagCornerToObjectPoint(units::meter_t cornerX,
+                                            units::meter_t cornerY,
+                                            frc::Pose3d tagPose);
+
+  std::optional<std::array<cv::Point3d, 4>> CalcTagCorners(int tagID);
+
+  // /**
+  //  * Map from AprilTag ID in layout to positions of all four corners of the tag
+  //  * in OpenCV 3d space.
+  //  * //TODO check if ordering of points matters here
+  // */
+  // std::unordered_map<int, std::array<cv::Point3d, 4>> m_tagCornerObjectPoints;
 };
 
 }  // namespace photonlib2

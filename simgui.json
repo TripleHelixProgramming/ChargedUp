@@ -81,6 +81,15 @@
             "open": true
           }
         },
+        "SQPNP": {
+          "Rotation": {
+            "open": true
+          },
+          "Translation": {
+            "open": true
+          },
+          "open": true
+        },
         "Sim": {
           "Modules": {
             "Front Left": {

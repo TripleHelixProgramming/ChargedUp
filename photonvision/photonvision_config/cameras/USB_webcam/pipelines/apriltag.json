@@ -12,7 +12,7 @@
   "cameraVideoModeIndex" : 17,
   "streamingFrameDivisor" : "QUARTER",
   "ledMode" : false,
-  "inputShouldShow" : false,
+  "inputShouldShow" : true,
   "outputShouldShow" : true,
   "hsvHue" : {
     "first" : 50,
