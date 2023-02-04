@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "subsystems/Superstructure.h"
+#include "subsystems/Superstructure.hpp"
 
 #include <frc/DoubleSolenoid.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -10,7 +10,7 @@
 #include <units/energy.h>
 #include <units/math.h>
 
-#include "Constants.h"
+#include "Constants.hpp"
 
 using namespace frc;
 using namespace rev;

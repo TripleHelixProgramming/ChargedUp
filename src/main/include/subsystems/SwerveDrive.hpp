@@ -5,7 +5,7 @@
 #include <array>
 
 #include <AHRS.h>
-#include <Constants.h>
+#include <Constants.hpp>
 #include <frc/StateSpaceUtil.h>
 #include <frc/Timer.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
@@ -23,9 +23,9 @@
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 
-#include "subsystems/SwerveModule.h"
-#include "subsystems/Vision.h"
-#include "util/log/DoubleTelemetryEntry.h"
+#include "subsystems/SwerveModule.hpp"
+#include "subsystems/Vision.hpp"
+#include "util/log/DoubleTelemetryEntry.hpp"
 
 class SwerveDrive : public frc2::SubsystemBase {
  public:

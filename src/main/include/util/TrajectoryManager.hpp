@@ -10,7 +10,7 @@
 #include <frc/Filesystem.h>
 #include <wpi/json.h>
 
-#include "util/Trajectory.h"
+#include "util/Trajectory.hpp"
 
 class TrajectoryManager {
  public:

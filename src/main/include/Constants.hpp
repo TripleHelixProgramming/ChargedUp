@@ -16,7 +16,7 @@
 #include <units/time.h>
 #include <units/velocity.h>
 
-#include "util/log/TelemetryEntry.h"
+#include "util/log/TelemetryEntry.hpp"
 
 namespace OperatorConstants {
 

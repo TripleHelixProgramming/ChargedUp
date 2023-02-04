@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "commands/DriveTrajectory.h"
+#include "commands/DriveTrajectory.hpp"
 
 #include <frc/Timer.h>
 #include <units/angular_velocity.h>

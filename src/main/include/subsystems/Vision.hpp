@@ -11,7 +11,7 @@
 #include <photonlib/PhotonPoseEstimator.h>
 #include <units/time.h>
 
-#include "util/photonlib2/PhotonPoseEstimator.h"
+#include "util/photonlib2/PhotonPoseEstimator.hpp"
 
 class Vision : public frc2::SubsystemBase {
  public:

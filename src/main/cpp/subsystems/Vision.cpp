@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "subsystems/Vision.h"
+#include "subsystems/Vision.hpp"
 
 #include <memory>
 #include <optional>
@@ -21,8 +21,8 @@
 #include <units/length.h>
 #include <wpi/json.h>
 
-#include "Constants.h"
-#include "util/photonlib2/PhotonPoseEstimator.h"
+#include "Constants.hpp"
+#include "util/photonlib2/PhotonPoseEstimator.hpp"
 
 using namespace frc;
 using namespace photonlib;

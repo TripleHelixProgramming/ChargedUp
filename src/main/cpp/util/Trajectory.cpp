@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "util/Trajectory.h"
+#include "util/Trajectory.hpp"
 
 #include <vector>
 
