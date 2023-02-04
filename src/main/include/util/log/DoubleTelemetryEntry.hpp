@@ -7,7 +7,7 @@
 
 #include <wpi/DataLog.h>
 
-#include "util/log/TelemetryEntry.h"
+#include "util/log/TelemetryEntry.hpp"
 
 class DoubleTelemetryEntry {
  public:

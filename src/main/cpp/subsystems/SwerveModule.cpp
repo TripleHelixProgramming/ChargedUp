@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "subsystems/SwerveModule.h"
+#include "subsystems/SwerveModule.hpp"
 
 #include <cmath>
 #include <numbers>
@@ -20,8 +20,8 @@
 #include <units/time.h>
 #include <wpi/DataLog.h>
 
-#include "Constants.h"
-#include "util/log/TelemetryEntry.h"
+#include "Constants.hpp"
+#include "util/log/TelemetryEntry.hpp"
 
 using namespace frc;
 using namespace rev;

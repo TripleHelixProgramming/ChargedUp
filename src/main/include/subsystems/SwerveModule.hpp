@@ -15,7 +15,7 @@
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
 
-#include "util/log/DoubleTelemetryEntry.h"
+#include "util/log/DoubleTelemetryEntry.hpp"
 
 class SwerveModule : public frc2::SubsystemBase {
  public:

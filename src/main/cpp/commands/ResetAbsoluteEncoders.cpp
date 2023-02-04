@@ -1,8 +1,8 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "commands/ResetAbsoluteEncoders.h"
+#include "commands/ResetAbsoluteEncoders.hpp"
 
-#include "subsystems/SwerveDrive.h"
+#include "subsystems/SwerveDrive.hpp"
 
 ResetAbsoluteEncoders::ResetAbsoluteEncoders(SwerveDrive* drive)
     : drive(drive) {}

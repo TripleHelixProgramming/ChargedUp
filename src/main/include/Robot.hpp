@@ -8,7 +8,7 @@
 #include <frc/TimesliceRobot.h>
 #include <frc2/command/CommandPtr.h>
 
-#include "RobotContainer.h"
+#include "RobotContainer.hpp"
 
 class Robot : public frc::TimesliceRobot {
  public:

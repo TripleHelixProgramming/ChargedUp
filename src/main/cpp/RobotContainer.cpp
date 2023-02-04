@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "RobotContainer.h"
+#include "RobotContainer.hpp"
 
 #include <iostream>
 
@@ -12,10 +12,10 @@
 #include <frc2/command/button/Trigger.h>
 #include <wpi/json.h>
 
-#include "Constants.h"
-#include "commands/DriveTrajectory.h"
-#include "commands/ResetAbsoluteEncoders.h"
-#include "util/log/DoubleTelemetryEntry.h"
+#include "Constants.hpp"
+#include "commands/DriveTrajectory.hpp"
+#include "commands/ResetAbsoluteEncoders.hpp"
+#include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace frc;
 using namespace frc2;

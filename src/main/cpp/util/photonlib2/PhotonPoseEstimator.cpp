@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "util/photonlib2/PhotonPoseEstimator.h"
+#include "util/photonlib2/PhotonPoseEstimator.hpp"
 
 #include <chrono>
 #include <iostream>

@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "util/log/DoubleTelemetryEntry.h"
+#include "util/log/DoubleTelemetryEntry.hpp"
 
 #include <string_view>
 
@@ -8,8 +8,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <wpi/DataLog.h>
 
-#include "Constants.h"
-#include "util/log/TelemetryEntry.h"
+#include "Constants.hpp"
+#include "util/log/TelemetryEntry.hpp"
 
 DoubleTelemetryEntry::DoubleTelemetryEntry(std::string_view name,
                                            TelemetryLevel level)

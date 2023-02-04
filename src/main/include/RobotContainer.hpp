@@ -8,11 +8,11 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
-#include "Constants.h"
-#include "subsystems/Superstructure.h"
-#include "subsystems/SwerveDrive.h"
-#include "util/TrajectoryManager.h"
-#include "util/log/DoubleTelemetryEntry.h"
+#include "Constants.hpp"
+#include "subsystems/Superstructure.hpp"
+#include "subsystems/SwerveDrive.hpp"
+#include "util/TrajectoryManager.hpp"
+#include "util/log/DoubleTelemetryEntry.hpp"
 
 class RobotContainer {
  public:
