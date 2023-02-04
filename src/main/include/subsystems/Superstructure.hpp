@@ -10,7 +10,7 @@
 #include <rev/SparkMaxLimitSwitch.h>
 #include <units/angle.h>
 
-#include "Constants.h"
+#include "Constants.hpp"
 
 class Superstructure : public frc2::SubsystemBase {
  public:

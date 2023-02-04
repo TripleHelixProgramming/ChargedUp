@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "subsystems/SwerveDrive.h"
+#include "subsystems/SwerveDrive.hpp"
 
 #include <cmath>
 
@@ -27,10 +27,10 @@
 #include <units/velocity.h>
 #include <wpi/array.h>
 
-#include "Constants.h"
-#include "subsystems/Vision.h"
-#include "util/log/DoubleTelemetryEntry.h"
-#include "util/log/TelemetryEntry.h"
+#include "Constants.hpp"
+#include "subsystems/Vision.hpp"
+#include "util/log/DoubleTelemetryEntry.hpp"
+#include "util/log/TelemetryEntry.hpp"
 
 using namespace frc;
 using namespace frc2;
