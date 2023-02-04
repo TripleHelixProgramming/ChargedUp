@@ -24,6 +24,7 @@ includeOtherLibs {
   gtest/
   hal/
   networktables/
+  opencv2/
   photonlib/
   rev/.*?\.h$
   units/

@@ -18,7 +18,9 @@ using namespace units;
 
 using namespace SuperstructureConstants;
 
-Superstructure::Superstructure() : m_beamBreak{m_leftWheel.GetForwardLimitSwitch(SparkMaxLimitSwitch::Type::kNormallyOpen)} {
+Superstructure::Superstructure()
+    : m_beamBreak{m_leftWheel.GetForwardLimitSwitch(
+          SparkMaxLimitSwitch::Type::kNormallyOpen)} {
   // Initialize intake wheel motors
   m_leftWheel.SetSmartCurrentLimit(5);
   m_rightWheel.SetSmartCurrentLimit(5);
@@ -68,15 +70,18 @@ void Superstructure::SuperstructurePeriodic() {
   }
 
   // Ensure arm position bounds are not violated.
-  armPosition = units::math::min(kMaxArmPosition, units::math::max(kMinArmPosition, armPosition));
+  armPosition = units::math::min(
+      kMaxArmPosition, units::math::max(kMinArmPosition, armPosition));
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
   m_leftWheel.Set(-intakeWheelSpeed);
-  m_expander.Set(m_expanded ? DoubleSolenoid::kReverse : DoubleSolenoid::kForward);
+  m_expander.Set(m_expanded ? DoubleSolenoid::kReverse
+                            : DoubleSolenoid::kForward);
 
   m_armController.SetSetpoint(armPosition.value());
-  volt_t commandedVoltage = volt_t{m_armController.Calculate(GetArmPosition().value()) +
-                                   kArmFF * GetArmPosition().value()};
+  volt_t commandedVoltage =
+      volt_t{m_armController.Calculate(GetArmPosition().value()) +
+             kArmFF * GetArmPosition().value()};
   m_armLeader.SetVoltage(commandedVoltage);
 }

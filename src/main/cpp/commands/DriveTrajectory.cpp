@@ -8,12 +8,14 @@
 
 using namespace units;
 
-DriveTrajectory::DriveTrajectory(SwerveDrive* drive, const Trajectory* trajectory)
-    : m_drive{drive}, m_trajectory{trajectory},
-    m_timestampLog("Trajectory/Timestamp"),
-    m_xSetpointLog("Trajectory/X Setpoint"),
-    m_ySetpointLog("Trajectory/Y Setpoint"),
-    m_thetaSetpointLog("Trajectory/Theta Setpoint") {
+DriveTrajectory::DriveTrajectory(SwerveDrive* drive,
+                                 const Trajectory* trajectory)
+    : m_drive{drive},
+      m_trajectory{trajectory},
+      m_timestampLog("Trajectory/Timestamp"),
+      m_xSetpointLog("Trajectory/X Setpoint"),
+      m_ySetpointLog("Trajectory/Y Setpoint"),
+      m_thetaSetpointLog("Trajectory/Theta Setpoint") {
   AddRequirements(m_drive);
 }
 
@@ -31,12 +33,13 @@ void DriveTrajectory::Execute() {
   m_controllerY.SetSetpoint(state.pose.Y().value());
   m_controllerRotation.SetSetpoint(state.pose.Rotation().Radians().value());
 
-  auto vx = state.vx +
-            meters_per_second_t{m_controllerX.Calculate(currentPose.X().value())};
-  auto vy = state.vy +
-            meters_per_second_t{m_controllerY.Calculate(currentPose.Y().value())};
-  auto omega = state.omega + radians_per_second_t{m_controllerRotation.Calculate(
-                                 currentPose.Rotation().Radians().value())};
+  auto vx = state.vx + meters_per_second_t{
+                           m_controllerX.Calculate(currentPose.X().value())};
+  auto vy = state.vy + meters_per_second_t{
+                           m_controllerY.Calculate(currentPose.Y().value())};
+  auto omega =
+      state.omega + radians_per_second_t{m_controllerRotation.Calculate(
+                        currentPose.Rotation().Radians().value())};
 
   m_timestampLog.Append(m_timestamp.Get().value());
   m_xSetpointLog.Append(state.pose.X().value());

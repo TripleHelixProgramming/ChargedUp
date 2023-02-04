@@ -50,29 +50,32 @@ SwerveDrive::SwerveDrive()
                               kAbsEncoderPorts[2]),
                  SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3],
                               kAbsEncoderPorts[3])}},
-      m_driveKinematics{
-          {Translation2d{kWheelBase / 2, kTrackWidth / 2},
-           Translation2d{kWheelBase / 2, -kTrackWidth / 2},
-           Translation2d{-kWheelBase / 2, kTrackWidth / 2},
-           Translation2d{-kWheelBase / 2, -kTrackWidth / 2}}},
+      m_driveKinematics{{Translation2d{kWheelBase / 2, kTrackWidth / 2},
+                         Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+                         Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+                         Translation2d{-kWheelBase / 2, -kTrackWidth / 2}}},
       m_odometry{m_driveKinematics,
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d()},
       m_poseEstimator{m_driveKinematics,
-                 Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
-                 {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-                  m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-                 Pose2d(),
-                 {0.1, 0.1, 0.1},
-                 {0.1, 0.1, 0.1}},
+                      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+                      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+                       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
+                      Pose2d(),
+                      {0.1, 0.1, 0.1},
+                      {0.1, 0.1, 0.1}},
       m_poseEstimateXLog("Drive/Pose Estimate/X", TelemetryLevel::kCompetition),
       m_poseEstimateYLog("Drive/Pose Estimate/Y", TelemetryLevel::kCompetition),
-      m_poseEstimateThetaLog("Drive/Pose Estimate/Theta", TelemetryLevel::kCompetition),
-      m_visionPoseEstimateXLog("Vision/Pose Estimate/X", TelemetryLevel::kCompetition),
-      m_visionPoseEstimateYLog("Vision/Pose Estimate/Y", TelemetryLevel::kCompetition),
-      m_visionPoseEstimateThetaLog("Vision/Pose Estimate/Theta", TelemetryLevel::kCompetition),
+      m_poseEstimateThetaLog("Drive/Pose Estimate/Theta",
+                             TelemetryLevel::kCompetition),
+      m_visionPoseEstimateXLog("Vision/Pose Estimate/X",
+                               TelemetryLevel::kCompetition),
+      m_visionPoseEstimateYLog("Vision/Pose Estimate/Y",
+                               TelemetryLevel::kCompetition),
+      m_visionPoseEstimateThetaLog("Vision/Pose Estimate/Theta",
+                                   TelemetryLevel::kCompetition),
       m_gyroSim("navX-Sensor", 4),
       m_gyroSimYaw(m_gyroSim.GetDouble("Yaw")) {
   SmartDashboard::PutData("Field", &m_field);
@@ -149,7 +152,7 @@ void SwerveDrive::Brake() {
 }
 
 void SwerveDrive::Periodic() {
-  m_odometry.Update( // TODO: Remove odometry
+  m_odometry.Update(  // TODO: Remove odometry
       Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
@@ -164,14 +167,22 @@ void SwerveDrive::Periodic() {
     m_poseEstimator.AddVisionMeasurement(
         visionEstimatedPose->estimatedPose.ToPose2d(),
         visionEstimatedPose->timestamp);
-    m_visionPoseEstimateXLog.Append(visionEstimatedPose->estimatedPose.X().value()); // TODO: add timestamp to this (additional param)
-    m_visionPoseEstimateYLog.Append(visionEstimatedPose->estimatedPose.Y().value());
-    m_visionPoseEstimateThetaLog.Append(visionEstimatedPose->estimatedPose.ToPose2d().Rotation().Radians().value());
+    m_visionPoseEstimateXLog.Append(
+        visionEstimatedPose->estimatedPose.X()
+            .value());  // TODO: add timestamp to this (additional param)
+    m_visionPoseEstimateYLog.Append(
+        visionEstimatedPose->estimatedPose.Y().value());
+    m_visionPoseEstimateThetaLog.Append(
+        visionEstimatedPose->estimatedPose.ToPose2d()
+            .Rotation()
+            .Radians()
+            .value());
   }
 
   m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());
   m_poseEstimateYLog.Append(m_poseEstimator.GetEstimatedPosition().Y().value());
-  m_poseEstimateThetaLog.Append(m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
+  m_poseEstimateThetaLog.Append(
+      m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
 
   m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
 }
@@ -187,7 +198,8 @@ void SwerveDrive::SimulationPeriodic() {
     moduleDeltas[index] = {currentPosition.distance - lastPosition.distance,
                            currentPosition.angle};
 
-    m_previousModulePositions[index].distance = m_modules[index].GetPosition().distance;
+    m_previousModulePositions[index].distance =
+        m_modules[index].GetPosition().distance;
   }
 
   Twist2d delta = m_driveKinematics.ToTwist2d(moduleDeltas);

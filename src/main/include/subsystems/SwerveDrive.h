@@ -107,5 +107,4 @@ class SwerveDrive : public frc2::SubsystemBase {
   hal::SimDouble m_gyroSimYaw;
 
   std::array<frc::SwerveModulePosition, 4> m_previousModulePositions{};
-
 };

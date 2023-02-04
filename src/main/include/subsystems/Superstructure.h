@@ -12,8 +12,6 @@
 
 #include "Constants.h"
 
-using namespace ElectricalConstants;
-
 class Superstructure : public frc2::SubsystemBase {
  public:
   Superstructure();
@@ -40,13 +38,17 @@ class Superstructure : public frc2::SubsystemBase {
                                       SuperstructureConstants::kArmD};
 
   // Hardware modules
-  rev::CANSparkMax m_leftWheel{kIntakeLeftWheelPort, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightWheel{kIntakeRightWheelPort, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftWheel{ElectricalConstants::kIntakeLeftWheelPort,
+                               rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightWheel{ElectricalConstants::kIntakeRightWheelPort,
+                                rev::CANSparkMax::MotorType::kBrushless};
 
-  rev::CANSparkMax m_armLeader{kArmLeaderPort, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_armFollower{kArmFollowerPort, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_armLeader{ElectricalConstants::kArmLeaderPort,
+                               rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_armFollower{ElectricalConstants::kArmFollowerPort,
+                                 rev::CANSparkMax::MotorType::kBrushless};
 
-  frc::DutyCycleEncoder m_armEncoder{kArmEncoderPort};
+  frc::DutyCycleEncoder m_armEncoder{ElectricalConstants::kArmEncoderPort};
 
   rev::SparkMaxLimitSwitch m_beamBreak;
 

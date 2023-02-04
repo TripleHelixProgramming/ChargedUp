@@ -5,8 +5,7 @@
 #include "subsystems/SwerveDrive.h"
 
 ResetAbsoluteEncoders::ResetAbsoluteEncoders(SwerveDrive* drive)
-  : drive(drive) {
-}
+    : drive(drive) {}
 
 void ResetAbsoluteEncoders::Initialize() {
   drive->ResetAbsoluteEncoders();

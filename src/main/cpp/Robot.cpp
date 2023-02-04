@@ -14,12 +14,12 @@ using namespace frc;
 Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms} {
   // Schedule periodic functions
   Schedule(
-    [=, this] {
-      if (IsEnabled()) {
+      [=, this] {
+        if (IsEnabled()) {
           m_container.SuperstructurePeriodic();
-      }
-    },
-    1.5_ms);
+        }
+      },
+      1.5_ms);
 }
 
 void Robot::RobotInit() {

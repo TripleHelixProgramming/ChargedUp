@@ -12,6 +12,7 @@ referenceState = [1, 0]
 
 arm = single_jointed_arm(2.0, 5.0, 0.01, 1.0)
 
+
 def main():
 
     states = [initialState, initialState, initialState]
@@ -21,6 +22,9 @@ def main():
         state = states[-3]
         states.append(RK4(arm.dynamics, state, [P(state[0], referenceState[0])], dt))
 
-    animate_arm_trajectory(int(1.0 / dt), dt, states, arm, [referenceState[0], 0], False)
+    animate_arm_trajectory(
+        int(1.0 / dt), dt, states, arm, [referenceState[0], 0], False
+    )
+
 
 main()

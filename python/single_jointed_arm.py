@@ -2,6 +2,7 @@ from math_util import RK4
 import numpy as np
 from math import *
 
+
 class single_jointed_arm(object):
     def __init__(self, length, mass, kt, kv):
         # Arm length
@@ -51,7 +52,4 @@ class single_jointed_arm(object):
         tau_u = (voltage - self.kv * omega) / self.kt
         tau_g = self.g * self.m * cos(theta)
         # tau_g = 0
-        return np.array([
-            omega,
-            (tau_u + tau_g) / self.M
-        ])
+        return np.array([omega, (tau_u + tau_g) / self.M])

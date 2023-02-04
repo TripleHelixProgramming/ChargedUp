@@ -23,8 +23,8 @@ using namespace OIConstants;
 
 RobotContainer::RobotContainer()
     : m_oiDriverLeftXLog("OI/Driver/Left X"),
-    m_oiDriverRightXLog("OI/Driver/Right X"),
-    m_oiDriverRightYLog("OI/Driver/Right Y") {
+      m_oiDriverRightXLog("OI/Driver/Right X"),
+      m_oiDriverRightYLog("OI/Driver/Right Y") {
   m_drive.SetDefaultCommand(RunCommand(
       [this] {  // onExecute
         // Right stick up on xbox is negative, right stick down is postive.
@@ -42,7 +42,8 @@ RobotContainer::RobotContainer()
 
   m_trajManager.LoadTrajectories();
 
-  SmartDashboard::PutData("Reset Encoders", new ResetAbsoluteEncoders(&m_drive));
+  SmartDashboard::PutData("Reset Encoders",
+                          new ResetAbsoluteEncoders(&m_drive));
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
@@ -64,14 +65,18 @@ void RobotContainer::ConfigureBindings() {
 
   // m_operator.X().OnTrue(IntakeCone(&m_gripper).ToPtr());
   // m_operator.X().OnFalse(
-  //     InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  //     InstantCommand([this]() { return m_gripper.Retract(); },
+  //     {&m_gripper}).ToPtr());
   // m_operator.Y().OnTrue(IntakeCube(&m_gripper).ToPtr());
   // m_operator.Y().OnFalse(
-  //     InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  //     InstantCommand([this]() { return m_gripper.Retract(); },
+  //     {&m_gripper}).ToPtr());
   // m_operator.A().OnTrue(
-  //     InstantCommand([this]() { return m_gripper.EjectGamePiece(); }, {&m_gripper}).ToPtr());
+  //     InstantCommand([this]() { return m_gripper.EjectGamePiece(); },
+  //     {&m_gripper}).ToPtr());
   // m_operator.A().OnFalse(
-  //     InstantCommand([this]() { return m_gripper.Retract(); }, {&m_gripper}).ToPtr());
+  //     InstantCommand([this]() { return m_gripper.Retract(); },
+  //     {&m_gripper}).ToPtr());
 }
 
 void RobotContainer::SuperstructurePeriodic() {

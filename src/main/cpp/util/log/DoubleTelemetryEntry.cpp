@@ -11,10 +11,14 @@
 #include "Constants.h"
 #include "util/log/TelemetryEntry.h"
 
-DoubleTelemetryEntry::DoubleTelemetryEntry(std::string_view name, TelemetryLevel level)
-    : m_name(name), m_logEntry(frc::DataLogManager::GetLog(), m_name), m_level(level) {
+DoubleTelemetryEntry::DoubleTelemetryEntry(std::string_view name,
+                                           TelemetryLevel level)
+    : m_name(name),
+      m_logEntry(frc::DataLogManager::GetLog(), m_name),
+      m_level(level) {
   if (kTelemetryLevel >= m_level) {
-    frc::SmartDashboard::PutNumber(m_name, 0.0); // make sure it shows up in smartdashboard
+    frc::SmartDashboard::PutNumber(
+        m_name, 0.0);  // make sure it shows up in smartdashboard
   }
 }
 

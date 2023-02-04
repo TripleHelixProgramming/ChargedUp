@@ -59,8 +59,10 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       m_drivePositionLog("Drive/Modules/" + m_name + "/Drive Position (m)"),
       m_driveVelocityLog("Drive/Modules/" + m_name + "/Drive Velocity (mps)"),
       m_steerPositionLog("Drive/Modules/" + m_name + "/Steer Angle (rad)"),
-      m_driveVelocitySetpointLog("Drive/Modules/" + m_name + "/Drive Velocity Setpoint (mps)"),
-      m_steerPositionSetpointLog("Drive/Modules/" + m_name + "/Steer Angle Setpoint (rad)"),
+      m_driveVelocitySetpointLog("Drive/Modules/" + m_name +
+                                 "/Drive Velocity Setpoint (mps)"),
+      m_steerPositionSetpointLog("Drive/Modules/" + m_name +
+                                 "/Steer Angle Setpoint (rad)"),
       m_driveSim("SPARK MAX ", driveMotorID),
       m_steerSim("SPARK MAX ", steerMotorID),
       m_driveSimVelocity(m_driveSim.GetDouble("Velocity")),
@@ -114,10 +116,16 @@ void SwerveModule::SetDesiredState(
 
   Rotation2d curAngle = radian_t{m_steerEncoder.GetPosition()};
 
-  // Since we use relative encoder of steer motor, it is a field (doesn't wrap from 2pi to 0 for example).
-  // We need to calculate delta to avoid taking a longer route
-  // This is analagous to the EnableContinuousInput() function of WPILib's PIDController classes
-  double delta = std::fmod(std::fmod((state.angle.Radians().value() - curAngle.Radians().value() + pi), 2 * pi) + 2 * pi, 2 * pi) - pi; // NOLINT
+  // Since we use relative encoder of steer motor, it is a field (doesn't wrap
+  // from 2pi to 0 for example). We need to calculate delta to avoid taking a
+  // longer route This is analagous to the EnableContinuousInput() function of
+  // WPILib's PIDController classes
+  double delta = std::fmod(std::fmod((state.angle.Radians().value() -
+                                      curAngle.Radians().value() + pi),
+                                     2 * pi) +
+                               2 * pi,
+                           2 * pi) -
+                 pi;  // NOLINT
 
   double adjustedAngle = delta + curAngle.Radians().value();
 
@@ -143,7 +151,8 @@ void SwerveModule::Periodic() {
 void SwerveModule::SimulationPeriodic() {
   units::second_t dt = m_simTimer.Get();
   m_simTimer.Reset();
-  m_driveSimPosition.Set(m_driveSimPosition.Get() + m_driveSimVelocity.Get() * dt.value());
+  m_driveSimPosition.Set(m_driveSimPosition.Get() +
+                         m_driveSimVelocity.Get() * dt.value());
 }
 
 void SwerveModule::ResetEncoders() {

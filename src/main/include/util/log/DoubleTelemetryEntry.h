@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <string>
 #include <string_view>
 
 #include <wpi/DataLog.h>
@@ -10,7 +11,8 @@
 
 class DoubleTelemetryEntry {
  public:
-  DoubleTelemetryEntry(std::string_view name, TelemetryLevel level = TelemetryLevel::kDebug);
+  DoubleTelemetryEntry(std::string_view name,
+                       TelemetryLevel level = TelemetryLevel::kDebug);
 
   void Append(double value, int64_t timestamp = 0);
 

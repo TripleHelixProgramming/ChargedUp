@@ -1,3 +1,5 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
 #include <map>
@@ -8,9 +10,8 @@
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/geometry/Pose3d.h>
 #include <frc/geometry/Transform3d.h>
-
-#include "opencv2/core/mat.hpp"
-#include "photonlib/PhotonCamera.h"
+#include <opencv2/core/mat.hpp>
+#include <photonlib/PhotonCamera.h>
 
 namespace photonlib2 {
 
@@ -41,7 +42,7 @@ class PhotonPoseEstimator {
    * mount positions (ie, robot ➔ camera).
    */
   explicit PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTags,
-                               cv::Mat cameraMatrix, 
+                               cv::Mat cameraMatrix,
                                cv::Mat distortionCoefficients,
                                photonlib::PhotonCamera&& camera,
                                frc::Transform3d robotToCamera);

@@ -7,9 +7,10 @@
 
 #include "subsystems/SwerveDrive.h"
 
-class ResetAbsoluteEncoders : public frc2::CommandHelper<frc2::CommandBase, ResetAbsoluteEncoders> {
+class ResetAbsoluteEncoders
+    : public frc2::CommandHelper<frc2::CommandBase, ResetAbsoluteEncoders> {
  public:
-  ResetAbsoluteEncoders(SwerveDrive* drive);
+  explicit ResetAbsoluteEncoders(SwerveDrive* drive);
 
   void Initialize() override;
 
