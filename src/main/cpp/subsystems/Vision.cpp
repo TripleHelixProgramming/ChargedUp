@@ -52,12 +52,14 @@ std::optional<photonlib2::EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
   m_oldPoseEstimator.SetReferencePose(prevEstimatedRobotPose);
   auto updte = m_oldPoseEstimator.Update();
-  SmartDashboard::PutNumber("oldpv/X",
-                            updte->estimatedPose.ToPose2d().X().value());
-  SmartDashboard::PutNumber("oldpv/Y",
-                            updte->estimatedPose.ToPose2d().Y().value());
-  SmartDashboard::PutNumber(
-      "oldpv/Theta",
-      updte->estimatedPose.ToPose2d().Rotation().Radians().value());
+  if (updte.has_value()) {
+    SmartDashboard::PutNumber("oldpv/X",
+                              updte->estimatedPose.ToPose2d().X().value());
+    SmartDashboard::PutNumber("oldpv/Y",
+                              updte->estimatedPose.ToPose2d().Y().value());
+    SmartDashboard::PutNumber(
+        "oldpv/Theta",
+        updte->estimatedPose.ToPose2d().Rotation().Radians().value());
+  }
   return m_poseEstimator.Update();
 }
