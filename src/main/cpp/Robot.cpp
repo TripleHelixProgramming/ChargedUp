@@ -6,6 +6,7 @@
 #include <frc/DriverStation.h>
 #include <frc/TimesliceRobot.h>
 #include <frc2/command/CommandScheduler.h>
+#include "networktables/NetworkTableInstance.h"
 
 #include "RobotContainer.h"
 
@@ -20,6 +21,13 @@ Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms} {
         }
       },
       1.5_ms);
+  
+  if constexpr (RobotBase::IsSimulation()) {
+    auto inst = nt::NetworkTableInstance::GetDefault();
+    inst.StopServer();
+    inst.SetServer("photonvision.local");
+    inst.StartClient4("Robot Simulation");
+  }
 }
 
 void Robot::RobotInit() {
