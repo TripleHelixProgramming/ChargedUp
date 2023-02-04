@@ -21,6 +21,7 @@
 #include "opencv2/core/mat.hpp"
 #include "photonlib/PhotonPoseEstimator.h"
 #include "util/photonlib2/PhotonPoseEstimator.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 #include "Constants.h"
 
 using namespace frc;
