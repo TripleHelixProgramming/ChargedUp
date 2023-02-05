@@ -19,7 +19,7 @@ class Vision : public frc2::SubsystemBase {
 
   void Periodic() override;
 
-  std::optional<photonlib2::EstimatedRobotPose> GetEstimatedGlobalPose(
+  std::optional<photonlib::EstimatedRobotPose> GetEstimatedGlobalPose(
       const frc::Pose3d& estimatedRobotPose);
 
  private:

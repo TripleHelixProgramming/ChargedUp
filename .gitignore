@@ -176,3 +176,6 @@ my_package.egg-info
 
 # Ignore animations
 /python/animations
+
+# Ignore extra cameras on sim laptops
+HP_Wide_Vision_HD/

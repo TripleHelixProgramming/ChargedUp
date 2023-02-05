@@ -31,9 +31,14 @@ using namespace VisionConstants;
 
 AprilTagFieldLayout CustomFieldLayout() {
   AprilTag tagTwo{2, Pose3d(0_m, 0_m, 0_m, Rotation3d())};
-  AprilTag tagSix{6, Pose3d(8_in, 0_m, 0_m, Rotation3d())};
+  AprilTag tagSix{6, Pose3d(0_m, 0_m + 8_in, 0_m, Rotation3d())};
   return AprilTagFieldLayout({tagTwo, tagSix}, 10_m, 10_m);
 }
+
+// AprilTagFieldLayout CustomFieldLayout() {
+//   AprilTag tagOne{1, Pose3d(0_m, 0_m, 0_m, Rotation3d())};
+//   return AprilTagFieldLayout({tagOne}, 10_m, 10_m);
+// }
 
 Vision::Vision()
     : m_poseEstimator(/*LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp)*/
@@ -47,7 +52,7 @@ Vision::Vision()
 
 void Vision::Periodic() {}
 
-std::optional<photonlib2::EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
+std::optional<photonlib::EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
     const frc::Pose3d& prevEstimatedRobotPose) {
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
   m_oldPoseEstimator.SetReferencePose(prevEstimatedRobotPose);

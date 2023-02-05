@@ -76,6 +76,20 @@
         "open": true
       },
       "SmartDashboard": {
+        "Drive": {
+          "Pose Estimate": {
+            "open": true
+          }
+        },
+        "SQPNP": {
+          "Rotation": {
+            "open": true
+          },
+          "Translation": {
+            "open": true
+          },
+          "open": true
+        },
         "Sim": {
           "Modules": {
             "Front Left": {
@@ -83,6 +97,21 @@
             },
             "open": true
           },
+          "open": true
+        },
+        "Vision": {
+          "Pose Estimate": {
+            "open": true
+          },
+          "open": true
+        },
+        "oldpv": {
+          "open": true
+        },
+        "open": true
+      },
+      "photonvision": {
+        "front": {
           "open": true
         },
         "open": true
