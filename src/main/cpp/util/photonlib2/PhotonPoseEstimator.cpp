@@ -35,17 +35,31 @@ using namespace units;
 
 namespace photonlib2 {
 
-PhotonPoseEstimator::PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTagLayout,
-                                         cv::Mat cameraMatrix,
-                                         cv::Mat distortionCoefficients,
-                                         photonlib::PhotonCamera&& camera,
-                                         frc::Transform3d robotToCamera)
+PhotonPoseEstimator::PhotonPoseEstimator(
+    frc::AprilTagFieldLayout aprilTagLayout, cv::Mat cameraMatrix,
+    cv::Mat distortionCoefficients, photonlib::PhotonCamera&& camera,
+    frc::Transform3d robotToCamera)
     : m_aprilTagLayout(std::move(aprilTagLayout)),
       m_cameraMatrix(std::move(cameraMatrix)),
       m_distortionCoefficients(std::move(distortionCoefficients)),
       m_camera(std::move(camera)),
       m_robotToCamera(robotToCamera),
-      m_referencePose(frc::Pose3d()) {
+      m_referencePose(frc::Pose3d()) {}
+
+frc::AprilTagFieldLayout PhotonPoseEstimator::GetFieldLayout() const {
+  return m_aprilTagLayout;
+}
+
+frc::Pose3d PhotonPoseEstimator::GetReferencePose() const {
+  return m_referencePose;
+}
+
+void PhotonPoseEstimator::SetReferencePose(frc::Pose3d referencePose) {
+  m_referencePose = referencePose;
+}
+
+photonlib::PhotonCamera& PhotonPoseEstimator::GetCamera() {
+  return m_camera;
 }
 
 std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
@@ -66,10 +80,10 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
   for (auto target : targets) {
     int id = target.GetFiducialId();
     if (auto tagCorners = CalcTagCorners(id); tagCorners.has_value()) {
-      auto targetCorners =
-          target.GetDetectedCorners();
+      auto targetCorners = target.GetDetectedCorners();
       for (size_t cornerIdx = 0; cornerIdx < 4; ++cornerIdx) {
-        imagePoints.emplace_back(targetCorners[cornerIdx].first, targetCorners[cornerIdx].second);
+        imagePoints.emplace_back(targetCorners[cornerIdx].first,
+                                 targetCorners[cornerIdx].second);
         objectPoints.emplace_back((*tagCorners)[cornerIdx]);
       }
     }
@@ -107,29 +121,21 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
       std::chrono::duration_cast<std::chrono::milliseconds>(end - begin)
           .count());
 
-  return photonlib::EstimatedRobotPose(pose.TransformBy(m_robotToCamera.Inverse()),
-                            result.GetTimestamp());
+  return photonlib::EstimatedRobotPose(
+      pose.TransformBy(m_robotToCamera.Inverse()), result.GetTimestamp());
 }
 
 cv::Point3d PhotonPoseEstimator::ToPoint3d(const Translation3d& translation) {
-  return cv::Point3d(-translation.Y().value(),
-                     -translation.Z().value(),
+  return cv::Point3d(-translation.Y().value(), -translation.Z().value(),
                      +translation.X().value());
 }
 
 Pose3d PhotonPoseEstimator::ToPose3d(const cv::Mat& tvec, const cv::Mat& rvec) {
-
   cv::Mat R;
-  cv::Rodrigues(rvec, R); // R is 3x3
+  cv::Rodrigues(rvec, R);  // R is 3x3
 
-  R = R.t();  // rotation of inverse
-  cv::Mat tvecI = -R * tvec; // translation of inverse
-
-  // cv::Mat T = cv::Mat::eye(4, 4, R.type()); // T is 4x4
-  // T( cv::Range(0,3), cv::Range(0,3) ) = R * 1; // copies R into T
-  // T( cv::Range(0,3), cv::Range(3,4) ) = tvecI * 1; // copies tvec into T
-
-  // T is a 4x4 matrix with the pose of the camera in the object frame
+  R = R.t();                  // rotation of inverse
+  cv::Mat tvecI = -R * tvec;  // translation of inverse
 
   Vectord<3> tv;
   tv[0] = +tvecI.at<double>(2, 0);
@@ -140,36 +146,30 @@ Pose3d PhotonPoseEstimator::ToPose3d(const cv::Mat& tvec, const cv::Mat& rvec) {
   rv[1] = -rvec.at<double>(0, 0);
   rv[2] = +rvec.at<double>(1, 0);
 
-  return Pose3d(
-    Translation3d(
-      meter_t{tv[0]},
-      meter_t{tv[1]},
-      meter_t{tv[2]}),
-    Rotation3d(
-      // radian_t{rv[0]},
-      // radian_t{rv[1]},
-      // radian_t{rv[2]}
-      rv, radian_t{rv.norm()}
-    ));
+  return Pose3d(Translation3d(meter_t{tv[0]}, meter_t{tv[1]}, meter_t{tv[2]}),
+                Rotation3d(
+                    // radian_t{rv[0]},
+                    // radian_t{rv[1]},
+                    // radian_t{rv[2]}
+                    rv, radian_t{rv.norm()}));
 }
 
-cv::Point3d PhotonPoseEstimator::TagCornerToObjectPoint(
-    meter_t cornerX,
-    meter_t cornerY,
-    frc::Pose3d tagPose) {
-  Translation3d cornerTrans = tagPose.Translation()
-      + Translation3d(0.0_m, cornerX, cornerY).RotateBy(tagPose.Rotation());
+cv::Point3d PhotonPoseEstimator::TagCornerToObjectPoint(meter_t cornerX,
+                                                        meter_t cornerY,
+                                                        frc::Pose3d tagPose) {
+  Translation3d cornerTrans =
+      tagPose.Translation() +
+      Translation3d(0.0_m, cornerX, cornerY).RotateBy(tagPose.Rotation());
   return ToPoint3d(cornerTrans);
 }
 
-std::optional<std::array<cv::Point3d, 4>> PhotonPoseEstimator::CalcTagCorners(int tagID) {
+std::optional<std::array<cv::Point3d, 4>> PhotonPoseEstimator::CalcTagCorners(
+    int tagID) {
   if (auto tagPose = m_aprilTagLayout.GetTagPose(tagID); tagPose.has_value()) {
-    return std::array{
-      TagCornerToObjectPoint(-3_in, -3_in, *tagPose),
-      TagCornerToObjectPoint(+3_in, -3_in, *tagPose),
-      TagCornerToObjectPoint(+3_in, +3_in, *tagPose),
-      TagCornerToObjectPoint(-3_in, +3_in, *tagPose)
-    };
+    return std::array{TagCornerToObjectPoint(-3_in, -3_in, *tagPose),
+                      TagCornerToObjectPoint(+3_in, -3_in, *tagPose),
+                      TagCornerToObjectPoint(+3_in, +3_in, *tagPose),
+                      TagCornerToObjectPoint(-3_in, +3_in, *tagPose)};
   } else {
     return std::nullopt;
   }
