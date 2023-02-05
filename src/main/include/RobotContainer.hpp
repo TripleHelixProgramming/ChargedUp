@@ -9,10 +9,13 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.hpp"
+#include "frc/PneumaticsBase.h"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
+#include <frc/Compressor.h>
+#include <frc/PneumaticsModuleType.h>
 
 class RobotContainer {
  public:
@@ -22,12 +25,15 @@ class RobotContainer {
 
   void UpdateTelemetry();
 
+  void RunDisabled();
+
   void SuperstructurePeriodic();
 
  private:
   // Subsystems
   SwerveDrive m_drive;
   Superstructure m_superstructure;
+  frc::Compressor m_compressor{1, frc::PneumaticsModuleType::REVPH};
 
   // Operator Interface (OI)
   frc::Joystick m_driver{0};

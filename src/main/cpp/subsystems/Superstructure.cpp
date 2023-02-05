@@ -31,8 +31,8 @@ Superstructure::Superstructure()
   // Initialize arm motors
   m_armLeader.EnableVoltageCompensation(12);
   m_armFollower.EnableVoltageCompensation(12);
-  m_armLeader.SetSmartCurrentLimit(20);
-  m_armFollower.SetSmartCurrentLimit(20);
+  m_armLeader.SetSmartCurrentLimit(60);
+  m_armFollower.SetSmartCurrentLimit(60);
   m_armLeader.SetIdleMode(CANSparkMax::IdleMode::kBrake);
   m_armFollower.SetIdleMode(CANSparkMax::IdleMode::kBrake);
 
@@ -40,19 +40,58 @@ Superstructure::Superstructure()
 
   // Initialize arm encoder
   m_armEncoder.SetPositionOffset(kArmEncoderOffset);
-  m_armEncoder.SetDistancePerRotation(kArmEncoderGearRatio);
+
+  m_armRelativeEncoder.SetDistancePerPulse(1./2048.);
+
+  double pos = GetAbsoluteArmPosition().value();
+
+  SmartDashboard::PutNumber("Initial pos", pos);
+
+  SmartDashboard::PutNumber("pot", 0.0);
+}
+
+void Superstructure::SyncEncoders() {
+  m_armOffset = GetAbsoluteArmPosition() - degree_t{-360 * m_armRelativeEncoder.GetDistance() * kArmEncoderGearRatio};
+}
+
+void Superstructure::IntakeCone() {
+  SetArmPosition(-1.5_deg);
+  SetIntakeWheelSpeed(0.5);
+  SetExtenderPosition(true);
+}
+
+void Superstructure::IntakeCube() {
+  SetArmPosition(-1.5_deg);
+  SetIntakeWheelSpeed(0.5);
+  SetExtenderPosition(false);
 }
 
 void Superstructure::SetIntakeWheelSpeed(double speed) {
   m_intakeWheelSpeed = speed;
 }
 
+void Superstructure::SetExtenderPosition(bool expanded) {
+  m_expanded = expanded;
+}
+
+void Superstructure::Outtake() {
+  if (!m_expanded) {
+     SetIntakeWheelSpeed(-0.5);
+  } else {
+    m_expanded = false;
+  }
+}
+
 void Superstructure::SetArmPosition(radian_t position) {
   m_armPosition = position;
 }
 
-radian_t Superstructure::GetArmPosition() {
-  return radian_t{m_armEncoder.GetAbsolutePosition()};
+degree_t Superstructure::GetAbsoluteArmPosition() {
+  return degree_t{360 * m_armEncoder.GetAbsolutePosition() * kArmEncoderGearRatio - kArmEncoderOffset};
+}
+
+degree_t Superstructure::GetArmPosition() {
+  return degree_t{-360 * m_armRelativeEncoder.GetDistance() * kArmEncoderGearRatio} + m_armOffset;
 }
 
 bool Superstructure::HasGamePiece() {
@@ -61,27 +100,53 @@ bool Superstructure::HasGamePiece() {
 
 void Superstructure::SuperstructurePeriodic() {
   double intakeWheelSpeed = m_intakeWheelSpeed;
-  radian_t armPosition = m_armPosition;
+  degree_t armPosition = m_armPosition;
 
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece()) {
     intakeWheelSpeed = units::math::min(intakeWheelSpeed, 0.0);
-    armPosition = max(armPosition, kMinArmPickupPosition);
+    armPosition = degree_t{std::max(armPosition.value(), kMinArmPickupPosition.value())};
   }
 
   // Ensure arm position bounds are not violated.
   armPosition = units::math::min(
       kMaxArmPosition, units::math::max(kMinArmPosition, armPosition));
 
+  SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
+  SmartDashboard::PutBoolean("Extended", m_expanded);
+
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
-  m_leftWheel.Set(-intakeWheelSpeed);
-  m_expander.Set(m_expanded ? DoubleSolenoid::kReverse
-                            : DoubleSolenoid::kForward);
+  m_rightWheel.Set(-intakeWheelSpeed);
+  if (m_expanded) {
+    m_expander.Set(DoubleSolenoid::kForward);
+  } else {
+    m_expander.Set(DoubleSolenoid::kReverse);
+  }
 
-  m_armController.SetSetpoint(armPosition.value());
+  SmartDashboard::PutNumber("Target", armPosition.value());
+
+  // m_armController.SetSetpoint(armPosition.value());
+  m_armController.SetGoal(armPosition);
   volt_t commandedVoltage =
-      volt_t{m_armController.Calculate(GetArmPosition().value()) +
-             kArmFF * GetArmPosition().value()};
+      volt_t{m_armController.Calculate(GetArmPosition())};
+  
+  if (armPosition.value() < 1.0) {
+    commandedVoltage *= 0.5;
+  }
+
+  if (GetArmPosition().value() < 12.0 && GetArmPosition().value() > 3.0) {
+    commandedVoltage = volt_t{std::max(commandedVoltage.value(), -1.0)};
+  }
+  if (GetArmPosition().value() < 2.0 && GetArmPosition().value() > 0.5 && armPosition.value() < 1.0) {
+    commandedVoltage = volt_t{-2.0};
+  }
+
+  commandedVoltage = HasGamePiece() ? 2.0 * commandedVoltage : 1.25 * commandedVoltage;
+
+  commandedVoltage = volt_t{std::min(std::max(-7.0, commandedVoltage.value()), 7.0)};
+
+  SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
+             
   m_armLeader.SetVoltage(commandedVoltage);
 }
