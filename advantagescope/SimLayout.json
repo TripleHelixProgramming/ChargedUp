@@ -1,0 +1,27 @@
+{
+  "version": "2.2.0",
+  "layout": [
+    {
+      "type": 6,
+      "fields": [],
+      "listFields": [
+        [],
+        [
+          {
+            "type": "Robot",
+            "key": "/SmartDashboard/Sim Field/Robot",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "field": "2023",
+        "alliance": "blue",
+        "robot": "Bot-Bot Awakens (6328)",
+        "unitDistance": "meters",
+        "unitRotation": "degrees"
+      },
+      "title": "3D Field"
+    }
+  ]
+}
