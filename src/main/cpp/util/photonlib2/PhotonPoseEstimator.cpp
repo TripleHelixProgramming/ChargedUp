@@ -101,7 +101,7 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
   auto begin = std::chrono::system_clock::now();
 
   cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
-               m_distortionCoefficients, rvec, tvec, cv::SOLVEPNP_ITERATIVE);
+               m_distortionCoefficients, rvec, tvec, false, cv::SOLVEPNP_SQPNP);
 
   Pose3d pose = ToPose3d(tvec, rvec);
 
@@ -118,8 +118,8 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
                             pose.Rotation().Z().convert<degree>().value());
   SmartDashboard::PutNumber(
       "SQPNP/Time",
-      std::chrono::duration_cast<std::chrono::milliseconds>(end - begin)
-          .count());
+      std::chrono::duration_cast<std::chrono::microseconds>(end - begin)
+          .count() / 1000.0);
 
   return photonlib::EstimatedRobotPose(
       pose.TransformBy(m_robotToCamera.Inverse()), result.GetTimestamp());

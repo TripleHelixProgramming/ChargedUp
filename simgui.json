@@ -17,9 +17,6 @@
         "name": "Front Right Steer"
       },
       "SPARK MAX [15]": {
-        "header": {
-          "open": true
-        },
         "name": "Gripper Left Roller"
       },
       "SPARK MAX [16]": {
@@ -32,18 +29,12 @@
         "name": "Front Left Steer"
       },
       "SPARK MAX [24]": {
-        "header": {
-          "open": true
-        },
         "name": "Rear Left Drive"
       },
       "SPARK MAX [25]": {
         "name": "Rear Left Steer"
       },
       "navX-Sensor[4]": {
-        "header": {
-          "open": true
-        },
         "name": "navX"
       }
     },
@@ -89,8 +80,13 @@
             "open": true
           }
         },
-        "Pose Est Field": {
-          "open": true
+        "ITERATIVE": {
+          "Rotation": {
+            "open": true
+          },
+          "Translation": {
+            "open": true
+          }
         },
         "SQPNP": {
           "Rotation": {
@@ -116,7 +112,8 @@
         "Vision": {
           "Pose Estimate": {
             "open": true
-          }
+          },
+          "open": true
         },
         "oldpv": {
           "open": true
@@ -124,6 +121,9 @@
         "open": true
       },
       "photonvision": {
+        "Integrated_Webcam": {
+          "open": true
+        },
         "front": {
           "open": true
         },
