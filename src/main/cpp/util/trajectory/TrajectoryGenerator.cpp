@@ -79,6 +79,12 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
 
   // Forward pass
 
+  // Credit to rafi#0159 for this idea for the acceleration kinematics.
+  //
+  // vₓ₁² = 2aₓΔx + vₓ₀²
+  // vᵧ₁² = 2aᵧΔy + vᵧ₀²
+  // ω₁²  = 2αΔθ  + ω₀²
+
   // Backward pass
 
   // Convert set of poses, v_hats, and v_norms into a time-parameterized trajectory.
