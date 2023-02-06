@@ -76,11 +76,12 @@ SwerveDrive::SwerveDrive()
                                TelemetryLevel::kCompetition),
       m_visionPoseEstimateThetaLog("Vision/Pose Estimate/Theta",
                                    TelemetryLevel::kCompetition),
+      m_simPoseTracker(m_driveKinematics),
       m_gyroSim("navX-Sensor", 4),
       m_gyroSimYaw(m_gyroSim.GetDouble("Yaw")) {
-  SmartDashboard::PutData("Field", &m_field);
+  SmartDashboard::PutData("Pose Est Field", &m_poseEstField);
   if constexpr (RobotBase::IsSimulation()) {
-    // m_simTimer.Start();
+    SmartDashboard::PutData("Sim Field", &m_simPoseField);
   }
 }
 
@@ -184,32 +185,43 @@ void SwerveDrive::Periodic() {
   m_poseEstimateThetaLog.Append(
       m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
 
-  m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+  m_poseEstField.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
 }
 
 void SwerveDrive::SimulationPeriodic() {
-  // units::second_t dt = m_simTimer.Get();
-  // m_simTimer.Reset();
+  Pose2d previousPose = m_simPoseTracker.GetPose();
+  // wpi::array<SwerveModulePosition, 4> moduleDeltas(wpi::empty_array);
+  // for (size_t index = 0; index < 4; index++) {
+  //   auto& lastPosition = m_previousModulePositions[index];
+  //   auto currentPosition = m_modules[index].GetPosition();
+  //   moduleDeltas[index] = {currentPosition.distance - lastPosition.distance,
+  //                          currentPosition.angle};
 
-  wpi::array<SwerveModulePosition, 4> moduleDeltas(wpi::empty_array);
-  for (size_t index = 0; index < 4; index++) {
-    auto& lastPosition = m_previousModulePositions[index];
-    auto currentPosition = m_modules[index].GetPosition();
-    moduleDeltas[index] = {currentPosition.distance - lastPosition.distance,
-                           currentPosition.angle};
+  //   m_previousModulePositions[index].distance =
+  //       m_modules[index].GetPosition().distance;
+  // }
 
-    m_previousModulePositions[index].distance =
-        m_modules[index].GetPosition().distance;
-  }
+  // Twist2d delta = m_driveKinematics.ToTwist2d(moduleDeltas);
 
-  Twist2d delta = m_driveKinematics.ToTwist2d(moduleDeltas);
+  m_simPoseTracker.Update(GetModulePositions());
 
-  degree_t convertedDelta = -delta.dtheta;
-  m_gyroSimYaw.Set(m_gyroSimYaw.Get() + convertedDelta.value());
+  auto deltaRotation = m_simPoseTracker.GetPose().Rotation() - previousPose.Rotation();
+  degree_t gyroDelta = -deltaRotation.Degrees();
+  m_gyroSimYaw.Set(m_gyroSimYaw.Get() + gyroDelta.value());
+
+  m_simPoseField.SetRobotPose(m_simPoseTracker.GetPose());
 }
 
 void SwerveDrive::ResetAbsoluteEncoders() {
   for (auto& _module : m_modules) {
     _module.ResetEncoders();
   }
+}
+
+wpi::array<SwerveModulePosition, 4> SwerveDrive::GetModulePositions() const {
+  wpi::array<SwerveModulePosition, 4> modulePositions(wpi::empty_array);
+  for (size_t modIdx = 0; modIdx < 4; modIdx++) {
+    modulePositions[modIdx] = m_modules[modIdx].GetPosition();
+  }
+  return modulePositions;
 }

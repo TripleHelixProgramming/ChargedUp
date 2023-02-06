@@ -23,10 +23,10 @@ Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms} {
       1.5_ms);
 
   if constexpr (RobotBase::IsSimulation()) {
-    auto inst = nt::NetworkTableInstance::GetDefault();
-    inst.StopServer();
-    inst.SetServer("localhost");
-    inst.StartClient4("Robot Simulation");
+    // auto inst = nt::NetworkTableInstance::GetDefault();
+    // inst.StopServer();
+    // inst.SetServer("localhost");
+    // inst.StartClient4("Robot Simulation");
   }
 }
 
