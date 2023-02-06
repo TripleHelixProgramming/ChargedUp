@@ -119,7 +119,8 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
   SmartDashboard::PutNumber(
       "SQPNP/Time",
       std::chrono::duration_cast<std::chrono::microseconds>(end - begin)
-          .count() / 1000.0);
+              .count() /
+          1000.0);
 
   return photonlib::EstimatedRobotPose(
       pose.TransformBy(m_robotToCamera.Inverse()), result.GetTimestamp());
