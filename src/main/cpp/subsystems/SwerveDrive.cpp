@@ -205,7 +205,8 @@ void SwerveDrive::SimulationPeriodic() {
 
   m_simPoseTracker.Update(GetModulePositions());
 
-  auto deltaRotation = m_simPoseTracker.GetPose().Rotation() - previousPose.Rotation();
+  auto deltaRotation =
+      m_simPoseTracker.GetPose().Rotation() - previousPose.Rotation();
   degree_t gyroDelta = -deltaRotation.Degrees();
   m_gyroSimYaw.Set(m_gyroSimYaw.Get() + gyroDelta.value());
 

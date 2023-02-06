@@ -1,13 +1,15 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
 #include <cstddef>
-
-#include "util/SimSwervePoseTracker.hpp"
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <wpi/array.h>
+
+#include "util/SimSwervePoseTracker.hpp"
 
 template <size_t NumModules>
 SimSwervePoseTracker<NumModules>::SimSwervePoseTracker(
@@ -15,7 +17,6 @@ SimSwervePoseTracker<NumModules>::SimSwervePoseTracker(
     const wpi::array<frc::SwerveModulePosition, NumModules>& modulePositions,
     const frc::Pose2d& initialPose)
     : m_kinematics(kinematics), m_pose(initialPose) {
-
   m_previousModulePositions = modulePositions;
   // for (size_t i = 0; i < NumModules; i++) {
   //   m_previousModulePositions[i] = {modulePositions[i].distance,

@@ -1,17 +1,17 @@
+// Copyright (c) FRC Team 2363. All Rights Reserved.
+
 #pragma once
 
 #include <cstddef>
-#include "frc/kinematics/SwerveModulePosition.h"
-
-#include <frc/kinematics/SwerveDriveKinematics.h>
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
-
+#include <frc/kinematics/SwerveDriveKinematics.h>
+#include <frc/kinematics/SwerveModulePosition.h>
 #include <wpi/array.h>
 
 /**
- * 
+ *
  */
 template <size_t NumModules>
 class SimSwervePoseTracker {
@@ -26,12 +26,9 @@ class SimSwervePoseTracker {
    */
   SimSwervePoseTracker(
       frc::SwerveDriveKinematics<NumModules> kinematics,
-      const wpi::array<frc::SwerveModulePosition, NumModules>& modulePositions = {
-        frc::SwerveModulePosition{},
-        frc::SwerveModulePosition{},
-        frc::SwerveModulePosition{},
-        frc::SwerveModulePosition{}
-      },
+      const wpi::array<frc::SwerveModulePosition, NumModules>& modulePositions =
+          {frc::SwerveModulePosition{}, frc::SwerveModulePosition{},
+           frc::SwerveModulePosition{}, frc::SwerveModulePosition{}},
       const frc::Pose2d& initialPose = frc::Pose2d{});
 
   /**
