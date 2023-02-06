@@ -56,14 +56,22 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/frc2::SubsystemBase": "Subsystem",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/Reset Encoders": "Command"
+      "/SmartDashboard/Pose Est Field": "Field2d",
+      "/SmartDashboard/Reset Encoders": "Command",
+      "/SmartDashboard/Sim Field": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/Field": {
+      "/SmartDashboard/Pose Est Field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Sim Field": {
         "window": {
           "visible": true
         }
@@ -80,6 +88,9 @@
           "Pose Estimate": {
             "open": true
           }
+        },
+        "Pose Est Field": {
+          "open": true
         },
         "SQPNP": {
           "Rotation": {
@@ -99,11 +110,13 @@
           },
           "open": true
         },
+        "Sim Field": {
+          "open": true
+        },
         "Vision": {
           "Pose Estimate": {
             "open": true
-          },
-          "open": true
+          }
         },
         "oldpv": {
           "open": true

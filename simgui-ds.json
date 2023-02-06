@@ -1,7 +1,12 @@
 {
-  "Keyboard 0 Settings": {
+  "FMS": {
     "window": {
-      "visible": true
+      "visible": false
+    }
+  },
+  "Joysticks": {
+    "window": {
+      "visible": false
     }
   },
   "keyboardJoysticks": [
@@ -21,15 +26,15 @@
         },
         {},
         {
-          "decKey": 87,
+          "decKey": 65,
           "decayRate": 1.0,
-          "incKey": 83,
+          "incKey": 68,
           "keyRate": 1.0
         },
         {
-          "decKey": 68,
+          "decKey": 87,
           "decayRate": 1.0,
-          "incKey": 65,
+          "incKey": 83,
           "keyRate": 1.0
         }
       ],

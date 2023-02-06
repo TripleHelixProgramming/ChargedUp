@@ -25,6 +25,7 @@
 
 #include "subsystems/SwerveModule.hpp"
 #include "subsystems/Vision.hpp"
+#include "util/SimSwervePoseTracker.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 class SwerveDrive : public frc2::SubsystemBase {
@@ -63,6 +64,8 @@ class SwerveDrive : public frc2::SubsystemBase {
   void ResetAbsoluteEncoders();
 
  private:
+  wpi::array<frc::SwerveModulePosition, 4> GetModulePositions() const;
+
   // Subsystems:
   /**
    * @brief The four swerve modules.
@@ -98,13 +101,14 @@ class SwerveDrive : public frc2::SubsystemBase {
   DoubleTelemetryEntry m_visionPoseEstimateYLog;
   DoubleTelemetryEntry m_visionPoseEstimateThetaLog;
 
-  frc::Field2d m_field;
+  frc::Field2d m_poseEstField;
 
   // Simulation
-  // frc::Timer m_simTimer;
+
+  SimSwervePoseTracker<4> m_simPoseTracker;
 
   frc::sim::SimDeviceSim m_gyroSim;
   hal::SimDouble m_gyroSimYaw;
 
-  std::array<frc::SwerveModulePosition, 4> m_previousModulePositions{};
+  frc::Field2d m_simPoseField;
 };
