@@ -2,49 +2,79 @@
 
 #include "util/trajectory/TrajectoryGenerator.h"
 
+#include "frc/geometry/Pose2d.h"
+#include "frc/kinematics/ChassisSpeeds.h"
 #include "util/trajectory/Trajectory.h"
 
 using namespace frc;
 
 Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
-  // Given variables x₀, y₀, θ₀, ẋ₀, ẏ₀, θ̇₀, final variables x₁, y₁, θ₁, and equations of motion
+  // Given C₂ continous functions x(t), y(t), θ(t) where t ∈ [0, 1]. Time is denoted τ.
   //
-  //   x₁ = x₀ + ẋ₀ * dt + 0.5 * ẍ₀ * dt²
-  //   y₁ = x₀ + ẏ₀ * dt + 0.5 * ÿ₀ * dt²
-  //   θ₁ = x₀ + θ̇₀ * dt + 0.5 * θ̈₀ * dt²
+  //       [dx/dτ]
+  //   v = [dy/dτ]
+  //       [dθ/dτ]
   //
-  // Minimize dt subject to constraints
+  //       [dx/dt]
+  //   vₜ = [dy/dt]
+  //       [dθ/dt]
   //
-  //   ẍ < 
-  //   ÿ < 
-  //   θ̈ < 
-
-
-  // Minimize
+  // We state here that
   //
-  //   dt
-  //
-  // Subject to
-  //
-  //   (x₁ - x₀) / dt = 0.5 * (ẋ₀ + ẋ₁)
-  //   (y₁ - y₀) / dt = 0.5 * (ẏ₀ + ẏ₁)
-  //   (θ₁ - θ₀) / dt = 0.5 * (θ̇₀ + θ̇₁)
-  //
-  // Reformulate problem with the substitution
-  //
-  //   h = 1 / dt
-  //
-  // Minimize
-  //
-  //   -h
-  //
-  // Subject to
-  //
-  //   (x₁ - x₀) / dt = 0.5 * (ẋ₀ + ẋ₁)
-  //   (y₁ - y₀) / dt = 0.5 * (ẏ₀ + ẏ₁)
-  //   (θ₁ - θ₀) / dt = 0.5 * (θ̇₀ + θ̇₁)
-  //
+  //   v̂ = v̂ₜ         (1)
   // 
+  // Given a discretized set of poses on the previously defined functions, we can infer
+  // v̂ at all states from (1).
+  //
+  // The problem statement is maximize the unknowns |v| subject to the robot's constraints.
+  // We solve the problem with dynamic programming
+  //
+  //        |
+  //        |
+  //        |               - - - - - - - - - - -              - - - - - - - - -
+  //        |
+  //   |v|  |                                     - - - - - -
+  //        | - - - - - - - 
+  //        |
+  //        |
+  //        |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  //                                             t
+  //
+  // A forward pass is applied
+  //
+  //        |
+  //        |
+  //        |            / - - - - - - - - - - -           / - - - - - - - - - -
+  //        |           /                                 /
+  //   |v|  |          /                         - - - - /
+  //        |   / - - / 
+  //        |  /
+  //        | /
+  //        |/ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+  //                                             t
+  //
+  // A backward pass is applied
+  //
+  //        |
+  //        |
+  //        |            / - - - - - - - - - - \           / - - - - - \
+  //        |           /                       \         /             \
+  //   |v|  |          /                         \ - - - /               \
+  //        |   / - - /                                                   \
+  //        |  /                                                           \
+  //        | /                                                             \
+  //        |/ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ _
+  //                                             t
+  std::vector<Pose2d> pose;
+  std::vector<ChassisSpeeds> v_hat;
+  std::vector<double> v_norm;
+
+  std::vector<Trajectory::State> trajectoryStates;
+  for (size_t index = 0; index < pose.size(); ++index) {
+    trajectoryStates.emplace_back(1, pose[index], ChassisSpeeds{v_norm[index] * v_hat[index].vx,
+                                                                v_norm[index] * v_hat[index].vy,
+                                                                v_norm[index] * v_hat[index].omega});
+  }
 
   return Trajectory();
 }

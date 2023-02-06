@@ -3,6 +3,7 @@
 #include "util/trajectory/Trajectory.h"
 
 #include <vector>
+#include "frc/kinematics/ChassisSpeeds.h"
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Twist2d.h>
@@ -20,10 +21,11 @@ using wpi::json;
 Trajectory::State Trajectory::State::Interpolate(const Trajectory::State& other,
                                                  second_t newT) const {
   double scale = ((newT - t) / (other.t - t)).value();
-  return Trajectory::State{newT, pose.Exp(pose.Log(other.pose) * scale),
-                           (other.vx - vx) * scale + vx,
-                           (other.vy - vy) * scale + vy,
-                           (other.omega - omega) * scale + omega};
+  return Trajectory::State{newT, 
+                           pose.Exp(pose.Log(other.pose) * scale),
+                           ChassisSpeeds{(other.velocity.vx - velocity.vx) * scale + velocity.vx,
+                                         (other.velocity.vy - velocity.vy) * scale + velocity.vy,
+                                         (other.velocity.omega - velocity.omega) * scale + velocity.omega}};
   return other;
 }
 
@@ -74,9 +76,9 @@ void from_json(const json& j, Trajectory::State& state) {
   state.pose = Pose2d(Translation2d(meter_t{j.at("x").get<double>()},
                                     meter_t{j.at("y").get<double>()}),
                       Rotation2d(radian_t{j.at("heading").get<double>()}));
-  state.vx = meters_per_second_t{j.at("velocityX").get<double>()};
-  state.vy = meters_per_second_t{j.at("velocityY").get<double>()};
-  state.omega = radians_per_second_t{j.at("angularVelocity").get<double>()};
+  state.velocity = ChassisSpeeds{meters_per_second_t{j.at("velocityX").get<double>()},
+                                 meters_per_second_t{j.at("velocityY").get<double>()},
+                                 radians_per_second_t{j.at("angularVelocity").get<double>()}};
 }
 
 void to_json(json& j, const Trajectory::State& state) {
@@ -84,9 +86,9 @@ void to_json(json& j, const Trajectory::State& state) {
            {"x", state.pose.X().value()},
            {"y", state.pose.Y().value()},
            {"heading", state.pose.Rotation().Radians().value()},
-           {"velocityX", state.vx.value()},
-           {"velocityY", state.vy.value()},
-           {"angularVelocity", state.omega.value()}};
+           {"velocityX", state.velocity.vx.value()},
+           {"velocityY", state.velocity.vy.value()},
+           {"angularVelocity", state.velocity.omega.value()}};
 }
 
 void from_json(const json& j, Trajectory& traj) {

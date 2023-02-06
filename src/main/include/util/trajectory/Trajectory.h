@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <Eigen/Core>
+#include "frc/kinematics/ChassisSpeeds.h"
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Twist2d.h>
 #include <units/angular_velocity.h>
@@ -18,9 +19,7 @@ class Trajectory {
   struct State {
     units::second_t t;
     frc::Pose2d pose;
-    units::meters_per_second_t vx;
-    units::meters_per_second_t vy;
-    units::radians_per_second_t omega;
+    frc::ChassisSpeeds velocity;
 
     State Interpolate(const State& other, units::second_t newT) const;
   };
