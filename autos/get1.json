@@ -1,0 +1,198 @@
+{
+    "field_image": {
+        "default": "Charged Up"
+    },
+    "paths": {
+        "approach_a": {
+            "obstacles": [
+                {
+                    "center_x": 1.2640798371919362,
+                    "center_y": -9.992431298439547,
+                    "name": "bottom wall",
+                    "obstacle_type": "circle",
+                    "radius": 10.0,
+                    "safety_distance": 0.0
+                },
+                {
+                    "center_x": -8.569822860226257,
+                    "center_y": 0.31295988447128936,
+                    "name": "bottom wall",
+                    "obstacle_type": "circle",
+                    "radius": 10.0,
+                    "safety_distance": 0.0
+                }
+            ],
+            "waypoints": [
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 0,
+                    "heading": 3.141592653589793,
+                    "heading_constrained": true,
+                    "name": "start",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 1.92,
+                    "x_constrained": true,
+                    "y": 0.5136642444332489,
+                    "y_constrained": true
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": false,
+                    "control_interval_count": 20,
+                    "heading": 0.0,
+                    "heading_constrained": false,
+                    "name": "ctrl point",
+                    "velocity_magnitude_constrained": false,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": false,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 4.320170256901086,
+                    "x_constrained": true,
+                    "y": 0.7506404099810183,
+                    "y_constrained": true
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 20,
+                    "heading": 0.03490658503988659,
+                    "heading_constrained": true,
+                    "name": "lock heading",
+                    "velocity_magnitude_constrained": false,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": false,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": false,
+                    "waypoint_type": "custom",
+                    "x": 5.7913170390702,
+                    "x_constrained": true,
+                    "y": 0.8679974969186172,
+                    "y_constrained": true
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 40,
+                    "heading": 0.03490658503988659,
+                    "heading_constrained": true,
+                    "name": "pick",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 6.473324767588294,
+                    "x_constrained": true,
+                    "y": 0.8989712846847604,
+                    "y_constrained": true
+                }
+            ]
+        },
+        "return_a": {
+            "obstacles": [
+                {
+                    "center_x": 3.885302931288785,
+                    "center_y": -9.858009601306383,
+                    "name": "bottom wall",
+                    "obstacle_type": "circle",
+                    "radius": 10.0,
+                    "safety_distance": 0.0
+                },
+                {
+                    "center_x": -8.581024668320687,
+                    "center_y": 1.3211226129700746,
+                    "name": "bottom wall",
+                    "obstacle_type": "circle",
+                    "radius": 10.0,
+                    "safety_distance": 0.0
+                },
+                {
+                    "center_x": 3.6181840145011894,
+                    "center_y": 2.206756194602899,
+                    "name": "charging station",
+                    "obstacle_type": "circle",
+                    "radius": 1.0,
+                    "safety_distance": 0.0
+                }
+            ],
+            "waypoints": [
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 0,
+                    "heading": 0.03490658503988659,
+                    "heading_constrained": true,
+                    "name": "pick",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 6.473324767588294,
+                    "x_constrained": true,
+                    "y": 0.8989712846847604,
+                    "y_constrained": true
+                },
+                {
+                    "heading": 2.835713782184941,
+                    "name": "guess",
+                    "waypoint_type": "initial_guess",
+                    "x": 3.244781088676866,
+                    "y": 0.7558581190649615
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 30,
+                    "heading": 3.141592653589793,
+                    "heading_constrained": true,
+                    "name": "start",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 1.92,
+                    "x_constrained": true,
+                    "y": 1.669078191047342,
+                    "y_constrained": true
+                }
+            ]
+        }
+    },
+    "robot_configuration": {
+        "bumper_length": 0.954,
+        "bumper_width": 0.903,
+        "mass": 46.7,
+        "moment_of_inertia": 5.6,
+        "motor_max_angular_speed": 70.0,
+        "motor_max_torque": 1.9,
+        "team_number": 2363,
+        "wheel_horizontal_distance": 0.622,
+        "wheel_radius": 0.051,
+        "wheel_vertical_distance": 0.572
+    },
+    "selected_path_index": 0,
+    "unit_preferences": {
+        "acceleration_unit": "metre_per_second",
+        "angle_unit": "degree_angle",
+        "angular_speed_unit": "revolution_per_minute",
+        "length_unit": "metre",
+        "mass_unit": "kilogram",
+        "moment_of_inertia_unit": "kilogram_square_metre",
+        "speed_unit": "metre_per_second",
+        "time_unit": "second",
+        "torque_unit": "newton_metre"
+    }
+}

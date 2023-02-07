@@ -10,6 +10,7 @@
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
+#include <frc2/command/SequentialCommandGroup.h>
 #include <wpi/json.h>
 
 #include "Constants.hpp"
@@ -48,7 +49,9 @@ RobotContainer::RobotContainer()
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   return CommandPtr(
-      DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("traj")));
+      SequentialCommandGroup(
+        DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("approach_a")),
+        DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("return_a"))));
 }
 
 void RobotContainer::UpdateTelemetry() {
