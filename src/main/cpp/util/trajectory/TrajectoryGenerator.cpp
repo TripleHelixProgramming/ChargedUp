@@ -86,41 +86,40 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   // TODO: use minimum-snap splines to generate paths with non-zero initial
   // velocity.
   int N = 100;
-  meter_t dx = end.X() - start.X();
-  meter_t dy = end.Y() - start.X();
-  Rotation2d dtheta = end.Rotation() - start.Rotation();
-  double linearVnorm = std::hypot(dx.value(), dy.value(), dtheta.Radians().value());
+  meter_t delta_x = end.X() - start.X();
+  meter_t delta_y = end.Y() - start.X();
+  Rotation2d delta_theta = end.Rotation() - start.Rotation();
+  double linearVnorm = std::hypot(delta_x.value(), delta_y.value(), delta_theta.Radians().value());
   ChassisSpeeds linearVHat{
-      meters_per_second_t{dx.value() / linearVnorm},
-      meters_per_second_t{dy.value() / linearVnorm},
-      radians_per_second_t{dtheta.Radians().value() / linearVnorm}};
+      meters_per_second_t{delta_x.value() / linearVnorm},
+      meters_per_second_t{delta_y.value() / linearVnorm},
+      radians_per_second_t{delta_theta.Radians().value() / linearVnorm}};
   for (int index = 0; index < N; ++index) {
     double scale = (double)index / (N - 1);
     poses.emplace_back(
-        dx * scale + start.X(),
-        dy * scale + start.Y(),
-        dtheta * scale + start.Rotation());
+        delta_x * scale + start.X(),
+        delta_y * scale + start.Y(),
+        delta_theta * scale + start.Rotation());
     v_hats.push_back(linearVHat);
+  }
+
+  // Rotate velocities to be robot relative, this makes the generator math easier.
+  for (int index = 0; index < N; ++index) {
+    v_hats[index] = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index].vx, 
+                                                           v_hats[index].vy, 
+                                                           v_hats[index].omega, 
+                                                           poses[index].Rotation());
   }
 
   // Forward pass
   for (int index = 0; index < N - 1; ++index) {
     double maxVelocityNorm = std::numeric_limits<double>::infinity();
     for (auto& constraint : m_constraints) {
-      // Rotate velocities to be robot relative
-      auto startVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index].vx, 
-                                                                     v_hats[index].vy, 
-                                                                     v_hats[index].omega, 
-                                                                     poses[index].Rotation());
-      auto endVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index + 1].vx, 
-                                                                   v_hats[index + 1].vy, 
-                                                                   v_hats[index + 1].omega, 
-                                                                   poses[index + 1].Rotation());
       maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormForward(poses[index], 
                                                                                     poses[index + 1], 
-                                                                                    startVelocityHat, 
+                                                                                    v_hats[index], 
                                                                                     v_norms[index], 
-                                                                                    endVelocityHat));
+                                                                                    v_hats[index + 1]));
       v_norms[index + 1] = maxVelocityNorm;
     }
   }
@@ -129,19 +128,10 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   for (int index = N - 1; index >= 0; --index) {
     double maxVelocityNorm = v_norms[index];
     for (auto& constraint : m_constraints) {
-      // Rotate velocities to be robot relative
-      auto startVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index].vx, 
-                                                                     v_hats[index].vy, 
-                                                                     v_hats[index].omega, 
-                                                                     poses[index].Rotation());
-      auto endVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index + 1].vx, 
-                                                                   v_hats[index + 1].vy, 
-                                                                   v_hats[index + 1].omega, 
-                                                                   poses[index + 1].Rotation());
       maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormBackward(poses[index], 
                                                                                      poses[index + 1], 
-                                                                                     startVelocityHat,  
-                                                                                     endVelocityHat,
+                                                                                     v_hats[index],  
+                                                                                     v_hats[index + 1],
                                                                                      v_norms[index + 1]));
       v_norms[index] = maxVelocityNorm;
     }
@@ -150,34 +140,26 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   // Convert set of poses, v_hats, and v_norms into a time-parameterized
   // trajectory.
   std::vector<Trajectory::State> trajectoryStates;
-  trajectoryStates.emplace_back(
-      0.0_s, poses[0],
-      ChassisSpeeds{v_norms[0] * v_hats[0].vx, v_norms[0] * v_hats[0].vy,
-                    v_norms[0] * v_hats[0].omega});
+  trajectoryStates.emplace_back(0.0_s, poses[0], ChassisSpeeds{v_norms[0] * v_hats[0].vx, 
+                                                               v_norms[0] * v_hats[0].vy,
+                                                               v_norms[0] * v_hats[0].omega});
   for (size_t index = 1; index < poses.size(); ++index) {
-    double ds;
-    double v;
-    if (std::abs((poses[index].X() - poses[index - 1].X()).value()) > 1e-6) {
-      ds = (poses[index].X() - poses[index - 1].X()).value();
-      v = v_norms[index - 1] *
-          (v_hats[index - 1].vx + v_hats[index].vx).value() / 2.0;
-    } else if (std::abs((poses[index].Y() - poses[index - 1].Y()).value()) >
-               1e-6) {
-      ds = (poses[index].Y() - poses[index - 1].Y()).value();
-      v = v_norms[index - 1] *
-          (v_hats[index - 1].vy + v_hats[index].vy).value() / 2.0;
+    Twist2d delta = poses[index - 1].Log(poses[index]);
+    second_t dt;
+    if (delta.dx > 1e-6_m) {
+      dt = delta.dx / ((v_norms[index - 1] * v_hats[index - 1].vx + v_norms[index] * v_hats[index].vx) / 2.0);
+    } else if (delta.dy > 1e-6_m) {
+      dt = delta.dy / ((v_norms[index - 1] * v_hats[index - 1].vx + v_norms[index] * v_hats[index].vx) / 2.0);
     } else {
-      ds = (poses[index].Rotation() - poses[index - 1].Rotation())
-               .Radians()
-               .value();
-      v = v_norms[index - 1] *
-          (v_hats[index - 1].omega + v_hats[index].omega).value() / 2.0;
+      dt = delta.dtheta / ((v_norms[index - 1] * v_hats[index - 1].omega + v_norms[index] * v_hats[index].omega) / 2.0);
     }
     trajectoryStates.emplace_back(
-        second_t{ds / v} + trajectoryStates[index - 1].t, poses[index],
-        ChassisSpeeds{v_norms[index] * v_hats[index].vx,
-                      v_norms[index] * v_hats[index].vy,
-                      v_norms[index] * v_hats[index].omega});
+        second_t{dt} + trajectoryStates[index - 1].t, poses[index],
+        // Convert velocity back into field relative from robot relative.
+        ChassisSpeeds::FromFieldRelativeSpeeds(v_norms[index] * v_hats[index].vx,
+                                               v_norms[index] * v_hats[index].vy,
+                                               v_norms[index] * v_hats[index].omega,
+                                               -poses[index].Rotation()));
   }
 
   return Trajectory(trajectoryStates);
