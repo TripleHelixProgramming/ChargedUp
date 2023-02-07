@@ -86,20 +86,20 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   // TODO: use minimum-snap splines to generate paths with non-zero initial
   // velocity.
   int N = 100;
-  double linearVnorm =
-      std::hypot((end.X() - start.X()).value(), (end.Y() - start.X()).value(),
-                 (end.Rotation() - start.Rotation()).Radians().value());
+  meter_t dx = end.X() - start.X();
+  meter_t dy = end.Y() - start.X();
+  Rotation2d dtheta = end.Rotation() - start.Rotation();
+  double linearVnorm = std::hypot(dx.value(), dy.value(), dtheta.Radians().value());
   ChassisSpeeds linearVHat{
-      meters_per_second_t{(end.X() - start.X()).value() / linearVnorm},
-      meters_per_second_t{(end.Y() - start.Y()).value() / linearVnorm},
-      radians_per_second_t{
-          (end.Rotation() - start.Rotation()).Radians().value() / linearVnorm}};
+      meters_per_second_t{dx.value() / linearVnorm},
+      meters_per_second_t{dy.value() / linearVnorm},
+      radians_per_second_t{dtheta.Radians().value() / linearVnorm}};
   for (int index = 0; index < N; ++index) {
     double scale = (double)index / (N - 1);
     poses.emplace_back(
-        (end.X() - start.X()) * scale + start.X(),
-        (end.Y() - start.Y()) * scale + start.Y(),
-        (end.Rotation() - start.Rotation()) * scale + start.Rotation());
+        dx * scale + start.X(),
+        dy * scale + start.Y(),
+        dtheta * scale + start.Rotation());
     v_hats.push_back(linearVHat);
   }
 
@@ -107,23 +107,43 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   for (int index = 0; index < N - 1; ++index) {
     double maxVelocityNorm = std::numeric_limits<double>::infinity();
     for (auto& constraint : m_constraints) {
+      // Rotate velocities to be robot relative
+      auto startVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index].vx, 
+                                                                     v_hats[index].vy, 
+                                                                     v_hats[index].omega, 
+                                                                     poses[index].Rotation());
+      auto endVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index + 1].vx, 
+                                                                   v_hats[index + 1].vy, 
+                                                                   v_hats[index + 1].omega, 
+                                                                   poses[index + 1].Rotation());
       maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormForward(poses[index], 
                                                                                     poses[index + 1], 
-                                                                                    v_hats[index], 
+                                                                                    startVelocityHat, 
                                                                                     v_norms[index], 
-                                                                                    v_hats[index + 1]));
+                                                                                    endVelocityHat));
+      v_norms[index + 1] = maxVelocityNorm;
     }
   }
 
   // Backward pass
   for (int index = N - 1; index >= 0; --index) {
-    double maxVelocityNorm = std::numeric_limits<double>::infinity();
+    double maxVelocityNorm = v_norms[index];
     for (auto& constraint : m_constraints) {
+      // Rotate velocities to be robot relative
+      auto startVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index].vx, 
+                                                                     v_hats[index].vy, 
+                                                                     v_hats[index].omega, 
+                                                                     poses[index].Rotation());
+      auto endVelocityHat = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index + 1].vx, 
+                                                                   v_hats[index + 1].vy, 
+                                                                   v_hats[index + 1].omega, 
+                                                                   poses[index + 1].Rotation());
       maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormBackward(poses[index], 
                                                                                      poses[index + 1], 
-                                                                                     v_hats[index], 
-                                                                                     v_hats[index + 1],
+                                                                                     startVelocityHat,  
+                                                                                     endVelocityHat,
                                                                                      v_norms[index + 1]));
+      v_norms[index] = maxVelocityNorm;
     }
   }
 
