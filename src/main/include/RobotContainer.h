@@ -11,8 +11,8 @@
 #include "Constants.h"
 #include "subsystems/Superstructure.h"
 #include "subsystems/SwerveDrive.h"
-#include "util/trajectory/TrajectoryManager.h"
 #include "util/log/DoubleTelemetryEntry.h"
+#include "util/trajectory/TrajectoryManager.h"
 
 class RobotContainer {
  public:

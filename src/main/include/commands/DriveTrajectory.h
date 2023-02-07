@@ -8,8 +8,8 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/SwerveDrive.h"
-#include "util/trajectory/Trajectory.h"
 #include "util/log/DoubleTelemetryEntry.h"
+#include "util/trajectory/Trajectory.h"
 
 class DriveTrajectory
     : public frc2::CommandHelper<frc2::CommandBase, DriveTrajectory> {

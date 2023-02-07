@@ -33,13 +33,15 @@ void DriveTrajectory::Execute() {
   m_controllerY.SetSetpoint(state.pose.Y().value());
   m_controllerRotation.SetSetpoint(state.pose.Rotation().Radians().value());
 
-  auto vx = state.velocity.vx + meters_per_second_t{
-                           m_controllerX.Calculate(currentPose.X().value())};
-  auto vy = state.velocity.vy + meters_per_second_t{
-                           m_controllerY.Calculate(currentPose.Y().value())};
-  auto omega =
-      state.velocity.omega + radians_per_second_t{m_controllerRotation.Calculate(
-                        currentPose.Rotation().Radians().value())};
+  auto vx =
+      state.velocity.vx +
+      meters_per_second_t{m_controllerX.Calculate(currentPose.X().value())};
+  auto vy =
+      state.velocity.vy +
+      meters_per_second_t{m_controllerY.Calculate(currentPose.Y().value())};
+  auto omega = state.velocity.omega +
+               radians_per_second_t{m_controllerRotation.Calculate(
+                   currentPose.Rotation().Radians().value())};
 
   m_timestampLog.Append(m_timestamp.Get().value());
   m_xSetpointLog.Append(state.pose.X().value());
