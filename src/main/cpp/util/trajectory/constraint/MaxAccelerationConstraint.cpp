@@ -1,16 +1,54 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-double currentVelocityNorm = v_norms[index];
-    ChassisSpeeds currentVelocityHat = v_hats[index];
-    ChassisSpeeds nextVelocityHat = v_hats[index + 1];
-    Twist2d delta = poses[index].Log(poses[index + 1]);
-    auto maxAllowableSquaredVelocityX = meters_per_second_t{(2 * maxAccelerationX * delta.dx).value() +
-                                                            sgn(nextVelocityHat.vx.value()) *
-                                                            (currentVelocityNorm * currentVelocityHat.vx).value()};
-    meters_per_second_t =
-    meters_per_second_t maxAllowableVelocityY = ;
-    radians_per_second_t maxAllowableRotationalVelocity = ;
+#include "util/trajectory/constraint/MaxAccelerationConstraint.h"
 
-    double v_norm = std::min({maxAllowableVelocityX / v_hats[index].vx,
-                              maxAllowableVelocityY / v_hats[index].vy,
-                              maxAllowableRotationalVelocity / v_hats[index].omega});
+#include <limits>
+
+#include <frc/geometry/Pose2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
+
+using namespace frc;
+using namespace units;
+
+MaxAccelerationConstraint::MaxAccelerationConstraint(meters_per_second_squared maxAccelerationX,
+                                                     meters_per_second_squared maxAccelerationY,
+                                                     radians_per_second_squared maxRotationalAcceleration) :
+    m_maxAccelerationX{maxAccelerationX},
+    m_maxAccelerationY{maxAccelerationY},
+    m_maxRotationalAcceleration{maxRotationalAcceleration} {}
+
+double MaxAccelerationConstraint::MaxVelocityNormForward(Pose2d currentPose,
+                                                         Pose2d endPose,
+                                                         ChassisSpeeds startVelocityHat,
+                                                         double startVelocityNorm,
+                                                         ChassisSpeeds endVelocityHat) {
+  double v_norm = std::numeric_limits<double>::infinity();
+  if (endVelocityHat.vx.value() != 0.0) {
+    v_norm = std::min(v_norm, (m_maxVelocityX / endVelocityHat.vx).value());
+  }
+  if (endVelocityHat.vy.value() != 0.0) {
+    v_norm = std::min(v_norm, (m_maxVelocityY / endVelocityHat.vy).value());
+  }
+  if (endVelocityHat.omega.value() != 0.0) {
+    v_norm = std::min(v_norm, (m_maxRotationalVelocity / endVelocityHat.omega).value());
+  }
+  return v_norm;
+}
+
+double MaxAccelerationConstraint::MaxVelocityNormBackward(Pose2d currentPose,
+                                                          Pose2d endPose,
+                                                          ChassisSpeeds startVelocityHat,
+                                                          ChassisSpeeds endVelocityHat,
+                                                          double endVelocityNorm) {
+  double v_norm = std::numeric_limits<double>::infinity();
+  if (startVelocityHat.vx.value() != 0.0) {
+    v_norm = std::min(v_norm, (m_maxVelocityX / startVelocityHat.vx).value());
+  }
+  if (startVelocityHat.vy.value() != 0.0) {
+    v_norm = std::min(v_norm, (m_maxVelocityY / startVelocityHat.vy).value());
+  }
+  if (startVelocityHat.omega.value() != 0.0) {
+    v_norm = std::min(v_norm, (m_maxRotationalVelocity / startVelocityHat.omega).value());
+  }
+  return v_norm;
+}

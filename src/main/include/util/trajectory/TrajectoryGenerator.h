@@ -2,11 +2,12 @@
 
 #pragma once
 
+#include <vector>
+
 #include <frc/geometry/Pose2d.h>
 #include <units/acceleration.h>
 #include <units/angular_acceleration.h>
 #include <units/velocity.h>
-#include <vector>
 
 #include "util/trajectory/Trajectory.h"
 #include "util/trajectory/constraint/TrajectoryConstraint.h"

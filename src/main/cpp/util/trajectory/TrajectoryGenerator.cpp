@@ -105,9 +105,9 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
 
   // Rotate velocities to be robot relative, this makes the generator math easier.
   for (int index = 0; index < N; ++index) {
-    v_hats[index] = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index].vx, 
-                                                           v_hats[index].vy, 
-                                                           v_hats[index].omega, 
+    v_hats[index] = ChassisSpeeds::FromFieldRelativeSpeeds(v_hats[index].vx,
+                                                           v_hats[index].vy,
+                                                           v_hats[index].omega,
                                                            poses[index].Rotation());
   }
 
@@ -115,10 +115,10 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   for (int index = 0; index < N - 1; ++index) {
     double maxVelocityNorm = std::numeric_limits<double>::infinity();
     for (auto& constraint : m_constraints) {
-      maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormForward(poses[index], 
-                                                                                    poses[index + 1], 
-                                                                                    v_hats[index], 
-                                                                                    v_norms[index], 
+      maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormForward(poses[index],
+                                                                                    poses[index + 1],
+                                                                                    v_hats[index],
+                                                                                    v_norms[index],
                                                                                     v_hats[index + 1]));
       v_norms[index + 1] = maxVelocityNorm;
     }
@@ -128,9 +128,9 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   for (int index = N - 1; index >= 0; --index) {
     double maxVelocityNorm = v_norms[index];
     for (auto& constraint : m_constraints) {
-      maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormBackward(poses[index], 
-                                                                                     poses[index + 1], 
-                                                                                     v_hats[index],  
+      maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormBackward(poses[index],
+                                                                                     poses[index + 1],
+                                                                                     v_hats[index],
                                                                                      v_hats[index + 1],
                                                                                      v_norms[index + 1]));
       v_norms[index] = maxVelocityNorm;
@@ -140,7 +140,7 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   // Convert set of poses, v_hats, and v_norms into a time-parameterized
   // trajectory.
   std::vector<Trajectory::State> trajectoryStates;
-  trajectoryStates.emplace_back(0.0_s, poses[0], ChassisSpeeds{v_norms[0] * v_hats[0].vx, 
+  trajectoryStates.emplace_back(0.0_s, poses[0], ChassisSpeeds{v_norms[0] * v_hats[0].vx,
                                                                v_norms[0] * v_hats[0].vy,
                                                                v_norms[0] * v_hats[0].omega});
   for (size_t index = 1; index < poses.size(); ++index) {

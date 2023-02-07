@@ -2,9 +2,10 @@
 
 #include "util/trajectory/constraint/MaxVelocityConstraint.h"
 
+#include <limits>
+
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/ChassisSpeeds.h>
-#include <limits>
 
 using namespace frc;
 
