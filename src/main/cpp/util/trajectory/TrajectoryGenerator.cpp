@@ -13,14 +13,12 @@
 #include <units/velocity.h>
 
 #include "util/trajectory/Trajectory.h"
+#include "util/trajectory/constraint/TrajectoryConstraint.h"
 
 using namespace frc;
 using namespace units;
 
-template <typename T>
-int sgn(T val) {
-  return (T(0) < val) - (val < T(0));
-};
+TrajectoryGenerator::TrajectoryGenerator(std::vector<TrajectoryConstraint> constraints) : m_constraints{constraints} {};
 
 Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   // Given C₂ continous functions x(t), y(t), θ(t) where t ∈ [0, 1]. Time is
@@ -106,33 +104,27 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   }
 
   // Forward pass
-  //
-  //   vₓ₁² = 2aₓΔx + vₓ₀²
-  //   vᵧ₁² = 2aᵧΔy + vᵧ₀²
-  //   ω₁²  = 2αΔθ  + ω₀²
   for (int index = 0; index < N - 1; ++index) {
-    double currentVelocityNorm = v_norms[index];
-    ChassisSpeeds currentVelocityHat = v_hats[index];
-    ChassisSpeeds nextVelocityHat = v_hats[index + 1];
-    Twist2d delta = poses[index].Log(poses[index + 1]);
-    auto maxAllowableSquaredVelocityX = meters_per_second_t{
-        (2 * maxAccelerationX * delta.dx).value() +
-        sgn(nextVelocityHat.vx.value()) *
-            (currentVelocityNorm * currentVelocityHat.vx).value()};
-    meters_per_second_t meters_per_second_t maxAllowableVelocityY = ;
-    radians_per_second_t maxAllowableRotationalVelocity = ;
-
-    double v_norm =
-        std::min({maxAllowableVelocityX / v_hats[index].vx,
-                  maxAllowableVelocityY / v_hats[index].vy,
-                  maxAllowableRotationalVelocity / v_hats[index].omega});
+    double maxVelocityNorm = std::numeric_limits<double>::infinity();
+    for (auto& constraint : m_constraints) {
+      maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormForward(poses[index], 
+                                                                                    poses[index + 1], 
+                                                                                    v_hats[index], 
+                                                                                    v_norms[index], 
+                                                                                    v_hats[index + 1]));
+    }
   }
 
   // Backward pass
   for (int index = N - 1; index >= 0; --index) {
-    double v_hat = std::numeric_limits<double>::infinity();
-    Twist2d delta = poses[index].Log(poses[index + 1]);
-    v_hat = std::min(v_hat, );
+    double maxVelocityNorm = std::numeric_limits<double>::infinity();
+    for (auto& constraint : m_constraints) {
+      maxVelocityNorm = std::min(maxVelocityNorm, constraint.MaxVelocityNormBackward(poses[index], 
+                                                                                     poses[index + 1], 
+                                                                                     v_hats[index], 
+                                                                                     v_hats[index + 1],
+                                                                                     v_norms[index + 1]));
+    }
   }
 
   // Convert set of poses, v_hats, and v_norms into a time-parameterized
