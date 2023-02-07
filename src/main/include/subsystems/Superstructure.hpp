@@ -50,6 +50,11 @@ class Superstructure : public frc2::SubsystemBase {
   units::degree_t m_armPosition = 0.0_rad;
   bool m_expanded = true;
 
+  double m_integrator = 0.0;
+  double m_kI = 0.0;
+  double m_tolerance = 0.0;
+  double m_outputBound = 0.0;
+
   units::degree_t m_armOffset = units::degree_t{0.0};
 
   // Arm PID controller

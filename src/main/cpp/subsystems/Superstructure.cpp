@@ -43,6 +43,8 @@ Superstructure::Superstructure()
 
   m_armRelativeEncoder.SetDistancePerPulse(1./2048.);
 
+  
+
   double pos = GetAbsoluteArmPosition().value();
 
   SmartDashboard::PutNumber("Initial pos", pos);
@@ -55,13 +57,13 @@ void Superstructure::SyncEncoders() {
 }
 
 void Superstructure::IntakeCone() {
-  SetArmPosition(-1.5_deg);
+  SetArmPosition(-7.5_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(true);
 }
 
 void Superstructure::IntakeCube() {
-  SetArmPosition(-1.5_deg);
+  SetArmPosition(-7.5_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
 }
@@ -114,6 +116,7 @@ void Superstructure::SuperstructurePeriodic() {
 
   SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
   SmartDashboard::PutBoolean("Extended", m_expanded);
+  SmartDashboard::PutNumber("Arm current", m_armLeader.GetOutputCurrent());
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
@@ -131,20 +134,15 @@ void Superstructure::SuperstructurePeriodic() {
   volt_t commandedVoltage =
       volt_t{m_armController.Calculate(GetArmPosition())};
   
-  if (armPosition.value() < 1.0) {
-    commandedVoltage *= 0.5;
+  if (GetArmPosition().value() < 3.0 && armPosition.value() < 1.0) {
+    commandedVoltage = volt_t{-0.5};
   }
 
-  if (GetArmPosition().value() < 12.0 && GetArmPosition().value() > 3.0) {
-    commandedVoltage = volt_t{std::max(commandedVoltage.value(), -1.0)};
+  if (GetArmPosition() < armPosition && armPosition.value() > 5.0) {
+    commandedVoltage = volt_t{std::max(2.0, commandedVoltage.value())};
   }
-  if (GetArmPosition().value() < 2.0 && GetArmPosition().value() > 0.5 && armPosition.value() < 1.0) {
-    commandedVoltage = volt_t{-2.0};
-  }
-
-  commandedVoltage = HasGamePiece() ? 2.0 * commandedVoltage : 1.25 * commandedVoltage;
-
-  commandedVoltage = volt_t{std::min(std::max(-7.0, commandedVoltage.value()), 7.0)};
+  
+  commandedVoltage = volt_t{std::max(std::pow(((30 - GetArmPosition().value()) / 30.0), 2) * -2 - 1, commandedVoltage.value())};
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
              
