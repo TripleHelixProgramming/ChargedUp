@@ -3,6 +3,7 @@
 #include "RobotContainer.h"
 
 #include <iostream>
+#include <vector>
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -10,12 +11,19 @@
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
+#include <units/angular_velocity.h>
+#include <units/velocity.h>
 #include <wpi/json.h>
 
 #include "Constants.h"
 #include "commands/DriveTrajectory.h"
 #include "commands/ResetAbsoluteEncoders.h"
 #include "util/log/DoubleTelemetryEntry.h"
+#include "util/trajectory/TrajectoryConfig.h"
+#include "util/trajectory/TrajectoryGenerator.h"
+#include "util/trajectory/constraint/MaxAccelerationConstraint.h"
+#include "util/trajectory/constraint/MaxVelocityConstraint.h"
+#include "util/trajectory/constraint/TrajectoryConstraint.h"
 
 using namespace frc;
 using namespace frc2;
@@ -47,6 +55,26 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
+  Pose2d startPose(0_m, 0_m, 0_rad);
+  Pose2d endPose(1_m, 0_m, 0_rad);
+
+  TrajectoryConfig config;
+  auto maxVelocityConstraint = MaxVelocityConstraint(units::meters_per_second_t{1.0},
+                                                     units::meters_per_second_t{1.0},
+                                                     units::radians_per_second_t{1.0});
+  auto maxAccelerationConstraint = MaxAccelerationConstraint(1.0,
+                                                             1.0,
+                                                             1.0);
+  config.ApplyConstraint(maxVelocityConstraint);
+  config.ApplyConstraint(maxAccelerationConstraint);
+
+  TrajectoryGenerator generator{config};
+
+
+  wpi::json j = generator.Generate(startPose, endPose);
+  std::cout << j.dump() << std::endl;
+
+
   return CommandPtr(
       DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("traj")));
 }

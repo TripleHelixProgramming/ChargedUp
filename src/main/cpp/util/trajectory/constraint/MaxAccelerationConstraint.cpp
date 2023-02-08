@@ -3,11 +3,11 @@
 #include "util/trajectory/constraint/MaxAccelerationConstraint.h"
 
 #include <limits>
-#include "frc/geometry/Twist2d.h"
-#include "units/acceleration.h"
 
 #include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Twist2d.h>
 #include <frc/kinematics/ChassisSpeeds.h>
+#include <units/acceleration.h>
 
 using namespace frc;
 using namespace units;

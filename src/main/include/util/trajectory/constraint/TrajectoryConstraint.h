@@ -9,15 +9,25 @@
  * An interface for defining physical constraints on generated trajectories.
  */
 struct TrajectoryConstraint {
+  TrajectoryConstraint() = default;
+
+  TrajectoryConstraint(const TrajectoryConstraint&) = default;
+  TrajectoryConstraint& operator=(const TrajectoryConstraint&) = default;
+
+  TrajectoryConstraint(TrajectoryConstraint&&) = default;
+  TrajectoryConstraint& operator=(TrajectoryConstraint&&) = default;
+
+  virtual ~TrajectoryConstraint() = default;
+
   virtual double MaxVelocityNormForward(frc::Pose2d currentPose,
                                         frc::Pose2d endPose,
                                         frc::ChassisSpeeds startVelocityHat,
                                         double startVelocityNorm,
-                                        frc::ChassisSpeeds endVelocityHat);
+                                        frc::ChassisSpeeds endVelocityHat) = 0;
 
   virtual double MaxVelocityNormBackward(frc::Pose2d currentPose,
                                          frc::Pose2d endPose,
                                          frc::ChassisSpeeds startVelocityHat,
                                          frc::ChassisSpeeds endVelocityHat,
-                                         double endVelocityNorm);
+                                         double endVelocityNorm) = 0;
 };

@@ -9,21 +9,21 @@
 
 class MaxVelocityConstraint : public TrajectoryConstraint {
  public:
-  MaxVelocityConstraint(units::meters_per_second_t maxVelocityX,
-                        units::meters_per_second_t maxVelocityY,
-                        units::radians_per_second_t maxRotationalVelocity);
+  explicit MaxVelocityConstraint(units::meters_per_second_t maxVelocityX,
+                                 units::meters_per_second_t maxVelocityY,
+                                 units::radians_per_second_t maxRotationalVelocity);
 
   double MaxVelocityNormForward(frc::Pose2d currentPose,
                                 frc::Pose2d endPose,
                                 frc::ChassisSpeeds startVelocityHat,
                                 double startVelocityNorm,
-                                frc::ChassisSpeeds endVelocityHat);
+                                frc::ChassisSpeeds endVelocityHat) override;
 
   double MaxVelocityNormBackward(frc::Pose2d currentPose,
                                  frc::Pose2d endPose,
                                  frc::ChassisSpeeds startVelocityHat,
                                  frc::ChassisSpeeds endVelocityHat,
-                                 double endVelocityNorm);
+                                 double endVelocityNorm) override;
 
  private:
   units::meters_per_second_t m_maxVelocityX;

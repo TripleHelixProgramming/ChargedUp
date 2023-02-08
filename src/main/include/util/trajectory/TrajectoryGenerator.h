@@ -10,16 +10,17 @@
 #include <units/velocity.h>
 
 #include "util/trajectory/Trajectory.h"
+#include "util/trajectory/TrajectoryConfig.h"
 #include "util/trajectory/constraint/TrajectoryConstraint.h"
 
 using namespace units::literals;
 
 class TrajectoryGenerator {
  public:
-  TrajectoryGenerator(std::vector<TrajectoryConstraint> constraint);
+  TrajectoryGenerator(TrajectoryConfig& config);
 
   Trajectory Generate(frc::Pose2d start, frc::Pose2d end);
 
  private:
-  std::vector<TrajectoryConstraint> m_constraints;
+  TrajectoryConfig m_config;
 };
