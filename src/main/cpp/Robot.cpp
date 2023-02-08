@@ -46,7 +46,9 @@ void Robot::RobotPeriodic() {
 
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+  m_container.RunDisabled();
+}
 
 void Robot::AutonomousInit() {
   m_autonomousCommand = m_container.GetAutonomousCommand();

@@ -4,7 +4,10 @@
 
 #include <optional>
 
+#include <frc/Compressor.h>
 #include <frc/Joystick.h>
+#include <frc/PneumaticsBase.h>
+#include <frc/PneumaticsModuleType.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
@@ -22,12 +25,15 @@ class RobotContainer {
 
   void UpdateTelemetry();
 
+  void RunDisabled();
+
   void SuperstructurePeriodic();
 
  private:
   // Subsystems
   SwerveDrive m_drive;
   Superstructure m_superstructure;
+  frc::Compressor m_compressor{1, frc::PneumaticsModuleType::REVPH};
 
   // Operator Interface (OI)
   frc::Joystick m_driver{0};

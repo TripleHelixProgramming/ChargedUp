@@ -33,11 +33,11 @@ constexpr int kDriveMotorPorts[] = {28, 26, 10, 12};
 constexpr int kSteerMotorPorts[] = {29, 27, 11, 13};
 constexpr int kAbsEncoderPorts[] = {43, 33, 45, 31};
 
-constexpr int kArmLeaderPort = 4;
-constexpr int kArmFollowerPort = 5;
+constexpr int kArmLeaderPort = 14;
+constexpr int kArmFollowerPort = 15;
 
-constexpr int kIntakeLeftWheelPort = 15;
-constexpr int kIntakeRightWheelPort = 16;
+constexpr int kIntakeLeftWheelPort = 16;
+constexpr int kIntakeRightWheelPort = 17;
 
 constexpr int kArmEncoderPort = 0;
 
@@ -77,17 +77,17 @@ constexpr double kSteerGearRatio = 12.8;
 
 namespace SuperstructureConstants {
 
-constexpr auto kMinArmPosition = 0.0_rad;
-constexpr auto kMinArmPickupPosition = 0.1_rad;
+constexpr auto kMinArmPosition = 0.0_deg;
+constexpr auto kMinArmPickupPosition = 3.0_deg;
 constexpr auto kMaxArmPosition = 1.0_rad;
 
 constexpr double kArmFF = 0;
-constexpr double kArmP = 0;
+constexpr double kArmP = 10.0;
 constexpr double kArmI = 0;
 constexpr double kArmD = 0;
 
-constexpr double kArmEncoderOffset = 0;
-constexpr double kArmEncoderGearRatio = 0;
+constexpr double kArmEncoderOffset = 17;
+constexpr double kArmEncoderGearRatio = 1 / 5.0;
 
 }  // namespace SuperstructureConstants
 
