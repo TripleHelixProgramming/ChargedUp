@@ -13,8 +13,6 @@
 #include "util/trajectory/TrajectoryConfig.h"
 #include "util/trajectory/constraint/TrajectoryConstraint.h"
 
-using namespace units::literals;
-
 class TrajectoryGenerator {
  public:
   TrajectoryGenerator(TrajectoryConfig& config);
