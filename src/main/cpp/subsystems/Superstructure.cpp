@@ -117,6 +117,7 @@ void Superstructure::SuperstructurePeriodic() {
   SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
   SmartDashboard::PutBoolean("Extended", m_expanded);
   SmartDashboard::PutNumber("Arm current", m_armLeader.GetOutputCurrent());
+  SmartDashboard::PutNumber("Error", (armPosition - GetArmPosition()).value());
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
@@ -129,18 +130,30 @@ void Superstructure::SuperstructurePeriodic() {
 
   SmartDashboard::PutNumber("Target", armPosition.value());
 
-  // m_armController.SetSetpoint(armPosition.value());
+  m_integral += (armPosition - GetArmPosition()).value();
+
+  double minVoltage = 0.0;
+  double maxVoltage = 2.5;
+  if (m_kI != 0.0) {
+    m_integral = std::max(minVoltage / m_kI, std::min(m_integral, maxVoltage / m_kI));
+  }
+
+  if (std::abs((armPosition - GetArmPosition()).value()) > m_tolerance) {
+    m_integral = 0.0;
+  }
+
+  if (armPosition.value() < 10.0) {
+    m_integral = 0.0;
+  }
+
   m_armController.SetGoal(armPosition);
-  volt_t commandedVoltage =
-      volt_t{m_armController.Calculate(GetArmPosition())};
+  auto commandedVoltage = volt_t{m_armController.Calculate(GetArmPosition()) + m_integral * m_kI};
   
   if (GetArmPosition().value() < 3.0 && armPosition.value() < 1.0) {
     commandedVoltage = volt_t{-0.5};
   }
 
-  if (GetArmPosition() < armPosition && armPosition.value() > 5.0) {
-    commandedVoltage = volt_t{std::max(2.0, commandedVoltage.value())};
-  }
+  commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
   
   commandedVoltage = volt_t{std::max(std::pow(((30 - GetArmPosition().value()) / 30.0), 2) * -2 - 1, commandedVoltage.value())};
 

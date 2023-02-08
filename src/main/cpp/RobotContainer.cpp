@@ -67,6 +67,11 @@ void RobotContainer::ConfigureBindings() {
                     return m_drive.ResetOdometry(Pose2d());
                   }).ToPtr());
 
+  JoystickButton zorroLeftBumper{&m_driver, kZorroAIn};
+
+  zorroLeftBumper.OnTrue((InstantCommand([this]() { return m_superstructure.Outtake(); })).ToPtr());
+  zorroLeftBumper.OnFalse((InstantCommand([this]() { return m_superstructure.SetIntakeWheelSpeed(0.0); })).ToPtr());
+
   // m_operator.X().OnTrue(IntakeCone(&m_gripper).ToPtr());
   // m_operator.X().OnFalse(
   //     InstantCommand([this]() { return m_gripper.Retract(); },
@@ -85,10 +90,8 @@ void RobotContainer::ConfigureBindings() {
   m_operator.X().OnFalse((InstantCommand([this]() { return m_superstructure.SetIntakeWheelSpeed(0.0); })).ToPtr());
   m_operator.Y().OnTrue((InstantCommand([this]() { return m_superstructure.IntakeCube(); })).ToPtr());
   m_operator.Y().OnFalse((InstantCommand([this]() { return m_superstructure.SetIntakeWheelSpeed(0.0); })).ToPtr());
-  m_operator.A().OnTrue((InstantCommand([this]() { return m_superstructure.SetArmPosition(22_deg); })).ToPtr());
-  m_operator.B().OnTrue((InstantCommand([this]() { return m_superstructure.SetArmPosition(30_deg); })).ToPtr());
-  m_operator.LeftBumper().OnTrue((InstantCommand([this]() { return m_superstructure.Outtake(); })).ToPtr());
-  m_operator.LeftBumper().OnFalse((InstantCommand([this]() { return m_superstructure.SetIntakeWheelSpeed(0.0); })).ToPtr());
+  m_operator.A().OnTrue((InstantCommand([this]() { return m_superstructure.SetArmPosition(25.5_deg); })).ToPtr());
+  m_operator.B().OnTrue((InstantCommand([this]() { return m_superstructure.SetArmPosition(33_deg); })).ToPtr());
   m_operator.RightBumper().OnTrue((InstantCommand([this]() { return m_superstructure.SetIntakeWheelSpeed(0.5); })).ToPtr());
   m_operator.RightBumper().OnFalse((InstantCommand([this]() { return m_superstructure.SetIntakeWheelSpeed(0.0); })).ToPtr());
   // m_operator.().OnTrue((InstantCommand([this]() { return m_superstructure.SetIntakeWheelSpeed(0.5); })).ToPtr());
