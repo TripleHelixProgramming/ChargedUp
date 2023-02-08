@@ -8,6 +8,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RunCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
 #include <wpi/json.h>
@@ -15,6 +16,7 @@
 #include "Constants.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
+#include "commands/autos/North2ConeCharge.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace frc;
@@ -47,8 +49,7 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  return CommandPtr(
-      DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("traj")));
+  return North2ConeCharge(&m_drive, &m_trajManager).ToPtr();
 }
 
 void RobotContainer::UpdateTelemetry() {

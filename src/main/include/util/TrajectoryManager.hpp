@@ -14,7 +14,7 @@
 
 class TrajectoryManager {
  public:
-  Trajectory& GetTrajectory(const std::string& name);
+  const Trajectory& GetTrajectory(const std::string& name) const;
 
   void LoadTrajectories();
 

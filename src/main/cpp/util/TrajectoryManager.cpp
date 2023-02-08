@@ -19,8 +19,9 @@ using std::filesystem::directory_iterator;
 using std::filesystem::path;
 using wpi::json;
 
-Trajectory& TrajectoryManager::GetTrajectory(const std::string& name) {
-  return m_trajectories[name];
+const Trajectory& TrajectoryManager::GetTrajectory(
+    const std::string& name) const {
+  return m_trajectories.at(name);
 }
 
 void TrajectoryManager::LoadTrajectories() {

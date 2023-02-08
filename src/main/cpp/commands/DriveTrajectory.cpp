@@ -22,6 +22,10 @@ DriveTrajectory::DriveTrajectory(SwerveDrive* drive,
 void DriveTrajectory::Initialize() {
   m_timestamp.Reset();
   m_timestamp.Start();
+
+  m_controllerRotation.EnableContinuousInput(-std::numbers::pi,
+                                             std::numbers::pi);
+
   m_drive->ResetOdometry(m_trajectory->GetInitialPose());
 }
 
