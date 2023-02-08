@@ -50,8 +50,11 @@ RobotContainer::RobotContainer()
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   return CommandPtr(
       SequentialCommandGroup(
-        DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("approach_a")),
-        DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("return_a"))));
+        DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_place_grid3x1"))
+        ,DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_pick4"))
+        ,DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_place_grid3x3"))
+        ,DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_charging_station"))
+        ));
 }
 
 void RobotContainer::UpdateTelemetry() {
