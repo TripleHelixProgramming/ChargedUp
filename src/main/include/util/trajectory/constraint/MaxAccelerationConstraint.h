@@ -9,9 +9,9 @@
 
 class MaxAccelerationConstraint : public TrajectoryConstraint {
  public:
-  MaxAccelerationConstraint(units::meters_per_second_squared maxAccelerationX,
-                            units::meters_per_second_squared maxAccelerationY,
-                            units::radians_per_second_squared maxRotationalAcceleration);
+  MaxAccelerationConstraint(double maxAccelerationX,
+                            double maxAccelerationY,
+                            double maxRotationalAcceleration);
 
   double MaxVelocityNormForward(frc::Pose2d currentPose,
                                 frc::Pose2d endPose,
@@ -26,7 +26,7 @@ class MaxAccelerationConstraint : public TrajectoryConstraint {
                                  double endVelocityNorm);
 
  private:
-  units::meters_per_second_squared m_maxAccelerationX;
-  units::meters_per_second_squared m_maxAccelerationY;
-  units::radians_per_second_squared m_maxRotationalAcceleration;
+  double m_maxAccelerationX;
+  double m_maxAccelerationY;
+  double m_maxRotationalAcceleration;
 };
