@@ -16,8 +16,6 @@
 
 #include "Constants.hpp"
 
-using namespace units::literals;
-
 class Superstructure : public frc2::SubsystemBase {
  public:
   Superstructure();
