@@ -59,21 +59,17 @@ std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   Pose2d endPose(1_m, 0_m, 0_rad);
 
   TrajectoryConfig config;
-  auto maxVelocityConstraint = MaxVelocityConstraint(units::meters_per_second_t{1.0},
-                                                     units::meters_per_second_t{1.0},
-                                                     units::radians_per_second_t{1.0});
-  auto maxAccelerationConstraint = MaxAccelerationConstraint(1.0,
-                                                             1.0,
-                                                             1.0);
+  auto maxVelocityConstraint = MaxVelocityConstraint(
+      units::meters_per_second_t{1.0}, units::meters_per_second_t{1.0},
+      units::radians_per_second_t{1.0});
+  auto maxAccelerationConstraint = MaxAccelerationConstraint(1.0, 1.0, 1.0);
   config.ApplyConstraint(maxVelocityConstraint);
   config.ApplyConstraint(maxAccelerationConstraint);
 
   TrajectoryGenerator generator{config};
 
-
   wpi::json j = generator.Generate(startPose, endPose);
   std::cout << j.dump() << std::endl;
-
 
   return CommandPtr(
       DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("traj")));

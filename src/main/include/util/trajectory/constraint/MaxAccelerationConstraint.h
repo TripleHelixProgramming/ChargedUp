@@ -13,14 +13,12 @@ class MaxAccelerationConstraint : public TrajectoryConstraint {
                                      double maxAccelerationY,
                                      double maxRotationalAcceleration);
 
-  double MaxVelocityNormForward(frc::Pose2d currentPose,
-                                frc::Pose2d endPose,
+  double MaxVelocityNormForward(frc::Pose2d currentPose, frc::Pose2d endPose,
                                 frc::ChassisSpeeds startVelocityHat,
                                 double startVelocityNorm,
                                 frc::ChassisSpeeds endVelocityHat) override;
 
-  double MaxVelocityNormBackward(frc::Pose2d currentPose,
-                                 frc::Pose2d endPose,
+  double MaxVelocityNormBackward(frc::Pose2d currentPose, frc::Pose2d endPose,
                                  frc::ChassisSpeeds startVelocityHat,
                                  frc::ChassisSpeeds endVelocityHat,
                                  double endVelocityNorm) override;

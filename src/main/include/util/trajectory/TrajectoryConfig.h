@@ -9,12 +9,14 @@
 
 class TrajectoryConfig {
  public:
-  template <typename T, typename = std::enable_if_t<std::is_base_of_v<TrajectoryConstraint, T>>>
+  template <typename T, typename = std::enable_if_t<
+                            std::is_base_of_v<TrajectoryConstraint, T>>>
   void ApplyConstraint(T constraint) {
     m_constraints.emplace_back(std::make_unique<T>(constraint));
   }
 
-  const std::vector<std::unique_ptr<TrajectoryConstraint>>& Constraints() const {
+  const std::vector<std::unique_ptr<TrajectoryConstraint>>& Constraints()
+      const {
     return m_constraints;
   }
 
