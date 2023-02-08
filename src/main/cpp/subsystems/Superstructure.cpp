@@ -41,9 +41,7 @@ Superstructure::Superstructure()
   // Initialize arm encoder
   m_armEncoder.SetPositionOffset(kArmEncoderOffset);
 
-  m_armRelativeEncoder.SetDistancePerPulse(1./2048.);
-
-
+  m_armRelativeEncoder.SetDistancePerPulse(1. / 2048.);
 
   double pos = GetAbsoluteArmPosition().value();
 
@@ -53,7 +51,9 @@ Superstructure::Superstructure()
 }
 
 void Superstructure::SyncEncoders() {
-  m_armOffset = GetAbsoluteArmPosition() - degree_t{-360 * m_armRelativeEncoder.GetDistance() * kArmEncoderGearRatio};
+  m_armOffset = GetAbsoluteArmPosition() -
+                degree_t{-360 * m_armRelativeEncoder.GetDistance() *
+                         kArmEncoderGearRatio};
 }
 
 void Superstructure::IntakeCone() {
@@ -78,7 +78,7 @@ void Superstructure::SetExtenderPosition(bool expanded) {
 
 void Superstructure::Outtake() {
   if (!m_expanded) {
-     SetIntakeWheelSpeed(-0.5);
+    SetIntakeWheelSpeed(-0.5);
   } else {
     m_expanded = false;
   }
@@ -89,11 +89,15 @@ void Superstructure::SetArmPosition(radian_t position) {
 }
 
 degree_t Superstructure::GetAbsoluteArmPosition() {
-  return degree_t{360 * m_armEncoder.GetAbsolutePosition() * kArmEncoderGearRatio - kArmEncoderOffset};
+  return degree_t{360 * m_armEncoder.GetAbsolutePosition() *
+                      kArmEncoderGearRatio -
+                  kArmEncoderOffset};
 }
 
 degree_t Superstructure::GetArmPosition() {
-  return degree_t{-360 * m_armRelativeEncoder.GetDistance() * kArmEncoderGearRatio} + m_armOffset;
+  return degree_t{-360 * m_armRelativeEncoder.GetDistance() *
+                  kArmEncoderGearRatio} +
+         m_armOffset;
 }
 
 bool Superstructure::HasGamePiece() {
@@ -107,7 +111,8 @@ void Superstructure::SuperstructurePeriodic() {
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece()) {
     intakeWheelSpeed = units::math::min(intakeWheelSpeed, 0.0);
-    armPosition = degree_t{std::max(armPosition.value(), kMinArmPickupPosition.value())};
+    armPosition =
+        degree_t{std::max(armPosition.value(), kMinArmPickupPosition.value())};
   }
 
   // Ensure arm position bounds are not violated.
@@ -135,7 +140,8 @@ void Superstructure::SuperstructurePeriodic() {
   double minVoltage = 0.0;
   double maxVoltage = 2.5;
   if (m_kI != 0.0) {
-    m_integral = std::max(minVoltage / m_kI, std::min(m_integral, maxVoltage / m_kI));
+    m_integral =
+        std::max(minVoltage / m_kI, std::min(m_integral, maxVoltage / m_kI));
   }
 
   if (std::abs((armPosition - GetArmPosition()).value()) > m_tolerance) {
@@ -147,7 +153,8 @@ void Superstructure::SuperstructurePeriodic() {
   }
 
   m_armController.SetGoal(armPosition);
-  auto commandedVoltage = volt_t{m_armController.Calculate(GetArmPosition()) + m_integral * m_kI};
+  auto commandedVoltage =
+      volt_t{m_armController.Calculate(GetArmPosition()) + m_integral * m_kI};
 
   if (GetArmPosition().value() < 3.0 && armPosition.value() < 1.0) {
     commandedVoltage = volt_t{-0.5};
@@ -155,7 +162,9 @@ void Superstructure::SuperstructurePeriodic() {
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
-  commandedVoltage = volt_t{std::max(std::pow(((30 - GetArmPosition().value()) / 30.0), 2) * -2 - 1, commandedVoltage.value())};
+  commandedVoltage = volt_t{
+      std::max(std::pow(((30 - GetArmPosition().value()) / 30.0), 2) * -2 - 1,
+               commandedVoltage.value())};
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
 

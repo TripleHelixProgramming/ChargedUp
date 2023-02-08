@@ -58,14 +58,12 @@ class Superstructure : public frc2::SubsystemBase {
   units::degree_t m_armOffset = units::degree_t{0.0};
 
   // Arm PID controller
-  frc::ProfiledPIDController<units::radian> m_armController{SuperstructureConstants::kArmP,
-                                                              SuperstructureConstants::kArmI,
-                                                              SuperstructureConstants::kArmD,
-                                                              frc::TrapezoidProfile<units::radian>::Constraints{
-                                                                10.0_rad_per_s,
-                                                                7.5_rad_per_s / 1.0_s
-                                                              },
-                                                              5_ms};
+  frc::ProfiledPIDController<units::radian> m_armController{
+      SuperstructureConstants::kArmP, SuperstructureConstants::kArmI,
+      SuperstructureConstants::kArmD,
+      frc::TrapezoidProfile<units::radian>::Constraints{10.0_rad_per_s,
+                                                        7.5_rad_per_s / 1.0_s},
+      5_ms};
 
   // Hardware modules
   rev::CANSparkMax m_leftWheel{ElectricalConstants::kIntakeLeftWheelPort,
@@ -79,7 +77,8 @@ class Superstructure : public frc2::SubsystemBase {
                                  rev::CANSparkMax::MotorType::kBrushless};
 
   frc::DutyCycleEncoder m_armEncoder{ElectricalConstants::kArmEncoderPort};
-  frc::Encoder m_armRelativeEncoder{1, 2, false, frc::Encoder::EncodingType::k4X};
+  frc::Encoder m_armRelativeEncoder{1, 2, false,
+                                    frc::Encoder::EncodingType::k4X};
 
   rev::SparkMaxLimitSwitch m_beamBreak;
 
