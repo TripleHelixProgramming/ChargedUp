@@ -16,6 +16,7 @@
 #include "Constants.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
+#include "commands/autos/North2ConeCharge.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace frc;
@@ -48,13 +49,7 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  return CommandPtr(
-      SequentialCommandGroup(
-        DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_place_grid3x1"))
-        ,DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_pick4"))
-        ,DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_place_grid3x3"))
-        ,DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("north_charging_station"))
-        ));
+  return North2ConeCharge(&m_drive, &m_trajManager).ToPtr();
 }
 
 void RobotContainer::UpdateTelemetry() {
