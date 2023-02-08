@@ -11,8 +11,8 @@
 #include <rev/CANSparkMax.h>
 #include <rev/SparkMaxLimitSwitch.h>
 #include <units/angle.h>
-#include <units/angular_velocity.h>
 #include <units/angular_acceleration.h>
+#include <units/angular_velocity.h>
 
 #include "Constants.hpp"
 

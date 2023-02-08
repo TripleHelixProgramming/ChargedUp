@@ -4,18 +4,18 @@
 
 #include <optional>
 
+#include <frc/Compressor.h>
 #include <frc/Joystick.h>
+#include <frc/PneumaticsBase.h>
+#include <frc/PneumaticsModuleType.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.hpp"
-#include "frc/PneumaticsBase.h"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
-#include <frc/Compressor.h>
-#include <frc/PneumaticsModuleType.h>
 
 class RobotContainer {
  public:

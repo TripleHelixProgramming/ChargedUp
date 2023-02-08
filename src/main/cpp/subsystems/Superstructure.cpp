@@ -43,7 +43,7 @@ Superstructure::Superstructure()
 
   m_armRelativeEncoder.SetDistancePerPulse(1./2048.);
 
-  
+
 
   double pos = GetAbsoluteArmPosition().value();
 
@@ -148,16 +148,16 @@ void Superstructure::SuperstructurePeriodic() {
 
   m_armController.SetGoal(armPosition);
   auto commandedVoltage = volt_t{m_armController.Calculate(GetArmPosition()) + m_integral * m_kI};
-  
+
   if (GetArmPosition().value() < 3.0 && armPosition.value() < 1.0) {
     commandedVoltage = volt_t{-0.5};
   }
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
-  
+
   commandedVoltage = volt_t{std::max(std::pow(((30 - GetArmPosition().value()) / 30.0), 2) * -2 - 1, commandedVoltage.value())};
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
-             
+
   m_armLeader.SetVoltage(commandedVoltage);
 }
