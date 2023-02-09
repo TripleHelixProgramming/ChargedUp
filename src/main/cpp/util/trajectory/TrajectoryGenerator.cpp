@@ -19,10 +19,9 @@
 using namespace frc;
 using namespace units;
 
-TrajectoryGenerator::TrajectoryGenerator(TrajectoryConfig& config)
-    : m_config{config} {};
+namespace trajectory {
 
-Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
+Trajectory Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
   // Given C₂ continous functions x(t), y(t), θ(t) where t ∈ [0, 1]. Time is
   // denoted τ.
   //
@@ -115,7 +114,7 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   // Forward pass
   for (int index = 0; index < N - 1; ++index) {
     double maxVelocityNorm = std::numeric_limits<double>::infinity();
-    for (auto& constraint : m_config.Constraints()) {
+    for (auto& constraint : config.Constraints()) {
       maxVelocityNorm = std::min(
           maxVelocityNorm, constraint->MaxVelocityNormForward(
                                poses[index], poses[index + 1], v_hats[index],
@@ -127,7 +126,7 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   // Backward pass
   for (int index = N - 1; index >= 0; --index) {
     double maxVelocityNorm = v_norms[index];
-    for (auto& constraint : m_config.Constraints()) {
+    for (auto& constraint : config.Constraints()) {
       maxVelocityNorm = std::min(
           maxVelocityNorm, constraint->MaxVelocityNormBackward(
                                poses[index], poses[index + 1], v_hats[index],
@@ -171,4 +170,6 @@ Trajectory TrajectoryGenerator::Generate(Pose2d start, Pose2d end) {
   }
 
   return Trajectory(trajectoryStates);
+}
+
 }

@@ -66,9 +66,7 @@ std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   config.ApplyConstraint(maxVelocityConstraint);
   config.ApplyConstraint(maxAccelerationConstraint);
 
-  TrajectoryGenerator generator{config};
-
-  wpi::json j = generator.Generate(startPose, endPose);
+  wpi::json j = trajectory::Generate(startPose, endPose, config);
   std::cout << j.dump() << std::endl;
 
   return CommandPtr(

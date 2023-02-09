@@ -13,12 +13,9 @@
 #include "util/trajectory/TrajectoryConfig.h"
 #include "util/trajectory/constraint/TrajectoryConstraint.h"
 
-class TrajectoryGenerator {
- public:
-  TrajectoryGenerator(TrajectoryConfig& config);
+namespace trajectory {
 
-  Trajectory Generate(frc::Pose2d start, frc::Pose2d end);
+Trajectory Generate(frc::Pose2d start, frc::Pose2d end,
+                    TrajectoryConfig& config);
 
- private:
-  TrajectoryConfig m_config;
-};
+}  // namespace trajectory

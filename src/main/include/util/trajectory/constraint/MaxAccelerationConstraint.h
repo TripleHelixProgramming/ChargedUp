@@ -13,6 +13,13 @@ class MaxAccelerationConstraint : public TrajectoryConstraint {
                                      double maxAccelerationY,
                                      double maxRotationalAcceleration);
 
+  MaxAccelerationConstraint(const MaxAccelerationConstraint&) = default;
+  MaxAccelerationConstraint& operator=(const MaxAccelerationConstraint&) =
+      default;
+
+  MaxAccelerationConstraint(MaxAccelerationConstraint&&) = default;
+  MaxAccelerationConstraint& operator=(MaxAccelerationConstraint&&) = default;
+
   double MaxVelocityNormForward(frc::Pose2d currentPose, frc::Pose2d endPose,
                                 frc::ChassisSpeeds startVelocityHat,
                                 double startVelocityNorm,

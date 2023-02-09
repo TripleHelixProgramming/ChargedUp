@@ -14,6 +14,12 @@ class MaxVelocityConstraint : public TrajectoryConstraint {
       units::meters_per_second_t maxVelocityY,
       units::radians_per_second_t maxRotationalVelocity);
 
+  MaxVelocityConstraint(const MaxVelocityConstraint&) = default;
+  MaxVelocityConstraint& operator=(const MaxVelocityConstraint&) = default;
+
+  MaxVelocityConstraint(MaxVelocityConstraint&&) = default;
+  MaxVelocityConstraint& operator=(MaxVelocityConstraint&&) = default;
+
   double MaxVelocityNormForward(frc::Pose2d currentPose, frc::Pose2d endPose,
                                 frc::ChassisSpeeds startVelocityHat,
                                 double startVelocityNorm,
