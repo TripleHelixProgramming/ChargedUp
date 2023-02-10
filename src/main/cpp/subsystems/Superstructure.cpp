@@ -56,6 +56,18 @@ void Superstructure::SyncEncoders() {
                          kArmEncoderGearRatio};
 }
 
+void Superstructure::PositionCubeHigh() {}
+
+void Superstructure::PositionCubeMedium() {}
+
+void Superstructure::PositionConeHigh() {
+  SetArmPosition(33_deg);
+}
+
+void Superstructure::PositionConeMedium() {
+  SetArmPosition(25.5_deg);
+}
+
 void Superstructure::IntakeCone() {
   SetArmPosition(-7.5_deg);
   SetIntakeWheelSpeed(0.5);
@@ -79,9 +91,8 @@ void Superstructure::SetExtenderPosition(bool expanded) {
 void Superstructure::Outtake() {
   if (!m_expanded) {
     SetIntakeWheelSpeed(-0.5);
-  } else {
-    m_expanded = false;
   }
+  SetExtenderPosition(false);
 }
 
 void Superstructure::SetArmPosition(radian_t position) {

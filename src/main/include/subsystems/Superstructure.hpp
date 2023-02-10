@@ -20,6 +20,14 @@ class Superstructure : public frc2::SubsystemBase {
  public:
   Superstructure();
 
+  void PositionCubeHigh();
+
+  void PositionCubeMedium();
+
+  void PositionConeHigh();
+
+  void PositionConeMedium();
+
   void IntakeCube();
 
   void IntakeCone();
