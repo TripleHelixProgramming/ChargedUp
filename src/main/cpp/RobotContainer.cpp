@@ -50,7 +50,7 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  return North2ConeCharge(&m_drive, &m_trajManager).ToPtr();
+  return North2ConeCharge(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
 }
 
 void RobotContainer::UpdateTelemetry() {
@@ -93,27 +93,24 @@ void RobotContainer::ConfigureBindings() {
   // m_operator.A().OnFalse(
   //     InstantCommand([this]() { return m_gripper.Retract(); },
   //     {&m_gripper}).ToPtr());
-  m_operator.X().OnTrue((InstantCommand([this]() {
-                          return m_superstructure.IntakeCone();
-                        })).ToPtr());
+  m_operator.X().OnTrue(
+      (InstantCommand([this]() { m_superstructure.IntakeCone(); })).ToPtr());
   m_operator.X().OnFalse((InstantCommand([this]() {
-                           return m_superstructure.SetIntakeWheelSpeed(0.0);
+                           m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
-  m_operator.Y().OnTrue((InstantCommand([this]() {
-                          return m_superstructure.IntakeCube();
-                        })).ToPtr());
+  m_operator.Y().OnTrue(
+      (InstantCommand([this]() { m_superstructure.IntakeCube(); })).ToPtr());
   m_operator.Y().OnFalse((InstantCommand([this]() {
-                           return m_superstructure.SetIntakeWheelSpeed(0.0);
+                           m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
   m_operator.A().OnTrue((InstantCommand([this]() {
-                          return m_superstructure.SetArmPosition(25.5_deg);
+                          m_superstructure.PositionConeMedium();
                         })).ToPtr());
   m_operator.B().OnTrue((InstantCommand([this]() {
-                          return m_superstructure.SetArmPosition(33_deg);
+                          m_superstructure.PositionConeHigh();
                         })).ToPtr());
   m_operator.RightBumper().OnTrue((InstantCommand([this]() {
-                                    return m_superstructure.SetIntakeWheelSpeed(
-                                        0.5);
+                                    m_superstructure.SetIntakeWheelSpeed(0.5);
                                   })).ToPtr());
   m_operator.RightBumper().OnFalse(
       (InstantCommand([this]() {
