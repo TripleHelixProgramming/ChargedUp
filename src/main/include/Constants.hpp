@@ -97,8 +97,14 @@ namespace VisionConstants {
 // -13.5_in, 11.2_in),
 //                                    frc::Rotation3d(0_rad, 0_rad, -90_deg));
 
-const frc::Transform3d kRobotToCam(frc::Translation3d(0.0_m, 0.0_m, 0.0_m),
-                                   frc::Rotation3d(0_rad, 0_rad, 0.0_rad));
+// const frc::Transform3d kRobotToCam(frc::Translation3d(-11_in,
+// 0_in, 24.865_in),
+//                                    frc::Rotation3d(0_deg, 0_deg, 0_deg));
+
+// Left side camera on 2023 robot
+const frc::Transform3d kRobotToCam(frc::Translation3d(11.25_in, 13.25_in,
+                                                      24.865_in),
+                                   frc::Rotation3d(0_deg, 0_deg, -45_deg));
 
 }  // namespace VisionConstants
 
