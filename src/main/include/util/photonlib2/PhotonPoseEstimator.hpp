@@ -10,9 +10,9 @@
 #include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Translation3d.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/core/types.hpp>
-#include <frc/smartdashboard/Field2d.h>
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
 

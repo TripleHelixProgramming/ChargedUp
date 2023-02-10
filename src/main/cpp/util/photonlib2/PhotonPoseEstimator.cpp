@@ -112,14 +112,16 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
 
   //   cv::Mat rvec(3, 1, cv::DataType<double>::type);
   //   cv::Mat tvec(3, 1, cv::DataType<double>::type);
-  
+
   //   cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
-  //              m_distortionCoefficients, rvec, tvec, false, cv::SOLVEPNP_IPPE_SQUARE);
+  //              m_distortionCoefficients, rvec, tvec, false,
+  //              cv::SOLVEPNP_IPPE_SQUARE);
 
   //   SmartDashboard::PutNumber("", objectPoints[0].x);
-    
+
   //   // pose1 = ToPose3d(tvecs[0], rvecs[0]);
-  //   // pose2 = ToPose3d(tvecs[1], rvecs[1]); // TODO change order to match OpenCV
+  //   // pose2 = ToPose3d(tvecs[1], rvecs[1]); // TODO change order to match
+  //   OpenCV
 
   //   pose1 = pose2 = ToPose3d(tvec, rvec);
 
@@ -128,7 +130,8 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
     cv::Mat rvec(3, 1, cv::DataType<double>::type);
     cv::Mat tvec(3, 1, cv::DataType<double>::type);
     cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
-               m_distortionCoefficients, rvec, tvec, false, cv::SOLVEPNP_SQPNP);
+                 m_distortionCoefficients, rvec, tvec, false,
+                 cv::SOLVEPNP_SQPNP);
     pose1 = pose2 = ToPose3d(tvec, rvec);
   } else {
     return std::nullopt;
@@ -199,10 +202,13 @@ cv::Point3d PhotonPoseEstimator::TagCornerToObjectPoint(meter_t cornerX,
 std::optional<std::array<cv::Point3d, 4>> PhotonPoseEstimator::CalcTagCorners(
     int tagID) {
   if (auto tagPose = m_aprilTagLayout.GetTagPose(tagID); tagPose.has_value()) {
-    return std::array{TagCornerToObjectPoint(-3_in, -3_in, *tagPose),
-                      TagCornerToObjectPoint(+3_in, -3_in, *tagPose),
-                      TagCornerToObjectPoint(+3_in, +3_in, *tagPose), // TODO change to match csys of OpenCV (+y should be down)
-                      TagCornerToObjectPoint(-3_in, +3_in, *tagPose)};
+    return std::array{
+        TagCornerToObjectPoint(-3_in, -3_in, *tagPose),
+        TagCornerToObjectPoint(+3_in, -3_in, *tagPose),
+        TagCornerToObjectPoint(+3_in, +3_in,
+                               *tagPose),  // TODO change to match csys of
+                                           // OpenCV (+y should be down)
+        TagCornerToObjectPoint(-3_in, +3_in, *tagPose)};
   } else {
     return std::nullopt;
   }
