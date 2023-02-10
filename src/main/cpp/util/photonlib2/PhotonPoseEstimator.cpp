@@ -44,7 +44,10 @@ PhotonPoseEstimator::PhotonPoseEstimator(
       m_distortionCoefficients(std::move(distortionCoefficients)),
       m_camera(std::move(camera)),
       m_robotToCamera(robotToCamera),
-      m_referencePose(frc::Pose3d()) {}
+      m_referencePose(frc::Pose3d()) {
+  SmartDashboard::PutData("Pose Est 1", &m_pose1Field);
+  SmartDashboard::PutData("Pose Est 2", &m_pose2Field);
+}
 
 frc::AprilTagFieldLayout PhotonPoseEstimator::GetFieldLayout() const {
   return m_aprilTagLayout;
@@ -95,27 +98,56 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
   }
 
   // Use OpenCV ITERATIVE solver
-  cv::Mat rvec(3, 1, cv::DataType<double>::type);
-  cv::Mat tvec(3, 1, cv::DataType<double>::type);
+  // std::vector<cv::Mat> rvecs;
+  // std::vector<cv::Mat> tvecs;
+
+  Pose3d pose1;
+  Pose3d pose2;
 
   auto begin = std::chrono::system_clock::now();
 
-  cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
-               m_distortionCoefficients, rvec, tvec, false, cv::SOLVEPNP_SQPNP);
+  // if (objectPoints.size() <= 4) { // single target
+  //   // std::vector<cv::Mat> rvecs{2};
+  //   // std::vector<cv::Mat> tvecs{2};
 
-  Pose3d pose = ToPose3d(tvec, rvec);
+  //   cv::Mat rvec(3, 1, cv::DataType<double>::type);
+  //   cv::Mat tvec(3, 1, cv::DataType<double>::type);
+  
+  //   cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
+  //              m_distortionCoefficients, rvec, tvec, false, cv::SOLVEPNP_IPPE_SQUARE);
+
+  //   SmartDashboard::PutNumber("", objectPoints[0].x);
+    
+  //   // pose1 = ToPose3d(tvecs[0], rvecs[0]);
+  //   // pose2 = ToPose3d(tvecs[1], rvecs[1]); // TODO change order to match OpenCV
+
+  //   pose1 = pose2 = ToPose3d(tvec, rvec);
+
+  // } else { // multi target
+  if (objectPoints.size() >= 8) {
+    cv::Mat rvec(3, 1, cv::DataType<double>::type);
+    cv::Mat tvec(3, 1, cv::DataType<double>::type);
+    cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
+               m_distortionCoefficients, rvec, tvec, false, cv::SOLVEPNP_SQPNP);
+    pose1 = pose2 = ToPose3d(tvec, rvec);
+  } else {
+    return std::nullopt;
+  }
 
   auto end = std::chrono::system_clock::now();
 
-  SmartDashboard::PutNumber("SQPNP/Translation/X", pose.X().value());
-  SmartDashboard::PutNumber("SQPNP/Translation/Y", pose.Y().value());
-  SmartDashboard::PutNumber("SQPNP/Translation/Z", pose.Z().value());
+  m_pose1Field.SetRobotPose(pose1.ToPose2d());
+  m_pose2Field.SetRobotPose(pose2.ToPose2d());
+
+  SmartDashboard::PutNumber("SQPNP/Translation/X", pose1.X().value());
+  SmartDashboard::PutNumber("SQPNP/Translation/Y", pose1.Y().value());
+  SmartDashboard::PutNumber("SQPNP/Translation/Z", pose1.Z().value());
   SmartDashboard::PutNumber("SQPNP/Rotation/Roll (X)",
-                            pose.Rotation().X().convert<degree>().value());
+                            pose1.Rotation().X().convert<degree>().value());
   SmartDashboard::PutNumber("SQPNP/Rotation/Pitch (Y)",
-                            pose.Rotation().Y().convert<degree>().value());
+                            pose1.Rotation().Y().convert<degree>().value());
   SmartDashboard::PutNumber("SQPNP/Rotation/Yaw (Z)",
-                            pose.Rotation().Z().convert<degree>().value());
+                            pose1.Rotation().Z().convert<degree>().value());
   SmartDashboard::PutNumber(
       "SQPNP/Time",
       std::chrono::duration_cast<std::chrono::microseconds>(end - begin)
@@ -123,7 +155,7 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
           1000.0);
 
   return photonlib::EstimatedRobotPose(
-      pose.TransformBy(m_robotToCamera.Inverse()), result.GetTimestamp());
+      pose1.TransformBy(m_robotToCamera.Inverse()), result.GetTimestamp());
 }
 
 cv::Point3d PhotonPoseEstimator::ToPoint3d(const Translation3d& translation) {
@@ -169,7 +201,7 @@ std::optional<std::array<cv::Point3d, 4>> PhotonPoseEstimator::CalcTagCorners(
   if (auto tagPose = m_aprilTagLayout.GetTagPose(tagID); tagPose.has_value()) {
     return std::array{TagCornerToObjectPoint(-3_in, -3_in, *tagPose),
                       TagCornerToObjectPoint(+3_in, -3_in, *tagPose),
-                      TagCornerToObjectPoint(+3_in, +3_in, *tagPose),
+                      TagCornerToObjectPoint(+3_in, +3_in, *tagPose), // TODO change to match csys of OpenCV (+y should be down)
                       TagCornerToObjectPoint(-3_in, +3_in, *tagPose)};
   } else {
     return std::nullopt;

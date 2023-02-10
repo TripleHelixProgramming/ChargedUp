@@ -41,8 +41,9 @@ AprilTagFieldLayout CustomFieldLayout() {
 // }
 
 Vision::Vision()
-    : m_poseEstimator(/*LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp)*/
-                      CustomFieldLayout(), m_cameraMatrix,
+    : m_poseEstimator(LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
+                      // CustomFieldLayout(),
+                      m_cameraMatrix,
                       m_distortionCoefficients,
                       photonlib::PhotonCamera{"front"}, kRobotToCam),
       m_oldPoseEstimator(CustomFieldLayout(), photonlib::LOWEST_AMBIGUITY,

@@ -12,6 +12,7 @@
 #include <frc/geometry/Translation3d.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/core/types.hpp>
+#include <frc/smartdashboard/Field2d.h>
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
 
@@ -107,6 +108,9 @@ class PhotonPoseEstimator {
    * a previously calculated reference pose to used to check ambiguous poses
    */
   frc::Pose3d m_referencePose;
+
+  frc::Field2d m_pose1Field;
+  frc::Field2d m_pose2Field;
 
   /**
    * Converts a Translation3d in the field coordinate system to an OpenCV
