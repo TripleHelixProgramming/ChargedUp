@@ -50,6 +50,7 @@ void graph::OptimizePose(
     std::function<Eigen::VectorXd(Eigen::Vector3d, Eigen::Matrix3d)>
         reprojectionFunction,
     Eigen::VectorXd measurement) {
+  std::cout << "begin" << std::endl;
   Eigen::Vector3d T = Eigen::VectorXd::Zero(3);
   Eigen::Matrix3d R = Eigen::MatrixXd::Identity(3, 3);
 
@@ -85,12 +86,16 @@ void graph::OptimizePose(
       return reprojectionFunction(T + t, R * Skew(w).exp());
     };
 
+    std::cout << "Formed local parameterization" << std::endl;
+
     // f(S) = h(S) - z
     Eigen::VectorXd f = reprojectionFunction(T, R) - measurement;
 
     // Linearize Jacobian around S = 0
     Eigen::SparseMatrix<double> J =
         NumericalJacobian(localParameterization, Eigen::VectorXd::Zero(6));
+
+    std::cout << "Computed evaluations" << std::endl;
 
     // Gauss-Newton method
     //

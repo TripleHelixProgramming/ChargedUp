@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <Eigen/Core>
-// #include "util/graph/FactorGraphSolver.hpp"
+#include "util/graph/FactorGraphSolver.hpp"
 
 TEST(FactorGraphTest, Translation) {
   std::cout << "Factor graph" << std::endl;
@@ -13,5 +13,5 @@ TEST(FactorGraphTest, Translation) {
     return R * Eigen::VectorXd::Ones(3);
   };
 
-//   graph::OptimizePose(h, measurement);
+  graph::OptimizePose(h, measurement);
 }
