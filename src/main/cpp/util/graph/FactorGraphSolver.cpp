@@ -88,6 +88,10 @@ void graph::OptimizePose(
 
     std::cout << "Formed local parameterization" << std::endl;
 
+    reprojectionFunction(T, R);
+
+    std::cout << "Evaluated reprojection" << std::endl;
+
     // f(S) = h(S) - z
     Eigen::VectorXd f = reprojectionFunction(T, R) - measurement;
 
