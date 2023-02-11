@@ -91,6 +91,8 @@ void graph::OptimizePose(
     // f(S) = h(S) - z
     Eigen::VectorXd f = reprojectionFunction(T, R) - measurement;
 
+    std::cout << "dumb dumb dumb code" << std::endl;
+
     // Linearize Jacobian around S = 0
     Eigen::SparseMatrix<double> J =
         NumericalJacobian(localParameterization, Eigen::VectorXd::Zero(6));
