@@ -3,6 +3,7 @@
 #include "util/graph/FactorGraphSolver.hpp"
 
 #include <vector>
+#include <iostream>
 
 #include <Eigen/Core>
 #include <Eigen/SparseCholesky>
@@ -104,5 +105,12 @@ void graph::OptimizePose(
     // Increment global parameterization from local increment
     T += t;
     R = R * Skew(w).exp();
+
+    if (step.norm() < 1e-6) {
+      break;
+    }
   }
+
+  std::cout << "Translation: \n" << T << std::endl;
+  std::cout << "Rotation: \n" << R << std::endl;
 }

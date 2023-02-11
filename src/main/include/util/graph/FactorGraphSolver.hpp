@@ -32,6 +32,8 @@ Eigen::SparseMatrix<double> NumericalJacobian(
  * Note this is a least-squares problem minimizing the error between predicted
  * and measured sensor readings.
  *
+ * Implementation based on https://www.cs.cmu.edu/~kaess/pub/Dellaert17fnt.pdf
+ *
  * @param reprojectionFunction Reprojection function h(T, R) which predicts
  * sensor readings from a given pose.
  * @param measurement Measured sensor readings z.
