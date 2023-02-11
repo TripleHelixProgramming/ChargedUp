@@ -3,19 +3,15 @@
 #include <Eigen/Core>
 // #include "util/graph/FactorGraphSolver.hpp"
 
-// Eigen::VectorXd reprojection(Eigen::Vector3d T, Eigen::Matrix3d R) {
-//   return R * Eigen::Vector3d::Ones();
-// }
-
 TEST(FactorGraphTest, Translation) {
   std::cout << "Factor graph" << std::endl;
 
-  Eigen::VectorXd measurement;
+  Eigen::VectorXd measurement{3};
   measurement << 1, 1, 1;
 
-//   std::function<Eigen::VectorXd(Eigen::Vector3d, Eigen::Matrix3d)> h = reprojection;
+  auto h = [](Eigen::Vector3d T, Eigen::MatrixXd R) {
+    return R * Eigen::VectorXd::Ones(3);
+  };
 
 //   graph::OptimizePose(h, measurement);
-
-//   EXPECT_EQ(0.0, 0.0);
 }
