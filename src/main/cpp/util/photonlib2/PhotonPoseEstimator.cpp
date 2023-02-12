@@ -3,10 +3,12 @@
 #include "util/photonlib2/PhotonPoseEstimator.hpp"
 
 #include <chrono>
+#include <cmath>
 #include <iostream>
 #include <limits>
 #include <map>
 #include <memory>
+#include <optional>
 #include <span>
 #include <string>
 #include <utility>
@@ -131,7 +133,7 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
     cv::Mat tvec(3, 1, cv::DataType<double>::type);
     cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
                  m_distortionCoefficients, rvec, tvec, false,
-                 cv::SOLVEPNP_SQPNP);
+                 cv::SOLVEPNP_ITERATIVE);
     pose1 = pose2 = ToPose3d(tvec, rvec);
   } else {
     return std::nullopt;
@@ -141,6 +143,8 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
 
   m_pose1Field.SetRobotPose(pose1.ToPose2d());
   m_pose2Field.SetRobotPose(pose2.ToPose2d());
+
+  pose1 = pose1.TransformBy(m_robotToCamera.Inverse());
 
   SmartDashboard::PutNumber("SQPNP/Translation/X", pose1.X().value());
   SmartDashboard::PutNumber("SQPNP/Translation/Y", pose1.Y().value());
@@ -157,8 +161,12 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
               .count() /
           1000.0);
 
+  if (std::abs(pose1.Z().convert<cm>().value()) >= 20) {
+    return std::nullopt;
+  }
+
   return photonlib::EstimatedRobotPose(
-      pose1.TransformBy(m_robotToCamera.Inverse()), result.GetTimestamp());
+      pose1, result.GetTimestamp());
 }
 
 cv::Point3d PhotonPoseEstimator::ToPoint3d(const Translation3d& translation) {

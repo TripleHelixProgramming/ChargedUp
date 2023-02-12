@@ -59,18 +59,27 @@ class SwerveDrive : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
+  /**
+   * Update pose of simulated robot based on motor speeds.
+   */
   void SimulationPeriodic() override;
 
+  /**
+   * Zero steering absolute encoders for all swerve modules, and store the
+   * offsets in the encoders' memories.
+   */
   void ResetAbsoluteEncoders();
 
  private:
+  /**
+   * Get the positions of all swerve modules, as an array.
+   */
   wpi::array<frc::SwerveModulePosition, 4> GetModulePositions() const;
 
   // Subsystems:
-  /**
-   * @brief The four swerve modules.
-   */
+  /// The four swerve modules.
   std::array<SwerveModule, 4> m_modules;
+  /// Vision system
   Vision m_vision;
 
   // Properties:
@@ -78,21 +87,23 @@ class SwerveDrive : public frc2::SubsystemBase {
    * @brief NAVX gyro sensor for heading
    */
   AHRS m_gyro{frc::SPI::Port::kMXP};
+
+  /// The camera facing forwar
   photonlib::PhotonCamera m_camera{"front"};
 
-  /**
-   * @brief Swerve drive kinematics
-   */
+  /// Swerve drive kinematics
   frc::SwerveDriveKinematics<4> m_driveKinematics;
 
   // State:
-  /**
-   * @brief The current position state of the robot.
-   */
+  /// The position of the robot as estimated by module encoders
   frc::SwerveDriveOdometry<4> m_odometry;
 
+  /// The position of the robot based on odometry and vision measurements
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
+  units::second_t m_lastAppliedTs{};
+
+  // Logging
   DoubleTelemetryEntry m_poseEstimateXLog;
   DoubleTelemetryEntry m_poseEstimateYLog;
   DoubleTelemetryEntry m_poseEstimateThetaLog;
@@ -101,14 +112,18 @@ class SwerveDrive : public frc2::SubsystemBase {
   DoubleTelemetryEntry m_visionPoseEstimateYLog;
   DoubleTelemetryEntry m_visionPoseEstimateThetaLog;
 
+  /// Display pose estimate on 2d field
   frc::Field2d m_poseEstField;
+  frc::Field2d m_visionEstField;
 
   // Simulation
 
+  /// Keeps track of the simulated robot's pose
   SimSwervePoseTracker<4> m_simPoseTracker;
 
+  /// Simulates the gyro sensor
   frc::sim::SimDeviceSim m_gyroSim;
-  hal::SimDouble m_gyroSimYaw;
 
+  /// Display sim pose on 2d field
   frc::Field2d m_simPoseField;
 };

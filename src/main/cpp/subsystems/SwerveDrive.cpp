@@ -28,6 +28,7 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
+#include "hal/SimDevice.h"
 #include "subsystems/Vision.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
@@ -65,7 +66,7 @@ SwerveDrive::SwerveDrive()
                        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                       Pose2d(),
                       {0.1, 0.1, 0.1},
-                      {0.1, 0.1, 0.1}},
+                      {0.3, 0.3, 0.3}},
       m_poseEstimateXLog("Drive/Pose Estimate/X", TelemetryLevel::kCompetition),
       m_poseEstimateYLog("Drive/Pose Estimate/Y", TelemetryLevel::kCompetition),
       m_poseEstimateThetaLog("Drive/Pose Estimate/Theta",
@@ -77,16 +78,17 @@ SwerveDrive::SwerveDrive()
       m_visionPoseEstimateThetaLog("Vision/Pose Estimate/Theta",
                                    TelemetryLevel::kCompetition),
       m_simPoseTracker(m_driveKinematics),
-      m_gyroSim("navX-Sensor", 4),
-      m_gyroSimYaw(m_gyroSim.GetDouble("Yaw")) {
+      m_gyroSim("navX-Sensor", 4) {
   SmartDashboard::PutData("Pose Est Field", &m_poseEstField);
+  SmartDashboard::PutData("Vision Est Field", &m_visionEstField);
   if constexpr (RobotBase::IsSimulation()) {
     SmartDashboard::PutData("Sim Field", &m_simPoseField);
   }
 }
 
 Pose2d SwerveDrive::GetPose() const {
-  return m_odometry.GetPose();
+  return m_poseEstimator.GetEstimatedPosition();
+  // return m_odometry.GetPose();
 }
 
 void SwerveDrive::ResetOdometry(const Pose2d& pose) {
@@ -164,10 +166,11 @@ void SwerveDrive::Periodic() {
 
   auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
       Pose3d(m_poseEstimator.GetEstimatedPosition()));
-  if (visionEstimatedPose.has_value()) {
+  if (visionEstimatedPose.has_value() && visionEstimatedPose->timestamp != m_lastAppliedTs) {
     m_poseEstimator.AddVisionMeasurement(
         visionEstimatedPose->estimatedPose.ToPose2d(),
         visionEstimatedPose->timestamp);
+    m_lastAppliedTs = visionEstimatedPose->timestamp;
     m_visionPoseEstimateXLog.Append(
         visionEstimatedPose->estimatedPose.X()
             .value());  // TODO: add timestamp to this (additional param)
@@ -178,6 +181,7 @@ void SwerveDrive::Periodic() {
             .Rotation()
             .Radians()
             .value());
+    m_visionEstField.SetRobotPose(visionEstimatedPose->estimatedPose.ToPose2d());
   }
 
   m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());
@@ -190,25 +194,15 @@ void SwerveDrive::Periodic() {
 
 void SwerveDrive::SimulationPeriodic() {
   Pose2d previousPose = m_simPoseTracker.GetPose();
-  // wpi::array<SwerveModulePosition, 4> moduleDeltas(wpi::empty_array);
-  // for (size_t index = 0; index < 4; index++) {
-  //   auto& lastPosition = m_previousModulePositions[index];
-  //   auto currentPosition = m_modules[index].GetPosition();
-  //   moduleDeltas[index] = {currentPosition.distance - lastPosition.distance,
-  //                          currentPosition.angle};
-
-  //   m_previousModulePositions[index].distance =
-  //       m_modules[index].GetPosition().distance;
-  // }
-
-  // Twist2d delta = m_driveKinematics.ToTwist2d(moduleDeltas);
 
   m_simPoseTracker.Update(GetModulePositions());
+
+  hal::SimDouble gyroSimYaw = m_gyroSim.GetDouble("Yaw");
 
   auto deltaRotation =
       m_simPoseTracker.GetPose().Rotation() - previousPose.Rotation();
   degree_t gyroDelta = -deltaRotation.Degrees();
-  m_gyroSimYaw.Set(m_gyroSimYaw.Get() + gyroDelta.value());
+  gyroSimYaw.Set(gyroSimYaw.Get() + gyroDelta.value());
 
   m_simPoseField.SetRobotPose(m_simPoseTracker.GetPose());
 }

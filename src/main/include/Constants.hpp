@@ -68,7 +68,7 @@ constexpr double kSteerFF = 0.0;
 
 constexpr auto kMaxSpeed = 4.0_mps;
 
-constexpr auto kWheelRadius = 0.049_m;
+constexpr auto kWheelRadius = 0.047804878_m;
 
 constexpr double kDriveGearRatio = 6.75;
 constexpr double kSteerGearRatio = 12.8;
@@ -93,18 +93,20 @@ constexpr double kArmEncoderGearRatio = 1 / 5.0;
 
 namespace VisionConstants {
 
-// const frc::Transform3d kRobotToCam(frc::Translation3d(0.0_m,
-// -13.5_in, 11.2_in),
-//                                    frc::Rotation3d(0_rad, 0_rad, -90_deg));
+// NOLINT
+const frc::Transform3d kRobotToLeftCam(
+    frc::Translation3d(10.984_in, 12.749_in, 24.671_in),
+    frc::Rotation3d(0_deg, 0_deg, -45_deg));
 
-// const frc::Transform3d kRobotToCam(frc::Translation3d(-11_in,
-// 0_in, 24.865_in),
-//                                    frc::Rotation3d(0_deg, 0_deg, 0_deg));
+// NOLINT
+const frc::Transform3d kRobotToRightCam(
+    frc::Translation3d(10.984_in, -12.749_in, 24.671_in),
+    frc::Rotation3d(0_deg, 0_deg, 45_deg));
 
-// Left side camera on 2023 robot
-const frc::Transform3d kRobotToCam(frc::Translation3d(11.25_in, 13.25_in,
-                                                      24.865_in),
-                                   frc::Rotation3d(0_deg, 0_deg, -45_deg));
+// NOLINT
+const frc::Transform3d kRobotToBackCam(
+    frc::Translation3d(-11.760_in, 0.000_in, 24.671_in),
+    frc::Rotation3d(0_deg, 0_deg, 180_deg));
 
 }  // namespace VisionConstants
 

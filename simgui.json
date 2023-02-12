@@ -52,6 +52,8 @@
       "/LiveWindow/Ungrouped/frc2::SubsystemBase": "Subsystem",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Pose Est 1": "Field2d",
+      "/SmartDashboard/Pose Est 2": "Field2d",
       "/SmartDashboard/Pose Est Field": "Field2d",
       "/SmartDashboard/Reset Encoders": "Command",
       "/SmartDashboard/Sim Field": "Field2d"
@@ -87,6 +89,9 @@
           "Translation": {
             "open": true
           }
+        },
+        "Pose Est Field": {
+          "open": true
         },
         "SQPNP": {
           "Rotation": {

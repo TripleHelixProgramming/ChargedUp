@@ -31,10 +31,10 @@ Trajectory::Trajectory(std::vector<Trajectory::State> states)
     : m_states{states} {}
 
 Trajectory::State Trajectory::Sample(second_t t) const {
-  if (t.value() < m_states[0].t.value()) {
+  if (t < m_states[0].t) {
     return m_states[0];
   }
-  if (t.value() > GetTotalTime().value()) {
+  if (t > GetTotalTime()) {
     return m_states.back();
   }
 

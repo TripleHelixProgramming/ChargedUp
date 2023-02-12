@@ -26,7 +26,7 @@ void DriveTrajectory::Initialize() {
   m_controllerRotation.EnableContinuousInput(-std::numbers::pi,
                                              std::numbers::pi);
 
-  m_drive->ResetOdometry(m_trajectory->GetInitialPose());
+  // m_drive->ResetOdometry(m_trajectory->GetInitialPose());
 }
 
 void DriveTrajectory::Execute() {
@@ -59,5 +59,5 @@ void DriveTrajectory::End(bool interrupted) {
 }
 
 bool DriveTrajectory::IsFinished() {
-  return m_timestamp.Get() > m_trajectory->GetTotalTime();
+  return m_timestamp.Get() > m_trajectory->GetTotalTime() + 0_ms; // add extra time at end to correct errors
 }

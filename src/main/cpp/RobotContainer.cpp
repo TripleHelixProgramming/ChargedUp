@@ -51,6 +51,7 @@ RobotContainer::RobotContainer()
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   return North2ConeCharge(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  // return DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("a-to-b")).ToPtr();
 }
 
 void RobotContainer::UpdateTelemetry() {

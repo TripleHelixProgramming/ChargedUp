@@ -61,11 +61,11 @@ void Superstructure::PositionCubeHigh() {}
 void Superstructure::PositionCubeMedium() {}
 
 void Superstructure::PositionConeHigh() {
-  SetArmPosition(33_deg);
+  SetArmPosition(33.5_deg);
 }
 
 void Superstructure::PositionConeMedium() {
-  SetArmPosition(25.5_deg);
+  SetArmPosition(27.0_deg);
 }
 
 void Superstructure::IntakeCone() {

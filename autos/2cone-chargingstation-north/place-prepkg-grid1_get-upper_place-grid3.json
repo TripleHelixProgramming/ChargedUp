@@ -63,16 +63,7 @@
             ]
         },
         "pick_4": {
-            "obstacles": [
-                {
-                    "center_x": 12.634486797521758,
-                    "center_y": -0.8360134065181427,
-                    "name": "0",
-                    "obstacle_type": "circle",
-                    "radius": 5.0,
-                    "safety_distance": 0.0
-                }
-            ],
+            "obstacles": [],
             "waypoints": [
                 {
                     "angular_velocity": 0.0,
@@ -179,7 +170,7 @@
                     "y_constrained": true
                 },
                 {
-                    "heading": -0.16965121728445937,
+                    "heading": 1.3049979247631727,
                     "name": "guess",
                     "waypoint_type": "initial_guess",
                     "x": 12.98118394951568,
@@ -250,9 +241,9 @@
     "robot_configuration": {
         "bumper_length": 0.954,
         "bumper_width": 0.903,
-        "mass": 46.7,
-        "moment_of_inertia": 5.6,
-        "motor_max_angular_speed": 40.0,
+        "mass": 90.718474,
+        "moment_of_inertia": 5.0,
+        "motor_max_angular_speed": 8.377580409572781,
         "motor_max_torque": 1.0,
         "team_number": 2363,
         "wheel_horizontal_distance": 0.622,
