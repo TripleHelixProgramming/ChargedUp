@@ -33,7 +33,7 @@ class DriveTrajectory
 
   frc::PIDController m_controllerX{6.0, 0, 0};
   frc::PIDController m_controllerY{6.0, 0, 0};
-  frc::PIDController m_controllerRotation{6.0, 0, 0};
+  frc::PIDController m_controllerRotation{10.0, 0, 0};
 
   DoubleTelemetryEntry m_timestampLog;
 
