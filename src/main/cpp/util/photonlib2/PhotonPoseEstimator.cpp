@@ -142,7 +142,7 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
   auto end = std::chrono::system_clock::now();
 
   m_pose1Field.SetRobotPose(pose1.ToPose2d());
-  m_pose2Field.SetRobotPose(pose2.ToPose2d());
+  m_pose2Field.SetRobotPose(Pose2d(pose1.X(), pose1.Y(), pose1.Rotation().Z()));
 
   pose1 = pose1.TransformBy(m_robotToCamera.Inverse());
 

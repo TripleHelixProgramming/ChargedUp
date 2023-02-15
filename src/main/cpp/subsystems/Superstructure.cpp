@@ -119,6 +119,10 @@ void Superstructure::SuperstructurePeriodic() {
   double intakeWheelSpeed = m_intakeWheelSpeed;
   degree_t armPosition = m_armPosition;
 
+  if (m_driverLockControl) {
+    armPosition = 9_deg;
+  }
+
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece()) {
     intakeWheelSpeed = units::math::min(intakeWheelSpeed, 0.0);
