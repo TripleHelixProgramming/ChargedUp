@@ -129,8 +129,10 @@ double Superstructure::GetAbsoluteStringPosition() {
 
   for (size_t index = 0; index < m_encoderPositions.size(); ++index) {
     if (m_encoderPositions[index] > position) {
-      double t = (position - m_encoderPositions[index - 1]) / (m_encoderPositions[index] - m_encoderPositions[index - 1]);
-      return (m_stringPositions[index] - m_stringPositions[index - 1]) * t + m_stringPositions[index - 1];
+      double t = (position - m_encoderPositions[index - 1]) /
+                 (m_encoderPositions[index] - m_encoderPositions[index - 1]);
+      return (m_stringPositions[index] - m_stringPositions[index - 1]) * t +
+             m_stringPositions[index - 1];
     }
   }
 
@@ -150,8 +152,11 @@ units::degree_t Superstructure::GetStringAngle() {
 
   for (size_t index = 0; index < m_stringPositions.size(); ++index) {
     if (m_stringPositions[index] > position) {
-      double t = (position - m_stringPositions[index - 1]) / (m_stringPositions[index] - m_stringPositions[index - 1]);
-      return degree_t{(m_encoderPositions[index] - m_encoderPositions[index - 1]) * t + m_encoderPositions[index - 1]};
+      double t = (position - m_stringPositions[index - 1]) /
+                 (m_stringPositions[index] - m_stringPositions[index - 1]);
+      return degree_t{
+          (m_encoderPositions[index] - m_encoderPositions[index - 1]) * t +
+          m_encoderPositions[index - 1]};
     }
   }
 
@@ -214,8 +219,8 @@ void Superstructure::SuperstructurePeriodic() {
   }
 
   m_armController.SetGoal(armPosition);
-  auto commandedVoltage =
-      volt_t{m_armController.Calculate(degree_t{currentAngle}) + m_integral * m_kI};
+  auto commandedVoltage = volt_t{
+      m_armController.Calculate(degree_t{currentAngle}) + m_integral * m_kI};
 
   if (GetArmPosition().value() < 3.0 && armPosition.value() < 1.0) {
     commandedVoltage = volt_t{-0.5};
@@ -223,9 +228,9 @@ void Superstructure::SuperstructurePeriodic() {
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
-  commandedVoltage = volt_t{
-      std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
-               commandedVoltage.value())};
+  commandedVoltage =
+      volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
+                      commandedVoltage.value())};
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
 
