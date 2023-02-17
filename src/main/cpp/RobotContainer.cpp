@@ -62,6 +62,12 @@ void RobotContainer::UpdateTelemetry() {
                             m_superstructure.GetAbsoluteArmPosition().value());
   SmartDashboard::PutNumber("Arm relative position",
                             m_superstructure.GetArmPosition().value());
+  SmartDashboard::PutNumber("String position",
+                            m_superstructure.RawString());
+  SmartDashboard::PutNumber("Estimated string position",
+                            m_superstructure.GetAbsoluteStringPosition());
+  SmartDashboard::PutNumber("Estimated angle",
+                            m_superstructure.GetStringAngle().value());
 }
 
 void RobotContainer::ConfigureBindings() {

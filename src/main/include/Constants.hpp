@@ -82,9 +82,9 @@ constexpr auto kMinArmPickupPosition = 3.0_deg;
 constexpr auto kMaxArmPosition = 1.0_rad;
 
 constexpr double kArmFF = 0;
-constexpr double kArmP = 10.0;
+constexpr double kArmP = 20.0;
 constexpr double kArmI = 0;
-constexpr double kArmD = 0;
+constexpr double kArmD = 4.0;
 
 constexpr double kArmEncoderOffset = 17;
 constexpr double kArmEncoderGearRatio = 1 / 5.0;

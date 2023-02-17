@@ -46,6 +46,12 @@ class Superstructure : public frc2::SubsystemBase {
 
   units::degree_t GetArmPosition();
 
+  double GetAbsoluteStringPosition();
+
+  units::degree_t GetStringAngle();
+
+  double RawString();
+
   bool HasGamePiece();
 
   void SuperstructurePeriodic();
@@ -57,9 +63,15 @@ class Superstructure : public frc2::SubsystemBase {
   bool m_expanded = true;
 
   double m_integral = 0.0;
-  double m_kI = 0.01;
-  double m_tolerance = 10.0;
+  double m_kI = 0.002;
+  double m_tolerance = 4.0;
   double m_outputBound = 0.0;
+
+  double m_seed = 0.0;
+
+  // Strint pot lookup table
+  std::array<double, 13> m_encoderPositions{0.835, 2.315, 4.275, 7.05, 10.60, 13.97, 17.345, 20.71, 23.667, 27.45, 31.53, 35.12, 39.85};
+  std::array<double, 13> m_stringPositions{0.0, 148.0, 318.25, 533.0, 847.0, 1134.0, 1401.5, 1650.25, 1829.75, 2023.0, 2230.75, 2358.25, 2466.0};
 
   units::degree_t m_armOffset = units::degree_t{0.0};
 
@@ -84,6 +96,9 @@ class Superstructure : public frc2::SubsystemBase {
 
   frc::DutyCycleEncoder m_armEncoder{ElectricalConstants::kArmEncoderPort};
   frc::Encoder m_armRelativeEncoder{1, 2, false,
+                                    frc::Encoder::EncodingType::k4X};
+
+  frc::Encoder m_stringEncoder{3, 4, false,
                                     frc::Encoder::EncodingType::k4X};
 
   rev::SparkMaxLimitSwitch m_beamBreak;
