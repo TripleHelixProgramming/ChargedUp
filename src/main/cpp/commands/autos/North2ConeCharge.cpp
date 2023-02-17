@@ -24,15 +24,13 @@ North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
-
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
                           &m_trajManager->GetTrajectory("north_pick4")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
-                                       }))
-      ),
+                                       }))),
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
                           &m_trajManager->GetTrajectory("north_place_grid3x3")),
@@ -44,13 +42,13 @@ North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
       //     DriveTrajectory(m_drive,
       //                     &m_trajManager->GetTrajectory("north_charging_station")),
       //     frc2::SequentialCommandGroup(frc2::WaitCommand(2.0_s),
-      //                                  frc2::InstantCommand([superstructure]() {
+      //                                  frc2::InstantCommand([superstructure]()
+      //                                  {
       //                                    superstructure->IntakeCube();
       //                                  }))
       // )
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
-          frc2::InstantCommand(
-          [superstructure]() { superstructure->SetIntakeWheelSpeed(0.0); })
-  );
+      frc2::InstantCommand(
+          [superstructure]() { superstructure->SetIntakeWheelSpeed(0.0); }));
 }

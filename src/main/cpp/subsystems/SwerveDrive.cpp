@@ -18,6 +18,7 @@
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
+#include <hal/SimDevice.h>
 #include <photonlib/PhotonCamera.h>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
@@ -28,7 +29,6 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
-#include "hal/SimDevice.h"
 #include "subsystems/Vision.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
@@ -166,7 +166,8 @@ void SwerveDrive::Periodic() {
 
   auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
       Pose3d(m_poseEstimator.GetEstimatedPosition()));
-  if (visionEstimatedPose.has_value() && visionEstimatedPose->timestamp != m_lastAppliedTs) {
+  if (visionEstimatedPose.has_value() &&
+      visionEstimatedPose->timestamp != m_lastAppliedTs) {
     m_poseEstimator.AddVisionMeasurement(
         visionEstimatedPose->estimatedPose.ToPose2d(),
         visionEstimatedPose->timestamp);
@@ -181,7 +182,8 @@ void SwerveDrive::Periodic() {
             .Rotation()
             .Radians()
             .value());
-    m_visionEstField.SetRobotPose(visionEstimatedPose->estimatedPose.ToPose2d());
+    m_visionEstField.SetRobotPose(
+        visionEstimatedPose->estimatedPose.ToPose2d());
   }
 
   m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());

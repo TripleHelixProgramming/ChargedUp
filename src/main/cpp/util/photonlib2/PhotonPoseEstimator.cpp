@@ -165,8 +165,7 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
     return std::nullopt;
   }
 
-  return photonlib::EstimatedRobotPose(
-      pose1, result.GetTimestamp());
+  return photonlib::EstimatedRobotPose(pose1, result.GetTimestamp());
 }
 
 cv::Point3d PhotonPoseEstimator::ToPoint3d(const Translation3d& translation) {

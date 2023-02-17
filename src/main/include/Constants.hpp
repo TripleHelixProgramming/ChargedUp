@@ -94,19 +94,20 @@ constexpr double kArmEncoderGearRatio = 1 / 5.0;
 namespace VisionConstants {
 
 // NOLINT
-const frc::Transform3d kRobotToLeftCam(
-    frc::Translation3d(10.984_in, 12.749_in, 24.671_in),
-    frc::Rotation3d(0_deg, 0_deg, -45_deg));
+const frc::Transform3d kRobotToLeftCam(frc::Translation3d(10.984_in, 12.749_in,
+                                                          24.671_in),
+                                       frc::Rotation3d(0_deg, 0_deg, -45_deg));
 
 // NOLINT
-const frc::Transform3d kRobotToRightCam(
-    frc::Translation3d(10.984_in, -12.749_in, 24.671_in),
-    frc::Rotation3d(0_deg, 0_deg, 45_deg));
+const frc::Transform3d kRobotToRightCam(frc::Translation3d(10.984_in,
+                                                           -12.749_in,
+                                                           24.671_in),
+                                        frc::Rotation3d(0_deg, 0_deg, 45_deg));
 
 // NOLINT
-const frc::Transform3d kRobotToBackCam(
-    frc::Translation3d(-11.760_in, 0.000_in, 24.671_in),
-    frc::Rotation3d(0_deg, 0_deg, 180_deg));
+const frc::Transform3d kRobotToBackCam(frc::Translation3d(-11.760_in, 0.000_in,
+                                                          24.671_in),
+                                       frc::Rotation3d(0_deg, 0_deg, 180_deg));
 
 }  // namespace VisionConstants
 

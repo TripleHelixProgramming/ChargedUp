@@ -59,5 +59,7 @@ void DriveTrajectory::End(bool interrupted) {
 }
 
 bool DriveTrajectory::IsFinished() {
-  return m_timestamp.Get() > m_trajectory->GetTotalTime() + 0_ms; // add extra time at end to correct errors
+  return m_timestamp.Get() >
+         m_trajectory->GetTotalTime() +
+             0_ms;  // add extra time at end to correct errors
 }
