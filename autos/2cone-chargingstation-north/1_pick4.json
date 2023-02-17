@@ -1,0 +1,108 @@
+{
+    "field_image": {
+        "default": "Charged Up"
+    },
+    "paths": {
+        "pick_4": {
+            "obstacles": [],
+            "waypoints": [
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 0,
+                    "heading": 0.0,
+                    "heading_constrained": true,
+                    "name": "start",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 14.65,
+                    "x_constrained": true,
+                    "y": 5.0,
+                    "y_constrained": true
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 30,
+                    "heading": 0.0,
+                    "heading_constrained": true,
+                    "name": "mid",
+                    "velocity_magnitude_constrained": false,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": false,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": false,
+                    "waypoint_type": "custom",
+                    "x": 13.4,
+                    "x_constrained": true,
+                    "y": 4.712703709675556,
+                    "y_constrained": false
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 30,
+                    "heading": 3.141592653589793,
+                    "heading_constrained": true,
+                    "name": "orient",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": -0.8000000000000007,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 10.4714,
+                    "x_constrained": true,
+                    "y": 4.7032,
+                    "y_constrained": true
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 20,
+                    "heading": 3.141592653589793,
+                    "heading_constrained": true,
+                    "name": "pick",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 9.893413333587125,
+                    "x_constrained": true,
+                    "y": 4.7032,
+                    "y_constrained": true
+                }
+            ]
+        }
+    },
+    "robot_configuration": {
+        "bumper_length": 0.954,
+        "bumper_width": 0.903,
+        "mass": 90.718474,
+        "moment_of_inertia": 5.0,
+        "motor_max_angular_speed": 68.06784082777885,
+        "motor_max_torque": 1.9,
+        "team_number": 2363,
+        "wheel_horizontal_distance": 0.622,
+        "wheel_radius": 0.051,
+        "wheel_vertical_distance": 0.572
+    },
+    "selected_path_index": 0,
+    "unit_preferences": {
+        "acceleration_unit": "metre_per_second",
+        "angle_unit": "degree_angle",
+        "angular_speed_unit": "revolution_per_minute",
+        "length_unit": "metre",
+        "mass_unit": "kilogram",
+        "moment_of_inertia_unit": "kilogram_square_metre",
+        "speed_unit": "metre_per_second",
+        "time_unit": "second",
+        "torque_unit": "newton_metre"
+    }
+}

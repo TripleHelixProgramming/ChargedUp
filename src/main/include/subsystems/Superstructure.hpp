@@ -50,6 +50,8 @@ class Superstructure : public frc2::SubsystemBase {
 
   void SuperstructurePeriodic();
 
+  bool m_driverLockControl = false;
+
  private:
   // State variables
   double m_intakeWheelSpeed = 0.0;

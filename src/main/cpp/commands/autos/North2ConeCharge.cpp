@@ -18,11 +18,12 @@ North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionConeHigh(); }),
-      frc2::WaitCommand(1.0_s),
+      frc2::WaitCommand(1.25_s),
       DriveTrajectory(m_drive,
                       &m_trajManager->GetTrajectory("north_place_grid3x1")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
+
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
                           &m_trajManager->GetTrajectory("north_pick4")),
@@ -33,13 +34,21 @@ North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
                           &m_trajManager->GetTrajectory("north_place_grid3x3")),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.0_s),
+          frc2::SequentialCommandGroup(frc2::WaitCommand(1.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionConeHigh();
                                        }))),
+      // frc2::ParallelDeadlineGroup(
+      //     DriveTrajectory(m_drive,
+      //                     &m_trajManager->GetTrajectory("north_charging_station")),
+      //     frc2::SequentialCommandGroup(frc2::WaitCommand(2.0_s),
+      //                                  frc2::InstantCommand([superstructure]()
+      //                                  {
+      //                                    superstructure->IntakeCube();
+      //                                  }))
+      // )
       frc2::InstantCommand(
-          [superstructure]() { superstructure->SetExtenderPosition(false); })
-      // DriveTrajectory(m_drive,
-      //                 &m_trajManager->GetTrajectory("north_charging_station")));
-  );
+          [superstructure]() { superstructure->SetExtenderPosition(false); }),
+      frc2::InstantCommand(
+          [superstructure]() { superstructure->SetIntakeWheelSpeed(0.0); }));
 }

@@ -26,9 +26,9 @@ class Vision : public frc2::SubsystemBase {
   // Swiped from photonvision JSON config file
   cv::Mat m_cameraMatrix =
       (cv::Mat_<double>(3, 3) <<
-           // Global shutter camera
-           735.0038676061282,
-       0.0, 666.4393853583332, 0.0, 734.0230911175827, 388.3489253256961, 0.0,
+           // Global shutter camera left after feb 14
+           737.1375625617618,
+       0.0, 605.0596973248307, 0.0, 737.332104946256, 326.2280047911644, 0.0,
        0.0, 1.0
        // Josh's XPS 13 webcam
        // 715.4570872534645, 0.0, 503.2741860156487, 0.0, 718.1743279814092,
@@ -37,9 +37,9 @@ class Vision : public frc2::SubsystemBase {
   cv::Mat m_distortionCoefficients =
       (cv::Mat_<double>(5, 1) <<
            // Global shutter camera
-           0.10407329380796507,
-       -0.07442029959264967, -4.0143549811508955e-4, -5.79173576686874e-4,
-       -0.10751011668818884
+           0.048988140593189386,
+       0.1507107694319857, -0.0013521811213351104, -8.674674516252695E-4,
+       -0.2012522991632792
        // Josh's XPS 13 webcam
        // -0.1993374890518083, 1.056200497191576, 0.009578356882858418,
        // 0.008707188436370845, -1.5919105322821563
@@ -48,5 +48,4 @@ class Vision : public frc2::SubsystemBase {
   //  -0.0013635121873952262, 1.2849267796860973);
 
   photonlib2::PhotonPoseEstimator m_poseEstimator;
-  photonlib::PhotonPoseEstimator m_oldPoseEstimator;
 };

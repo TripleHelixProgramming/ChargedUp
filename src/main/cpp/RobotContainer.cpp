@@ -33,10 +33,13 @@ RobotContainer::RobotContainer()
         // Right stick up on xbox is negative, right stick down is postive.
         // Right stick right on xbox is negative, right stick left is postive.
         // Left stick right is positive, left stick left is negative.
-        return m_drive.JoystickDrive(-m_driver.GetRawAxis(kZorroRightYAxis),
-                                     -m_driver.GetRawAxis(kZorroRightXAxis),
-                                     -m_driver.GetRawAxis(kZorroLeftXAxis),
-                                     true);
+        double rightXAxis = -m_driver.GetRawAxis(kZorroRightYAxis);
+        double rightYAxis = -m_driver.GetRawAxis(kZorroRightXAxis);
+        double leftXAxis = -m_driver.GetRawAxis(kZorroLeftXAxis);
+        return m_drive.JoystickDrive(
+            std::abs(rightXAxis) < 0.05 ? 0.0 : rightXAxis,
+            std::abs(rightYAxis) < 0.05 ? 0.0 : rightYAxis,
+            std::abs(leftXAxis) < 0.05 ? 0.0 : leftXAxis, true);
       },
       {&m_drive}  // requirements
       ));
@@ -51,6 +54,8 @@ RobotContainer::RobotContainer()
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
   return North2ConeCharge(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  // return DriveTrajectory(&m_drive,
+  // &m_trajManager.GetTrajectory("a-to-b")).ToPtr();
 }
 
 void RobotContainer::UpdateTelemetry() {
@@ -116,6 +121,14 @@ void RobotContainer::ConfigureBindings() {
       (InstantCommand([this]() {
         return m_superstructure.SetIntakeWheelSpeed(0.0);
       })).ToPtr());
+
+  JoystickButton driverRightTrigger(&m_driver, OIConstants::kZorroDIn);
+  driverRightTrigger.OnTrue(InstantCommand([this]() {
+                              m_superstructure.m_driverLockControl = true;
+                            }).ToPtr());
+  driverRightTrigger.OnFalse(InstantCommand([this]() {
+                               m_superstructure.m_driverLockControl = false;
+                             }).ToPtr());
   // m_operator.().OnTrue((InstantCommand([this]() { return
   // m_superstructure.SetIntakeWheelSpeed(0.5); })).ToPtr());
   // m_operator.RightBumper().OnFalse((InstantCommand([this]() { return

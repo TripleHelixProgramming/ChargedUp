@@ -34,6 +34,16 @@
       "SPARK MAX [25]": {
         "name": "Rear Left Steer"
       },
+      "SPARK MAX [28]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [29]": {
+        "header": {
+          "open": true
+        }
+      },
       "navX-Sensor[4]": {
         "name": "navX"
       }
@@ -52,9 +62,12 @@
       "/LiveWindow/Ungrouped/frc2::SubsystemBase": "Subsystem",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Pose Est 1": "Field2d",
+      "/SmartDashboard/Pose Est 2": "Field2d",
       "/SmartDashboard/Pose Est Field": "Field2d",
       "/SmartDashboard/Reset Encoders": "Command",
-      "/SmartDashboard/Sim Field": "Field2d"
+      "/SmartDashboard/Sim Field": "Field2d",
+      "/SmartDashboard/Vision Est Field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Pose Est Field": {
@@ -104,9 +117,6 @@
             },
             "open": true
           },
-          "open": true
-        },
-        "Sim Field": {
           "open": true
         },
         "Vision": {

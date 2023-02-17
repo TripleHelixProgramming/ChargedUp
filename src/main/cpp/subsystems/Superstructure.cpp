@@ -61,11 +61,11 @@ void Superstructure::PositionCubeHigh() {}
 void Superstructure::PositionCubeMedium() {}
 
 void Superstructure::PositionConeHigh() {
-  SetArmPosition(33_deg);
+  SetArmPosition(34.25_deg);
 }
 
 void Superstructure::PositionConeMedium() {
-  SetArmPosition(25.5_deg);
+  SetArmPosition(27.0_deg);
 }
 
 void Superstructure::IntakeCone() {
@@ -118,6 +118,10 @@ bool Superstructure::HasGamePiece() {
 void Superstructure::SuperstructurePeriodic() {
   double intakeWheelSpeed = m_intakeWheelSpeed;
   degree_t armPosition = m_armPosition;
+
+  if (m_driverLockControl) {
+    armPosition = 9_deg;
+  }
 
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece()) {
