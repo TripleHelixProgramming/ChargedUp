@@ -44,8 +44,6 @@ class Superstructure : public frc2::SubsystemBase {
 
   units::degree_t GetAbsoluteArmPosition();
 
-  units::degree_t GetArmPosition();
-
   double GetAbsoluteStringPosition();
 
   units::degree_t GetStringAngle();
@@ -77,8 +75,6 @@ class Superstructure : public frc2::SubsystemBase {
       0.0,     148.0,   318.25, 533.0,   847.0,   1134.0, 1401.5,
       1650.25, 1829.75, 2023.0, 2230.75, 2358.25, 2466.0};
 
-  units::degree_t m_armOffset = units::degree_t{0.0};
-
   // Arm PID controller
   frc::ProfiledPIDController<units::radian> m_armController{
       SuperstructureConstants::kArmP, SuperstructureConstants::kArmI,
@@ -99,8 +95,6 @@ class Superstructure : public frc2::SubsystemBase {
                                  rev::CANSparkMax::MotorType::kBrushless};
 
   frc::DutyCycleEncoder m_armEncoder{ElectricalConstants::kArmEncoderPort};
-  frc::Encoder m_armRelativeEncoder{1, 2, false,
-                                    frc::Encoder::EncodingType::k4X};
 
   frc::Encoder m_stringEncoder{3, 4, false, frc::Encoder::EncodingType::k4X};
 

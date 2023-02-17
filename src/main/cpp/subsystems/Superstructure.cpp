@@ -41,8 +41,6 @@ Superstructure::Superstructure()
   // Initialize arm encoder
   m_armEncoder.SetPositionOffset(kArmEncoderOffset);
 
-  m_armRelativeEncoder.SetDistancePerPulse(1. / 2048.);
-
   double pos = GetAbsoluteArmPosition().value();
 
   SmartDashboard::PutNumber("Initial pos", pos);
@@ -51,9 +49,6 @@ Superstructure::Superstructure()
 }
 
 void Superstructure::SyncEncoders() {
-  m_armOffset = GetAbsoluteArmPosition() -
-                degree_t{-360 * m_armRelativeEncoder.GetDistance() *
-                         kArmEncoderGearRatio};
   m_seed = GetAbsoluteStringPosition();
 }
 
@@ -104,12 +99,6 @@ degree_t Superstructure::GetAbsoluteArmPosition() {
   return degree_t{360 * m_armEncoder.GetAbsolutePosition() *
                       kArmEncoderGearRatio -
                   kArmEncoderOffset};
-}
-
-degree_t Superstructure::GetArmPosition() {
-  return degree_t{-360 * m_armRelativeEncoder.GetDistance() *
-                  kArmEncoderGearRatio} +
-         m_armOffset;
 }
 
 bool Superstructure::HasGamePiece() {
@@ -188,8 +177,6 @@ void Superstructure::SuperstructurePeriodic() {
   SmartDashboard::PutNumber("Arm current", m_armLeader.GetOutputCurrent());
   SmartDashboard::PutNumber("Error", armPosition.value() - currentAngle);
 
-  SmartDashboard::PutNumber("String encoder", m_stringEncoder.GetDistance());
-
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
   m_rightWheel.Set(-intakeWheelSpeed);
@@ -198,8 +185,6 @@ void Superstructure::SuperstructurePeriodic() {
   } else {
     m_expander.Set(DoubleSolenoid::kReverse);
   }
-
-  SmartDashboard::PutNumber("Target", armPosition.value());
 
   m_integral += armPosition.value() - currentAngle;
 
@@ -222,7 +207,7 @@ void Superstructure::SuperstructurePeriodic() {
   auto commandedVoltage = volt_t{
       m_armController.Calculate(degree_t{currentAngle}) + m_integral * m_kI};
 
-  if (GetArmPosition().value() < 3.0 && armPosition.value() < 1.0) {
+  if (currentAngle < 3.0 && armPosition.value() < 1.0) {
     commandedVoltage = volt_t{-0.5};
   }
 
