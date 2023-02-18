@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "commands/autos/North2ConeCharge.h"
+#include "commands/autos/North2ConeChgstat.hpp"
 
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/ParallelDeadlineGroup.h>
@@ -11,14 +11,14 @@
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
 
-North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
+North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                                    Superstructure* superstructure,
                                    const TrajectoryManager* trajManager)
     : m_drive(drive), m_trajManager(trajManager) {
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
-      frc2::WaitCommand(1.25_s),
+      frc2::WaitCommand(1.00_s),
       DriveTrajectory(m_drive,
                       &m_trajManager->GetTrajectory("north_place_grid3x1")),
       frc2::InstantCommand(
@@ -31,24 +31,16 @@ North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
+      
+      DriveTrajectory(m_drive,
+                          &m_trajManager->GetTrajectory("north-2cone-chgstat_3_align7")),
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
-                          &m_trajManager->GetTrajectory("north_place_grid3x3")),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(1.25_s),
+                          &m_trajManager->GetTrajectory("north-2cone-chgstat_3_place7")),
+          frc2::SequentialCommandGroup(frc2::WaitCommand(0.0_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
                                        }))),
-      // frc2::ParallelDeadlineGroup(
-      //     DriveTrajectory(m_drive,
-      //                     &m_trajManager->GetTrajectory("north_charging_station")),
-      //     frc2::SequentialCommandGroup(frc2::WaitCommand(2.0_s),
-      //                                  frc2::InstantCommand([superstructure]()
-      //                                  {
-      //                                    superstructure->IntakeCube();
-      //                                  }))
-      // )
       frc2::InstantCommand(
-          [superstructure]() { superstructure->SetExtenderPosition(false); }),
-      frc2::InstantCommand(
-          [superstructure]() { superstructure->SetIntakeWheelSpeed(0.0); }));
+          [superstructure]() { superstructure->SetExtenderPosition(false); }));
 }

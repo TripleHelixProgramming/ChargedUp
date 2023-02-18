@@ -16,7 +16,7 @@
 #include "Constants.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
-#include "commands/autos/North2ConeCharge.h"
+#include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/OneConeChgstat.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
@@ -54,8 +54,8 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  // return North2ConeCharge(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
-  return OneConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  return North2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  // return OneConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return DriveTrajectory(&m_drive,
   // &m_trajManager.GetTrajectory("a-to-b")).ToPtr();
 }
