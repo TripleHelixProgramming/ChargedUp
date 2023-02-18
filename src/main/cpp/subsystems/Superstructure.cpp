@@ -41,8 +41,6 @@ Superstructure::Superstructure()
   // Initialize arm encoder
   m_armEncoder.SetPositionOffset(kArmEncoderOffset);
 
-  m_armRelativeEncoder.SetDistancePerPulse(1. / 2048.);
-
   double pos = GetAbsoluteArmPosition().value();
 
   SmartDashboard::PutNumber("Initial pos", pos);
@@ -51,9 +49,7 @@ Superstructure::Superstructure()
 }
 
 void Superstructure::SyncEncoders() {
-  m_armOffset = GetAbsoluteArmPosition() -
-                degree_t{-360 * m_armRelativeEncoder.GetDistance() *
-                         kArmEncoderGearRatio};
+  m_seed = GetAbsoluteStringPosition();
 }
 
 void Superstructure::PositionCubeHigh() {}
@@ -105,19 +101,65 @@ degree_t Superstructure::GetAbsoluteArmPosition() {
                   kArmEncoderOffset};
 }
 
-degree_t Superstructure::GetArmPosition() {
-  return degree_t{-360 * m_armRelativeEncoder.GetDistance() *
-                  kArmEncoderGearRatio} +
-         m_armOffset;
-}
-
 bool Superstructure::HasGamePiece() {
   return m_beamBreak.Get();
+}
+
+double Superstructure::GetAbsoluteStringPosition() {
+  double position = GetAbsoluteArmPosition().value();
+
+  if (position <= m_encoderPositions[0]) {
+    return m_stringPositions[0];
+  }
+
+  if (position >= m_encoderPositions[m_encoderPositions.size() - 1]) {
+    return m_stringPositions[m_stringPositions.size() - 1];
+  }
+
+  for (size_t index = 0; index < m_encoderPositions.size(); ++index) {
+    if (m_encoderPositions[index] > position) {
+      double t = (position - m_encoderPositions[index - 1]) /
+                 (m_encoderPositions[index] - m_encoderPositions[index - 1]);
+      return (m_stringPositions[index] - m_stringPositions[index - 1]) * t +
+             m_stringPositions[index - 1];
+    }
+  }
+
+  return 0.0;
+}
+
+units::degree_t Superstructure::GetStringAngle() {
+  double position = RawString();
+
+  if (position <= m_stringPositions[0]) {
+    return degree_t{m_encoderPositions[0]};
+  }
+
+  if (position >= m_stringPositions[m_stringPositions.size() - 1]) {
+    return degree_t{m_encoderPositions[m_encoderPositions.size() - 1]};
+  }
+
+  for (size_t index = 0; index < m_stringPositions.size(); ++index) {
+    if (m_stringPositions[index] > position) {
+      double t = (position - m_stringPositions[index - 1]) /
+                 (m_stringPositions[index] - m_stringPositions[index - 1]);
+      return degree_t{
+          (m_encoderPositions[index] - m_encoderPositions[index - 1]) * t +
+          m_encoderPositions[index - 1]};
+    }
+  }
+
+  return 0.0_deg;
+}
+
+double Superstructure::RawString() {
+  return m_stringEncoder.GetDistance() + m_seed;
 }
 
 void Superstructure::SuperstructurePeriodic() {
   double intakeWheelSpeed = m_intakeWheelSpeed;
   degree_t armPosition = m_armPosition;
+  double currentAngle = GetStringAngle().value();
 
   if (m_driverLockControl) {
     armPosition = 9_deg;
@@ -137,7 +179,7 @@ void Superstructure::SuperstructurePeriodic() {
   SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
   SmartDashboard::PutBoolean("Extended", m_expanded);
   SmartDashboard::PutNumber("Arm current", m_armLeader.GetOutputCurrent());
-  SmartDashboard::PutNumber("Error", (armPosition - GetArmPosition()).value());
+  SmartDashboard::PutNumber("Error", armPosition.value() - currentAngle);
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
@@ -148,18 +190,16 @@ void Superstructure::SuperstructurePeriodic() {
     m_expander.Set(DoubleSolenoid::kReverse);
   }
 
-  SmartDashboard::PutNumber("Target", armPosition.value());
+  m_integral += armPosition.value() - currentAngle;
 
-  m_integral += (armPosition - GetArmPosition()).value();
-
-  double minVoltage = 0.0;
-  double maxVoltage = 2.5;
+  double minVoltage = -1.0;
+  double maxVoltage = 1.0;
   if (m_kI != 0.0) {
     m_integral =
         std::max(minVoltage / m_kI, std::min(m_integral, maxVoltage / m_kI));
   }
 
-  if (std::abs((armPosition - GetArmPosition()).value()) > m_tolerance) {
+  if (std::abs(armPosition.value() - currentAngle) > m_tolerance) {
     m_integral = 0.0;
   }
 
@@ -168,18 +208,18 @@ void Superstructure::SuperstructurePeriodic() {
   }
 
   m_armController.SetGoal(armPosition);
-  auto commandedVoltage =
-      volt_t{m_armController.Calculate(GetArmPosition()) + m_integral * m_kI};
+  auto commandedVoltage = volt_t{
+      m_armController.Calculate(degree_t{currentAngle}) + m_integral * m_kI};
 
-  if (GetArmPosition().value() < 3.0 && armPosition.value() < 1.0) {
+  if (currentAngle < 3.0 && armPosition.value() < 1.0) {
     commandedVoltage = volt_t{-0.5};
   }
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
-  commandedVoltage = volt_t{
-      std::max(std::pow(((30 - GetArmPosition().value()) / 30.0), 2) * -2 - 1,
-               commandedVoltage.value())};
+  commandedVoltage =
+      volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
+                      commandedVoltage.value())};
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
 
