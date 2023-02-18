@@ -17,7 +17,7 @@ North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
     : m_drive(drive), m_trajManager(trajManager) {
   AddCommands(
       frc2::InstantCommand(
-          [superstructure]() { superstructure->PositionConeHigh(); }),
+          [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(1.25_s),
       DriveTrajectory(m_drive,
                       &m_trajManager->GetTrajectory("north_place_grid3x1")),
@@ -36,7 +36,7 @@ North2ConeCharge::North2ConeCharge(SwerveDrive* drive,
                           &m_trajManager->GetTrajectory("north_place_grid3x3")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(1.25_s),
                                        frc2::InstantCommand([superstructure]() {
-                                         superstructure->PositionConeHigh();
+                                         superstructure->PositionHigh();
                                        }))),
       // frc2::ParallelDeadlineGroup(
       //     DriveTrajectory(m_drive,

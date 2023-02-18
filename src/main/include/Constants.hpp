@@ -78,7 +78,7 @@ constexpr double kSteerGearRatio = 12.8;
 namespace SuperstructureConstants {
 
 constexpr auto kMinArmPosition = 0.0_deg;
-constexpr auto kMinArmPickupPosition = 3.0_deg;
+constexpr auto kMinArmPickupPosition = 5.0_deg;
 constexpr auto kMaxArmPosition = 1.0_rad;
 
 constexpr double kArmFF = 0;

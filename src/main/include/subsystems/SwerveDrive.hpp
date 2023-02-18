@@ -32,7 +32,17 @@ class SwerveDrive : public frc2::SubsystemBase {
  public:
   SwerveDrive();
 
+  /**
+   * Get the vision and odometry fused pose.
+   */
   frc::Pose2d GetPose() const;
+
+  /**
+   * Get the pose only calculated based on odometry.
+   */
+  frc::Pose2d GetOdometryPose() const;
+
+  frc::Rotation2d GetGyroHeading();
 
   void ResetOdometry(const frc::Pose2d& pose);
 

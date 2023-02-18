@@ -3,12 +3,12 @@
         "default": "Charged Up"
     },
     "paths": {
-        "place3x3": {
+        "place7": {
             "obstacles": [
                 {
                     "center_x": 13.825461334613346,
                     "center_y": 15.231049903632398,
-                    "name": "0",
+                    "name": "upper limit",
                     "obstacle_type": "circle",
                     "radius": 10.0,
                     "safety_distance": 0.0
@@ -21,7 +21,7 @@
                     "control_interval_count": 0,
                     "heading": 3.141592653589793,
                     "heading_constrained": true,
-                    "name": "just picked",
+                    "name": "just picked 4",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": true,
@@ -39,7 +39,7 @@
                     "control_interval_count": 30,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "Custom Waypoint 3",
+                    "name": "orient",
                     "velocity_magnitude_constrained": false,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": false,
@@ -57,7 +57,7 @@
                     "control_interval_count": 40,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "Custom Waypoint 4",
+                    "name": "avoid chgstat",
                     "velocity_magnitude_constrained": false,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": false,
@@ -75,7 +75,7 @@
                     "control_interval_count": 40,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "place 3x3",
+                    "name": "place 7",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": true,

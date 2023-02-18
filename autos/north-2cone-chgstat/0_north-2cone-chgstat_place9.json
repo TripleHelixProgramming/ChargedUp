@@ -3,7 +3,7 @@
         "default": "Charged Up"
     },
     "paths": {
-        "a-to-b": {
+        "place9": {
             "obstacles": [],
             "waypoints": [
                 {
@@ -12,7 +12,7 @@
                     "control_interval_count": 0,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "Custom Waypoint 0",
+                    "name": "start",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": true,
@@ -27,19 +27,19 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 100,
-                    "heading": -0.0,
+                    "control_interval_count": 20,
+                    "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "Custom Waypoint 1",
+                    "name": "place",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": true,
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 11.787636444904765,
+                    "x": 14.65,
                     "x_constrained": true,
-                    "y": 6.296900722480064,
+                    "y": 5.0,
                     "y_constrained": true
                 }
             ]
@@ -48,10 +48,10 @@
     "robot_configuration": {
         "bumper_length": 0.954,
         "bumper_width": 0.903,
-        "mass": 46.7,
-        "moment_of_inertia": 5.6,
-        "motor_max_angular_speed": 18.84955592153876,
-        "motor_max_torque": 0.4,
+        "mass": 90.718474,
+        "moment_of_inertia": 5.0,
+        "motor_max_angular_speed": 68.06784082777885,
+        "motor_max_torque": 1.9,
         "team_number": 2363,
         "wheel_horizontal_distance": 0.622,
         "wheel_radius": 0.051,

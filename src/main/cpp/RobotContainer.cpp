@@ -17,6 +17,7 @@
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
 #include "commands/autos/North2ConeCharge.h"
+#include "commands/autos/OneConeChgstat.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace frc;
@@ -53,7 +54,8 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  return North2ConeCharge(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  // return North2ConeCharge(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  return OneConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return DriveTrajectory(&m_drive,
   // &m_trajManager.GetTrajectory("a-to-b")).ToPtr();
 }
@@ -65,11 +67,15 @@ void RobotContainer::UpdateTelemetry() {
   m_compressor.IsEnabled();
   SmartDashboard::PutNumber("Arm absolute position",
                             m_superstructure.GetAbsoluteArmPosition().value());
-  SmartDashboard::PutNumber("String position", m_superstructure.RawString());
-  SmartDashboard::PutNumber("Estimated string position",
-                            m_superstructure.GetAbsoluteStringPosition());
-  SmartDashboard::PutNumber("Estimated angle",
-                            m_superstructure.GetStringAngle().value());
+  // SmartDashboard::PutNumber("String position", m_superstructure.RawString());
+  // SmartDashboard::PutNumber("Estimated string position",
+  //                           m_superstructure.GetAbsoluteStringPosition());
+  // SmartDashboard::PutNumber("Estimated angle",
+  //                           m_superstructure.GetStringAngle().value());
+  SmartDashboard::PutNumber("Relative angle",
+                            m_superstructure.GetRelativePosition());
+  SmartDashboard::PutNumber("Raw relative angle",
+                            m_superstructure.RawPosition().value());
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -112,17 +118,25 @@ void RobotContainer::ConfigureBindings() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
   m_operator.A().OnTrue((InstantCommand([this]() {
-                          m_superstructure.PositionConeMedium();
+                          m_superstructure.PositionMedium();
                         })).ToPtr());
   m_operator.B().OnTrue((InstantCommand([this]() {
-                          m_superstructure.PositionConeHigh();
+                          m_superstructure.PositionHigh();
                         })).ToPtr());
+  m_operator.LeftBumper().OnTrue((InstantCommand([this]() {
+                                    m_superstructure.IntakeCubeStation();
+                                  })).ToPtr());
+  m_operator.LeftBumper().OnFalse(
+      (InstantCommand([this]() {
+        return m_superstructure.IntakeCube();
+      })).ToPtr());
+
   m_operator.RightBumper().OnTrue((InstantCommand([this]() {
-                                    m_superstructure.SetIntakeWheelSpeed(0.5);
+                                    m_superstructure.IntakeConeStation();
                                   })).ToPtr());
   m_operator.RightBumper().OnFalse(
       (InstantCommand([this]() {
-        return m_superstructure.SetIntakeWheelSpeed(0.0);
+        return m_superstructure.IntakeCone();
       })).ToPtr());
 
   JoystickButton driverRightTrigger(&m_driver, OIConstants::kZorroDIn);

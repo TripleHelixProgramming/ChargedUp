@@ -88,17 +88,24 @@ SwerveDrive::SwerveDrive()
 
 Pose2d SwerveDrive::GetPose() const {
   return m_poseEstimator.GetEstimatedPosition();
-  // return m_odometry.GetPose();
+}
+
+Pose2d SwerveDrive::GetOdometryPose() const {
+  return m_odometry.GetPose();
+}
+
+Rotation2d SwerveDrive::GetGyroHeading() {
+  return Rotation2d(units::degree_t{-m_gyro.GetYaw()});
 }
 
 void SwerveDrive::ResetOdometry(const Pose2d& pose) {
   m_odometry.ResetPosition(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
   m_poseEstimator.ResetPosition(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
@@ -110,7 +117,7 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
       fieldRelative
           ? ChassisSpeeds::FromFieldRelativeSpeeds(
                 joystickDrive * kMaxVelocityX, joystickStrafe * kMaxVelocityY,
-                joystickRotate * kMaxVelocityAngular, GetPose().Rotation())
+                joystickRotate * kMaxVelocityAngular, m_odometry.GetPose().Rotation())
           : ChassisSpeeds{joystickDrive * kMaxVelocityX,
                           joystickStrafe * kMaxVelocityY,
                           joystickRotate * kMaxVelocityAngular};
@@ -156,11 +163,11 @@ void SwerveDrive::Brake() {
 
 void SwerveDrive::Periodic() {
   m_odometry.Update(  // TODO: Remove odometry
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   m_poseEstimator.Update(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 

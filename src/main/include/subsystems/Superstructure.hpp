@@ -20,17 +20,17 @@ class Superstructure : public frc2::SubsystemBase {
  public:
   Superstructure();
 
-  void PositionCubeHigh();
+  void PositionHigh();
 
-  void PositionCubeMedium();
-
-  void PositionConeHigh();
-
-  void PositionConeMedium();
+  void PositionMedium();
 
   void IntakeCube();
 
   void IntakeCone();
+
+  void IntakeCubeStation();
+
+  void IntakeConeStation();
 
   void SetIntakeWheelSpeed(double speed);
 
@@ -45,6 +45,10 @@ class Superstructure : public frc2::SubsystemBase {
   units::degree_t GetAbsoluteArmPosition();
 
   double GetAbsoluteStringPosition();
+
+  units::degree_t RawPosition();
+
+  double GetRelativePosition();
 
   units::degree_t GetStringAngle();
 
@@ -97,6 +101,8 @@ class Superstructure : public frc2::SubsystemBase {
                                  rev::CANSparkMax::MotorType::kBrushless};
 
   frc::DutyCycleEncoder m_armEncoder{ElectricalConstants::kArmEncoderPort};
+
+  frc::Encoder m_relativeEncoder{1, 2, false, frc::Encoder::EncodingType::k4X};
 
   frc::Encoder m_stringEncoder{3, 4, false, frc::Encoder::EncodingType::k4X};
 

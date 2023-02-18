@@ -40,6 +40,8 @@ Superstructure::Superstructure()
 
   // Initialize arm encoder
   m_armEncoder.SetPositionOffset(kArmEncoderOffset);
+  
+  m_relativeEncoder.SetDistancePerPulse(1.0 / 2048.0);
 
   double pos = GetAbsoluteArmPosition().value();
 
@@ -49,20 +51,32 @@ Superstructure::Superstructure()
 }
 
 void Superstructure::SyncEncoders() {
-  m_seed = GetAbsoluteStringPosition();
+  // m_seed = GetAbsoluteStringPosition() - m_stringEncoder.GetDistance();
+  m_seed = GetAbsoluteArmPosition().value() - RawPosition().value();
 }
 
-void Superstructure::PositionCubeHigh() {}
-
-void Superstructure::PositionCubeMedium() {}
-
-void Superstructure::PositionConeHigh() {
-  SetArmPosition(34.25_deg);
+double Superstructure::GetRelativePosition() {
+  return RawPosition().value() + m_seed;
 }
 
-void Superstructure::PositionConeMedium() {
-  SetArmPosition(27.0_deg);
+degree_t Superstructure::RawPosition() {
+  return degree_t{-360 * m_relativeEncoder.GetDistance() * kArmEncoderGearRatio};
 }
+
+double Superstructure::RawString() {
+  return RawPosition().value() + m_seed;
+}
+
+void Superstructure::PositionHigh() {
+  // Cone angle is higher than cube placing angle
+  SetArmPosition(m_expanded ? 34.25_deg : 30_deg);
+}
+
+void Superstructure::PositionMedium() {
+  // Cone angle is higher than cube placing angle
+  SetArmPosition(m_expanded ? 28.0_deg : 25.0_deg);
+}
+
 
 void Superstructure::IntakeCone() {
   SetArmPosition(-7.5_deg);
@@ -74,6 +88,18 @@ void Superstructure::IntakeCube() {
   SetArmPosition(-7.5_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
+}
+
+void Superstructure::IntakeCubeStation() {
+  SetArmPosition(28.0_deg);
+  SetIntakeWheelSpeed(0.5);
+  SetExtenderPosition(false);
+}
+
+void Superstructure::IntakeConeStation() {
+  SetArmPosition(28.0_deg);
+  SetIntakeWheelSpeed(0.5);
+  SetExtenderPosition(true);
 }
 
 void Superstructure::SetIntakeWheelSpeed(double speed) {
@@ -106,7 +132,7 @@ bool Superstructure::HasGamePiece() {
 }
 
 double Superstructure::GetAbsoluteStringPosition() {
-  double position = GetAbsoluteArmPosition().value();
+  double position = GetRelativePosition();
 
   if (position <= m_encoderPositions[0]) {
     return m_stringPositions[0];
@@ -129,7 +155,7 @@ double Superstructure::GetAbsoluteStringPosition() {
 }
 
 units::degree_t Superstructure::GetStringAngle() {
-  double position = RawString();
+  double position = GetAbsoluteArmPosition().value();
 
   if (position <= m_stringPositions[0]) {
     return degree_t{m_encoderPositions[0]};
@@ -152,17 +178,13 @@ units::degree_t Superstructure::GetStringAngle() {
   return 0.0_deg;
 }
 
-double Superstructure::RawString() {
-  return m_stringEncoder.GetDistance() + m_seed;
-}
-
 void Superstructure::SuperstructurePeriodic() {
   double intakeWheelSpeed = m_intakeWheelSpeed;
   degree_t armPosition = m_armPosition;
-  double currentAngle = GetStringAngle().value();
+  double currentAngle = GetRelativePosition();
 
   if (m_driverLockControl) {
-    armPosition = 9_deg;
+    armPosition = 11_deg;
   }
 
   // If we have game piece, don't spin wheels and lift intake off the ground.
@@ -214,6 +236,8 @@ void Superstructure::SuperstructurePeriodic() {
   if (currentAngle < 3.0 && armPosition.value() < 1.0) {
     commandedVoltage = volt_t{-0.5};
   }
+
+  SmartDashboard::PutNumber("Target angle", armPosition.value());
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
