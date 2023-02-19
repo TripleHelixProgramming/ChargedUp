@@ -183,8 +183,8 @@ void Superstructure::SuperstructurePeriodic() {
   degree_t armPosition = m_armPosition;
   double currentAngle = GetRelativePosition();
 
-  if (m_driverLockControl) {
-    armPosition = 11_deg;
+  if (m_flipConeMode) {
+    armPosition = m_flipConeUp ? 11_deg : 6_deg;
   }
 
   // If we have game piece, don't spin wheels and lift intake off the ground.
@@ -233,8 +233,8 @@ void Superstructure::SuperstructurePeriodic() {
   auto commandedVoltage = volt_t{
       m_armController.Calculate(degree_t{currentAngle}) + m_integral * m_kI};
 
-  if (currentAngle < 3.0 && armPosition.value() < 1.0) {
-    commandedVoltage = volt_t{-0.5};
+  if (currentAngle < 3.0 && armPosition.value() < 5.0) {
+    commandedVoltage = volt_t{-0.6};
   }
 
   SmartDashboard::PutNumber("Target angle", armPosition.value());

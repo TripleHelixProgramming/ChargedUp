@@ -58,7 +58,9 @@ class Superstructure : public frc2::SubsystemBase {
 
   void SuperstructurePeriodic();
 
-  bool m_driverLockControl = false;
+  // Modes for picking up tipped cones
+  bool m_flipConeMode = false;
+  bool m_flipConeUp = false;
 
  private:
   // State variables

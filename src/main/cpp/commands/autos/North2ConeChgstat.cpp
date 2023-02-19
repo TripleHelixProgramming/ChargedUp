@@ -18,11 +18,12 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
-      frc2::WaitCommand(1.00_s),
+      frc2::WaitCommand(0.9_s),
       DriveTrajectory(m_drive,
                       &m_trajManager->GetTrajectory("north_place_grid3x1")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
+      frc2::WaitCommand(0.1_s),
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
@@ -37,10 +38,22 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
                           &m_trajManager->GetTrajectory("north-2cone-chgstat_3_place7")),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.0_s),
+          frc2::SequentialCommandGroup(frc2::WaitCommand(0.1_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
                                        }))),
       frc2::InstantCommand(
-          [superstructure]() { superstructure->SetExtenderPosition(false); }));
+          [superstructure]() { superstructure->SetExtenderPosition(false); }),
+
+      frc2::ParallelDeadlineGroup(
+          DriveTrajectory(m_drive,
+                          &m_trajManager->GetTrajectory("north-2cone-chgstat_4_chgstat"), false),
+          frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
+                                       frc2::InstantCommand([superstructure]() {
+                                         superstructure->IntakeCone();
+                                       }))),
+      frc2::RunCommand(
+          [drive]() { drive->Drive(frc::ChassisSpeeds{0_mps, 0_mps, 0.01_rad_per_s}); },
+          {drive}
+      ));
 }

@@ -12,14 +12,14 @@
                     "control_interval_count": 0,
                     "heading": 3.141592653589793,
                     "heading_constrained": true,
-                    "name": "just picked 4",
+                    "name": "pick",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": true,
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 9.893413333587125,
+                    "x": 9.588613333587125,
                     "x_constrained": true,
                     "y": 4.7032,
                     "y_constrained": true
@@ -73,9 +73,9 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 14.024464219752497,
+                    "x": 13.641903274995581,
                     "x_constrained": true,
-                    "y": 4.508447017327443,
+                    "y": 4.482852489671438,
                     "y_constrained": true
                 },
                 {
@@ -91,9 +91,9 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 14.389412195890756,
+                    "x": 14.199692008000358,
                     "x_constrained": true,
-                    "y": 3.3254503668869244,
+                    "y": 3.3210839492485613,
                     "y_constrained": true
                 }
             ]

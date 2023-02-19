@@ -49,9 +49,9 @@ void Robot::RobotPeriodic() {
   m_container.UpdateTelemetry();
 
   // Rainbow();
-  // Yellow();
+  Yellow();
   // Green();
-  Purple();
+  // Purple();
   m_leds.SetData(m_ledBuffer);
 }
 

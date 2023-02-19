@@ -140,11 +140,18 @@ void RobotContainer::ConfigureBindings() {
       })).ToPtr());
 
   JoystickButton driverRightTrigger(&m_driver, OIConstants::kZorroDIn);
+  JoystickButton driverRightBottomTrigger(&m_driver, OIConstants::kZorroHIn);
+  driverRightBottomTrigger.OnTrue(InstantCommand([this]() {
+                              m_superstructure.m_flipConeMode = true;
+                            }).ToPtr());
+  driverRightBottomTrigger.OnFalse(InstantCommand([this]() {
+                               m_superstructure.m_flipConeMode = false;
+                             }).ToPtr());
   driverRightTrigger.OnTrue(InstantCommand([this]() {
-                              m_superstructure.m_driverLockControl = true;
+                              m_superstructure.m_flipConeUp = true;
                             }).ToPtr());
   driverRightTrigger.OnFalse(InstantCommand([this]() {
-                               m_superstructure.m_driverLockControl = false;
+                               m_superstructure.m_flipConeUp = false;
                              }).ToPtr());
   // m_operator.().OnTrue((InstantCommand([this]() { return
   // m_superstructure.SetIntakeWheelSpeed(0.5); })).ToPtr());
