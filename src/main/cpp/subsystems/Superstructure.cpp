@@ -40,7 +40,7 @@ Superstructure::Superstructure()
 
   // Initialize arm encoder
   m_armEncoder.SetPositionOffset(kArmEncoderOffset);
-  
+
   m_relativeEncoder.SetDistancePerPulse(1.0 / 2048.0);
 
   double pos = GetAbsoluteArmPosition().value();
@@ -60,7 +60,8 @@ double Superstructure::GetRelativePosition() {
 }
 
 degree_t Superstructure::RawPosition() {
-  return degree_t{-360 * m_relativeEncoder.GetDistance() * kArmEncoderGearRatio};
+  return degree_t{-360 * m_relativeEncoder.GetDistance() *
+                  kArmEncoderGearRatio};
 }
 
 double Superstructure::RawString() {
@@ -76,7 +77,6 @@ void Superstructure::PositionMedium() {
   // Cone angle is higher than cube placing angle
   SetArmPosition(m_expanded ? 28.0_deg : 25.0_deg);
 }
-
 
 void Superstructure::IntakeCone() {
   SetArmPosition(-7.5_deg);

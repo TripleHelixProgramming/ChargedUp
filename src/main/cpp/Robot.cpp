@@ -35,7 +35,7 @@ void Robot::RobotInit() {
   DataLogManager::Start();
 
   // Record both DS control and joystick data
-  DriverStation::StartDataLog(DataLogManager::GetLog());  
+  DriverStation::StartDataLog(DataLogManager::GetLog());
 }
 
 void Robot::RobotPeriodic() {

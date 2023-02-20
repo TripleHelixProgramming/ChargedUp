@@ -9,8 +9,7 @@
 using namespace units;
 
 DriveTrajectory::DriveTrajectory(SwerveDrive* drive,
-                                 const Trajectory* trajectory,
-                                 bool useVision)
+                                 const Trajectory* trajectory, bool useVision)
     : m_drive{drive},
       m_trajectory{trajectory},
       m_useVision(useVision),
@@ -35,7 +34,8 @@ void DriveTrajectory::Initialize() {
 
 void DriveTrajectory::Execute() {
   auto state = m_trajectory->Sample(m_timestamp.Get());
-  auto currentPose = m_useVision ? m_drive->GetPose() : m_drive->GetOdometryPose();
+  auto currentPose =
+      m_useVision ? m_drive->GetPose() : m_drive->GetOdometryPose();
 
   m_controllerX.SetSetpoint(state.pose.X().value());
   m_controllerY.SetSetpoint(state.pose.Y().value());

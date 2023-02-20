@@ -11,9 +11,8 @@
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
 
-South2Cone::South2Cone(SwerveDrive* drive,
-                                   Superstructure* superstructure,
-                                   const TrajectoryManager* trajManager)
+South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
+                       const TrajectoryManager* trajManager)
     : m_drive(drive), m_trajManager(trajManager) {
   AddCommands(
       frc2::InstantCommand(
@@ -44,14 +43,16 @@ South2Cone::South2Cone(SwerveDrive* drive,
 
       // frc2::ParallelDeadlineGroup(
       //     DriveTrajectory(m_drive,
-      //                     &m_trajManager->GetTrajectory("north-2cone-chgstat_4_chgstat"), false),
+      //                     &m_trajManager->GetTrajectory("north-2cone-chgstat_4_chgstat"),
+      //                     false),
       //     frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
-      //                                  frc2::InstantCommand([superstructure]() {
+      //                                  frc2::InstantCommand([superstructure]()
+      //                                  {
       //                                    superstructure->IntakeCone();
       //                                  }))),
       // frc2::RunCommand(
-      //     [drive]() { drive->Drive(frc::ChassisSpeeds{0_mps, 0_mps, 0.01_rad_per_s}); },
-      //     {drive}
+      //     [drive]() { drive->Drive(frc::ChassisSpeeds{0_mps, 0_mps,
+      //     0.01_rad_per_s}); }, {drive}
       // )
-      );
+  );
 }

@@ -10,11 +10,10 @@
 #include "util/TrajectoryManager.hpp"
 
 class OneConeChgstat
-    : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 OneConeChgstat> {
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup, OneConeChgstat> {
  public:
   OneConeChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                   const TrajectoryManager* trajManager);
+                 const TrajectoryManager* trajManager);
 
  private:
   SwerveDrive* m_drive;

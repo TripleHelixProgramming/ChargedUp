@@ -4,17 +4,16 @@
 
 #include <optional>
 
+#include <frc/AddressableLED.h>
 #include <frc/Compressor.h>
 #include <frc/Joystick.h>
 #include <frc/PneumaticsBase.h>
 #include <frc/PneumaticsModuleType.h>
+#include <frc/geometry/Rotation2d.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
-#include <frc/AddressableLED.h>
-
 
 #include "Constants.hpp"
-#include "frc/geometry/Rotation2d.h"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"

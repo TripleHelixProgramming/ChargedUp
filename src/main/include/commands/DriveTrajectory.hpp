@@ -14,7 +14,8 @@
 class DriveTrajectory
     : public frc2::CommandHelper<frc2::CommandBase, DriveTrajectory> {
  public:
-  DriveTrajectory(SwerveDrive* drive, const Trajectory* trajectory, bool useVision = true);
+  DriveTrajectory(SwerveDrive* drive, const Trajectory* trajectory,
+                  bool useVision = true);
 
   void Initialize() override;
 

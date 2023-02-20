@@ -10,11 +10,10 @@
 #include "util/TrajectoryManager.hpp"
 
 class South2Cone
-    : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 South2Cone> {
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup, South2Cone> {
  public:
   South2Cone(SwerveDrive* drive, Superstructure* superstructure,
-                   const TrajectoryManager* trajManager);
+             const TrajectoryManager* trajManager);
 
  private:
   SwerveDrive* m_drive;

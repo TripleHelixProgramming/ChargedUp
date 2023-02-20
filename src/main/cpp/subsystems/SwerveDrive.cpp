@@ -52,17 +52,17 @@ SwerveDrive::SwerveDrive()
                  SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3],
                               kAbsEncoderPorts[3])}},
       m_driveKinematics{{
-        
-                         Translation2d{kWheelBase / 2, kTrackWidth / 2},
-                         Translation2d{kWheelBase / 2, -kTrackWidth / 2},
-                         Translation2d{-kWheelBase / 2, kTrackWidth / 2},
-                         Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
-                        //  Translation2d{8_in, 13_in},
-                        //  Translation2d{kWheelBase / 2, -kTrackWidth / 2},
-                        //  Translation2d{-kWheelBase / 2, kTrackWidth / 2},
-                        //  Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
-                         
-                         }},
+
+          Translation2d{kWheelBase / 2, kTrackWidth / 2},
+          Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+          Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+          Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
+          //  Translation2d{8_in, 13_in},
+          //  Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+          //  Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+          //  Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
+
+      }},
       m_odometry{m_driveKinematics,
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
@@ -109,7 +109,9 @@ Pose2d SwerveDrive::GetOdometryPose() const {
 
 Rotation2d SwerveDrive::GetGyroHeading() {
   double newAngle = -m_gyro.GetYaw();
-  double delta = std::fmod(std::fmod((newAngle - lastAngle + 180), 360) + 360, 360) - 180;  // NOLINT
+  double delta =
+      std::fmod(std::fmod((newAngle - lastAngle + 180), 360) + 360, 360) -
+      180;  // NOLINT
   lastAngle = newAngle;
   angle = angle + Rotation2d(degree_t{delta * 1.02466666667});
   SmartDashboard::PutNumber("Raw angle", newAngle);
@@ -137,7 +139,8 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
       fieldRelative
           ? ChassisSpeeds::FromFieldRelativeSpeeds(
                 joystickDrive * kMaxVelocityX, joystickStrafe * kMaxVelocityY,
-                joystickRotate * kMaxVelocityAngular, m_odometry.GetPose().Rotation())
+                joystickRotate * kMaxVelocityAngular,
+                m_odometry.GetPose().Rotation())
           : ChassisSpeeds{joystickDrive * kMaxVelocityX,
                           joystickStrafe * kMaxVelocityY,
                           joystickRotate * kMaxVelocityAngular};

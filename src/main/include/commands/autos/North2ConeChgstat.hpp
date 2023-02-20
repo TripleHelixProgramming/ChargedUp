@@ -14,7 +14,7 @@ class North2ConeChgstat
                                  North2ConeChgstat> {
  public:
   North2ConeChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                   const TrajectoryManager* trajManager);
+                    const TrajectoryManager* trajManager);
 
  private:
   SwerveDrive* m_drive;

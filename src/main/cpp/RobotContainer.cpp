@@ -52,7 +52,7 @@ RobotContainer::RobotContainer()
 
   SmartDashboard::PutData("Reset Encoders",
                           new ResetAbsoluteEncoders(&m_drive));
-  
+
   // Initialize the LEDs
   m_leds.SetLength(kLEDBuffLength);
   m_leds.SetData(m_ledBuffer);
@@ -60,7 +60,8 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  // return North2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  // return North2ConeChgstat(&m_drive, &m_superstructure,
+  // &m_trajManager).ToPtr();
   return South2Cone(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return OneConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return DriveTrajectory(&m_drive,
@@ -127,33 +128,30 @@ void RobotContainer::ConfigureBindings() {
   m_operator.A().OnTrue((InstantCommand([this]() {
                           m_superstructure.PositionMedium();
                         })).ToPtr());
-  m_operator.B().OnTrue((InstantCommand([this]() {
-                          m_superstructure.PositionHigh();
-                        })).ToPtr());
+  m_operator.B().OnTrue(
+      (InstantCommand([this]() { m_superstructure.PositionHigh(); })).ToPtr());
   m_operator.LeftBumper().OnTrue((InstantCommand([this]() {
-                                    m_superstructure.IntakeCubeStation();
+                                   m_superstructure.IntakeCubeStation();
+                                 })).ToPtr());
+  m_operator.LeftBumper().OnFalse((InstantCommand([this]() {
+                                    return m_superstructure.IntakeCube();
                                   })).ToPtr());
-  m_operator.LeftBumper().OnFalse(
-      (InstantCommand([this]() {
-        return m_superstructure.IntakeCube();
-      })).ToPtr());
 
   m_operator.RightBumper().OnTrue((InstantCommand([this]() {
                                     m_superstructure.IntakeConeStation();
                                   })).ToPtr());
-  m_operator.RightBumper().OnFalse(
-      (InstantCommand([this]() {
-        return m_superstructure.IntakeCone();
-      })).ToPtr());
+  m_operator.RightBumper().OnFalse((InstantCommand([this]() {
+                                     return m_superstructure.IntakeCone();
+                                   })).ToPtr());
 
   JoystickButton driverRightTrigger(&m_driver, OIConstants::kZorroDIn);
   JoystickButton driverRightBottomTrigger(&m_driver, OIConstants::kZorroHIn);
   driverRightBottomTrigger.OnTrue(InstantCommand([this]() {
-                              m_superstructure.m_flipConeMode = true;
-                            }).ToPtr());
+                                    m_superstructure.m_flipConeMode = true;
+                                  }).ToPtr());
   driverRightBottomTrigger.OnFalse(InstantCommand([this]() {
-                               m_superstructure.m_flipConeMode = false;
-                             }).ToPtr());
+                                     m_superstructure.m_flipConeMode = false;
+                                   }).ToPtr());
   driverRightTrigger.OnTrue(InstantCommand([this]() {
                               m_superstructure.m_flipConeUp = true;
                             }).ToPtr());
