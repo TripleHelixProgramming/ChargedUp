@@ -52,7 +52,6 @@ SwerveDrive::SwerveDrive()
                  SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3],
                               kAbsEncoderPorts[3])}},
       m_driveKinematics{{
-
           Translation2d{kWheelBase / 2, kTrackWidth / 2},
           Translation2d{kWheelBase / 2, -kTrackWidth / 2},
           Translation2d{-kWheelBase / 2, kTrackWidth / 2},
@@ -61,7 +60,6 @@ SwerveDrive::SwerveDrive()
           //  Translation2d{kWheelBase / 2, -kTrackWidth / 2},
           //  Translation2d{-kWheelBase / 2, kTrackWidth / 2},
           //  Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
-
       }},
       m_odometry{m_driveKinematics,
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
