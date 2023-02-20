@@ -98,6 +98,10 @@ class SwerveDrive : public frc2::SubsystemBase {
    */
   AHRS m_gyro{frc::SPI::Port::kMXP};
 
+  frc::Rotation2d angle;
+
+  double lastAngle;
+
   /// The camera facing forwar
   photonlib::PhotonCamera m_camera{"front"};
 

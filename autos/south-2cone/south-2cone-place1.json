@@ -1,0 +1,72 @@
+{
+    "field_image": {
+        "default": "Charged Up"
+    },
+    "paths": {
+        "place1": {
+            "obstacles": [],
+            "waypoints": [
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 0,
+                    "heading": 0.0,
+                    "heading_constrained": true,
+                    "name": "start",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 13.482971224692252,
+                    "x_constrained": true,
+                    "y": 0.5170177190245612,
+                    "y_constrained": true
+                },
+                {
+                    "angular_velocity": 0.0,
+                    "angular_velocity_constrained": true,
+                    "control_interval_count": 20,
+                    "heading": 0.0,
+                    "heading_constrained": true,
+                    "name": "place",
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": 0.0,
+                    "velocity_x_constrained": true,
+                    "velocity_y": 0.0,
+                    "velocity_y_constrained": true,
+                    "waypoint_type": "custom",
+                    "x": 14.606171224692254,
+                    "x_constrained": true,
+                    "y": 0.5170177190245612,
+                    "y_constrained": true
+                }
+            ]
+        }
+    },
+    "robot_configuration": {
+        "bumper_length": 0.954,
+        "bumper_width": 0.903,
+        "mass": 46.7,
+        "moment_of_inertia": 5.6,
+        "motor_max_angular_speed": 31.41592653589793,
+        "motor_max_torque": 0.5,
+        "team_number": 2363,
+        "wheel_horizontal_distance": 0.622,
+        "wheel_radius": 0.051,
+        "wheel_vertical_distance": 0.572
+    },
+    "selected_path_index": 0,
+    "unit_preferences": {
+        "acceleration_unit": "metre_per_second",
+        "angle_unit": "degree_angle",
+        "angular_speed_unit": "revolution_per_minute",
+        "length_unit": "metre",
+        "mass_unit": "kilogram",
+        "moment_of_inertia_unit": "kilogram_square_metre",
+        "speed_unit": "metre_per_second",
+        "time_unit": "second",
+        "torque_unit": "newton_metre"
+    }
+}

@@ -61,12 +61,12 @@ class Superstructure : public frc2::SubsystemBase {
   // Modes for picking up tipped cones
   bool m_flipConeMode = false;
   bool m_flipConeUp = false;
+  bool m_expanded = true;
 
  private:
   // State variables
   double m_intakeWheelSpeed = 0.0;
   units::degree_t m_armPosition = 0.0_rad;
-  bool m_expanded = true;
 
   double m_integral = 0.0;
   double m_kI = 0.002;

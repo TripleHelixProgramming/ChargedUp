@@ -35,12 +35,7 @@ void Robot::RobotInit() {
   DataLogManager::Start();
 
   // Record both DS control and joystick data
-  DriverStation::StartDataLog(DataLogManager::GetLog());
-
-  // Initialize the LEDs
-  m_leds.SetLength(kLEDBuffLength);
-  m_leds.SetData(m_ledBuffer);
-  m_leds.Start();
+  DriverStation::StartDataLog(DataLogManager::GetLog());  
 }
 
 void Robot::RobotPeriodic() {
@@ -48,11 +43,7 @@ void Robot::RobotPeriodic() {
 
   m_container.UpdateTelemetry();
 
-  // Rainbow();
-  Yellow();
-  // Green();
-  // Purple();
-  m_leds.SetData(m_ledBuffer);
+  m_container.LED();
 }
 
 void Robot::DisabledInit() {}
@@ -96,39 +87,6 @@ void Robot::SimulationInit() {}
  * This function is called periodically whilst in simulation.
  */
 void Robot::SimulationPeriodic() {}
-
-void Robot::Rainbow() {
-  // For every pixel
-  for (int i = 0; i < kLEDBuffLength; i++) {
-    // Calculate the hue - hue is easier for rainbows because the color
-    // shape is a circle so only one value needs to precess
-    const auto pixelHue = (firstPixelHue + (i * 180 / kLEDBuffLength)) % 180;
-    // Set the value
-    m_ledBuffer[i].SetHSV(pixelHue, 255, 128);
-  }
-  // Increase by to make the rainbow "move"
-  firstPixelHue += 3;
-  // Check bounds
-  firstPixelHue %= 180;
-}
-
-void Robot::Yellow() {
-  for (int i = 0; i < kLEDBuffLength; i++) {
-    m_ledBuffer[i].SetRGB(255, 100, 0);
-  }
-}
-
-void Robot::Green() {
-  for (int i = 0; i < kLEDBuffLength; i++) {
-    m_ledBuffer[i].SetRGB(0, 255, 0);
-  }
-}
-
-void Robot::Purple() {
-  for (int i = 0; i < kLEDBuffLength; i++) {
-    m_ledBuffer[i].SetRGB(150, 0, 255);
-  }
-}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

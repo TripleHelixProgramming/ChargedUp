@@ -1,6 +1,47 @@
 {
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Drive": {
+          "Pose Estimate": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Pose Est 1": "Field2d",
+      "/SmartDashboard/Pose Est 2": "Field2d",
+      "/SmartDashboard/Pose Est Field": "Field2d",
+      "/SmartDashboard/Reset Encoders": "Command",
+      "/SmartDashboard/Vision Est Field": "Field2d"
+    }
+  },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
-    "port4": 2363
+    "serverTeam": "2363"
+  },
+  "Plots": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Angle"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

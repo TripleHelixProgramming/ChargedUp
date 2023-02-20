@@ -51,10 +51,18 @@ SwerveDrive::SwerveDrive()
                               kAbsEncoderPorts[2]),
                  SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3],
                               kAbsEncoderPorts[3])}},
-      m_driveKinematics{{Translation2d{kWheelBase / 2, kTrackWidth / 2},
+      m_driveKinematics{{
+        
+                         Translation2d{kWheelBase / 2, kTrackWidth / 2},
                          Translation2d{kWheelBase / 2, -kTrackWidth / 2},
                          Translation2d{-kWheelBase / 2, kTrackWidth / 2},
-                         Translation2d{-kWheelBase / 2, -kTrackWidth / 2}}},
+                         Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
+                        //  Translation2d{8_in, 13_in},
+                        //  Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+                        //  Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+                        //  Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
+                         
+                         }},
       m_odometry{m_driveKinematics,
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
@@ -84,6 +92,11 @@ SwerveDrive::SwerveDrive()
   if constexpr (RobotBase::IsSimulation()) {
     SmartDashboard::PutData("Sim Field", &m_simPoseField);
   }
+
+  m_gyro.Calibrate();
+
+  angle = Rotation2d(degree_t{-m_gyro.GetYaw()});
+  lastAngle = -m_gyro.GetYaw();
 }
 
 Pose2d SwerveDrive::GetPose() const {
@@ -95,7 +108,14 @@ Pose2d SwerveDrive::GetOdometryPose() const {
 }
 
 Rotation2d SwerveDrive::GetGyroHeading() {
-  return Rotation2d(units::degree_t{-m_gyro.GetYaw()});
+  double newAngle = -m_gyro.GetYaw();
+  double delta = std::fmod(std::fmod((newAngle - lastAngle + 180), 360) + 360, 360) - 180;  // NOLINT
+  lastAngle = newAngle;
+  angle = angle + Rotation2d(degree_t{delta * 1.02466666667});
+  SmartDashboard::PutNumber("Raw angle", newAngle);
+  SmartDashboard::PutNumber("Fused angle", -m_gyro.GetFusedHeading());
+  SmartDashboard::PutNumber("Angle", angle.Degrees().value());
+  return angle;
 }
 
 void SwerveDrive::ResetOdometry(const Pose2d& pose) {

@@ -18,6 +18,7 @@
 #include "commands/ResetAbsoluteEncoders.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/OneConeChgstat.hpp"
+#include "commands/autos/South2Cone.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace frc;
@@ -51,10 +52,16 @@ RobotContainer::RobotContainer()
 
   SmartDashboard::PutData("Reset Encoders",
                           new ResetAbsoluteEncoders(&m_drive));
+  
+  // Initialize the LEDs
+  m_leds.SetLength(kLEDBuffLength);
+  m_leds.SetData(m_ledBuffer);
+  m_leds.Start();
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  return North2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  // return North2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  return South2Cone(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return OneConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return DriveTrajectory(&m_drive,
   // &m_trajManager.GetTrajectory("a-to-b")).ToPtr();
@@ -165,4 +172,54 @@ void RobotContainer::RunDisabled() {
 
 void RobotContainer::SuperstructurePeriodic() {
   m_superstructure.SuperstructurePeriodic();
+}
+
+void RobotContainer::LED() {
+  if (m_superstructure.HasGamePiece()) {
+    GamePieceLED();
+  } else {
+    if (!m_superstructure.m_expanded) {
+      Purple();
+    } else {
+      Yellow();
+    }
+  }
+  // Rainbow();
+  m_leds.SetData(m_ledBuffer);
+}
+
+void RobotContainer::GamePieceLED() {
+  // For every pixel
+  int stripLength = 3;
+  int initial = 0;
+  bool yellow = true;
+  for (int i = 0; i < kLEDBuffLength; i++) {
+    if (i - initial > stripLength - 1) {
+      initial = i;
+      yellow = !yellow;
+    }
+    if (yellow) {
+      m_ledBuffer[i].SetRGB(255, 100, 0);
+    } else {
+      m_ledBuffer[i].SetRGB(150, 0, 255);
+    }
+  }
+}
+
+void RobotContainer::Yellow() {
+  for (int i = 0; i < kLEDBuffLength; i++) {
+    m_ledBuffer[i].SetRGB(255, 100, 0);
+  }
+}
+
+void RobotContainer::Green() {
+  for (int i = 0; i < kLEDBuffLength; i++) {
+    m_ledBuffer[i].SetRGB(0, 255, 0);
+  }
+}
+
+void RobotContainer::Purple() {
+  for (int i = 0; i < kLEDBuffLength; i++) {
+    m_ledBuffer[i].SetRGB(150, 0, 255);
+  }
 }

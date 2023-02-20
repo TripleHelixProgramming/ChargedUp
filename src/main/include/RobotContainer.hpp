@@ -10,8 +10,11 @@
 #include <frc/PneumaticsModuleType.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
+#include <frc/AddressableLED.h>
+
 
 #include "Constants.hpp"
+#include "frc/geometry/Rotation2d.h"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
@@ -28,6 +31,13 @@ class RobotContainer {
   void RunDisabled();
 
   void SuperstructurePeriodic();
+
+  void GamePieceLED();
+  void Yellow();
+  void Green();
+  void Purple();
+
+  void LED();
 
  private:
   // Subsystems
@@ -46,4 +56,10 @@ class RobotContainer {
   DoubleTelemetryEntry m_oiDriverLeftXLog;
   DoubleTelemetryEntry m_oiDriverRightXLog;
   DoubleTelemetryEntry m_oiDriverRightYLog;
+
+  /// LED strip
+  static constexpr int kLEDBuffLength = 88;
+  frc::AddressableLED m_leds{0};
+  std::array<frc::AddressableLED::LEDData, kLEDBuffLength> m_ledBuffer;
+  int firstPixelHue;
 };
