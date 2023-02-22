@@ -70,7 +70,7 @@ double Superstructure::RawString() {
 
 void Superstructure::PositionHigh() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 35_deg : 30_deg);
+  SetArmPosition(m_expanded ? 36_deg : 30_deg);
 }
 
 void Superstructure::PositionMedium() {
@@ -122,7 +122,7 @@ void Superstructure::SetArmPosition(radian_t position) {
 }
 
 degree_t Superstructure::GetAbsoluteArmPosition() {
-  return degree_t{360 * m_armEncoder.GetAbsolutePosition() *
+  return degree_t{-360 * m_armEncoder.GetAbsolutePosition() *
                       kArmEncoderGearRatio -
                   kArmEncoderOffset};
 }
@@ -179,6 +179,12 @@ units::degree_t Superstructure::GetStringAngle() {
 }
 
 void Superstructure::SuperstructurePeriodic() {
+  // If we have game piece, don't spin wheels and lift intake off the ground.
+  if (HasGamePiece() && !m_lastBeamBreakDetection) {
+    m_armPosition =
+        degree_t{std::max(m_armPosition.value(), kMinArmPickupPosition.value())};
+  }
+
   double intakeWheelSpeed = m_intakeWheelSpeed;
   degree_t armPosition = m_armPosition;
   double currentAngle = GetRelativePosition();
@@ -187,11 +193,8 @@ void Superstructure::SuperstructurePeriodic() {
     armPosition = m_flipConeUp ? 11_deg : 6_deg;
   }
 
-  // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece()) {
     intakeWheelSpeed = units::math::min(intakeWheelSpeed, 0.0);
-    armPosition =
-        degree_t{std::max(armPosition.value(), kMinArmPickupPosition.value())};
   }
 
   // Ensure arm position bounds are not violated.
@@ -244,6 +247,10 @@ void Superstructure::SuperstructurePeriodic() {
   commandedVoltage =
       volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
                       commandedVoltage.value())};
+
+  if (armPosition.value() == kMinArmPickupPosition.value() && currentAngle < 2.0) {
+    commandedVoltage = volt_t{6};
+  }
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
 

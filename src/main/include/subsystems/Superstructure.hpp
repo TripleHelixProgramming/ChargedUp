@@ -75,6 +75,8 @@ class Superstructure : public frc2::SubsystemBase {
 
   double m_seed = 0.0;
 
+  bool m_lastBeamBreakDetection = false;
+
   // Strint pot lookup table
   std::array<double, 13> m_encoderPositions{0.835, 2.315,  4.275, 7.05,   10.60,
                                             13.97, 17.345, 20.71, 23.667, 27.45,

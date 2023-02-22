@@ -86,7 +86,7 @@ constexpr double kArmP = 20.0;
 constexpr double kArmI = 0;
 constexpr double kArmD = 4.0;
 
-constexpr double kArmEncoderOffset = 17;
+constexpr double kArmEncoderOffset = 17 - 64;
 constexpr double kArmEncoderGearRatio = 1 / 5.0;
 
 }  // namespace SuperstructureConstants

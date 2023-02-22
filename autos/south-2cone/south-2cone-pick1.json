@@ -103,15 +103,15 @@
                     "heading": 3.141592653589793,
                     "heading_constrained": true,
                     "name": "Custom Waypoint 2",
-                    "velocity_magnitude_constrained": false,
-                    "velocity_x": 0.0,
-                    "velocity_x_constrained": false,
+                    "velocity_magnitude_constrained": true,
+                    "velocity_x": -0.3000000000000007,
+                    "velocity_x_constrained": true,
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 10.032789366176049,
+                    "x": 10.168414288260285,
                     "x_constrained": true,
-                    "y": 1.096038529990076,
+                    "y": 1.122600366334588,
                     "y_constrained": true
                 },
                 {
@@ -129,7 +129,7 @@
                     "waypoint_type": "custom",
                     "x": 9.515028539788906,
                     "x_constrained": true,
-                    "y": 1.0974175277484526,
+                    "y": 1.1228175277484524,
                     "y_constrained": true
                 }
             ]

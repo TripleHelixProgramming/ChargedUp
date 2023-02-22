@@ -60,9 +60,9 @@ RobotContainer::RobotContainer()
 }
 
 std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  // return North2ConeChgstat(&m_drive, &m_superstructure,
-  // &m_trajManager).ToPtr();
-  return South2Cone(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
+  return North2ConeChgstat(&m_drive, &m_superstructure,
+  &m_trajManager).ToPtr();
+  // return South2Cone(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return OneConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
   // return DriveTrajectory(&m_drive,
   // &m_trajManager.GetTrajectory("a-to-b")).ToPtr();
