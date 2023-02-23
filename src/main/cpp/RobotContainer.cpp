@@ -19,6 +19,7 @@
 #include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/OneConeChgstat.hpp"
 #include "commands/autos/South2Cone.hpp"
+#include "frc2/command/Command.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace frc;
@@ -27,9 +28,13 @@ using namespace OIConstants;
 using namespace units;
 
 RobotContainer::RobotContainer()
-    : m_oiDriverLeftXLog("OI/Driver/Left X"),
+    : m_north2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager),
+      m_south2Cone(&m_drive, &m_superstructure, &m_trajManager),
+      m_mid1ConeChgstat(&m_drive, &m_superstructure, &m_trajManager),
+      m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
-      m_oiDriverRightYLog("OI/Driver/Right Y") {
+      m_oiDriverRightYLog("OI/Driver/Right Y"),
+      m_autoSwitchIndexLog("Auto Switch Index") {
   m_drive.SetDefaultCommand(RunCommand(
       [this] {  // onExecute
         // Right stick up on xbox is negative, right stick down is postive.
@@ -48,8 +53,6 @@ RobotContainer::RobotContainer()
 
   ConfigureBindings();
 
-  m_trajManager.LoadTrajectories();
-
   SmartDashboard::PutData("Reset Encoders",
                           new ResetAbsoluteEncoders(&m_drive));
 
@@ -59,13 +62,18 @@ RobotContainer::RobotContainer()
   m_leds.Start();
 }
 
-std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  return North2ConeChgstat(&m_drive, &m_superstructure,
-  &m_trajManager).ToPtr();
-  // return South2Cone(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
-  // return OneConeChgstat(&m_drive, &m_superstructure, &m_trajManager).ToPtr();
-  // return DriveTrajectory(&m_drive,
-  // &m_trajManager.GetTrajectory("a-to-b")).ToPtr();
+std::optional<Command*> RobotContainer::GetAutonomousCommand() {
+  UpdateAutoSelected();
+  switch (m_currentSelectedAuto) {
+    case SelectedAuto::kNorth2ConeChgstat:
+      return &m_north2ConeChgstat;
+    case SelectedAuto::kSouth2Cone:
+      return &m_south2Cone;
+    case SelectedAuto::kMid1ConeChgstat:
+      return &m_mid1ConeChgstat;
+    default:
+      return std::nullopt;
+  }
 }
 
 void RobotContainer::UpdateTelemetry() {
@@ -84,6 +92,12 @@ void RobotContainer::UpdateTelemetry() {
                             m_superstructure.GetRelativePosition());
   SmartDashboard::PutNumber("Raw relative angle",
                             m_superstructure.RawPosition().value());
+  
+  auto previousAutoSelected = m_currentSelectedAuto;
+  UpdateAutoSelected();
+  if (previousAutoSelected != m_currentSelectedAuto) {
+    m_autoSwitchIndexLog.Append(static_cast<int>(m_currentSelectedAuto));
+  }
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -184,6 +198,44 @@ void RobotContainer::LED() {
   }
   // Rainbow();
   m_leds.SetData(m_ledBuffer);
+}
+
+std::optional<size_t> RobotContainer::GetAutoSwitchIndex() const {
+  for (size_t switchIndex = 0; switchIndex < ElectricalConstants::kAutoSwitchPorts.size(); switchIndex++) {
+    if (!m_autoSwitch[switchIndex].Get()) {
+      return switchIndex;
+    }
+  }
+  return std::nullopt;
+}
+
+void RobotContainer::UpdateAutoSelected() {
+  auto selectionOpt = GetAutoSwitchIndex();
+  // std::optional<size_t> selectionOpt = static_cast<size_t>(SmartDashboard::GetNumber("Selected Auto", 0.0));
+  SelectedAuto newSelectedAuto;
+  using enum SelectedAuto;
+  if (!selectionOpt) {
+    newSelectedAuto = kNoAuto;
+  }
+  switch (*selectionOpt) {
+    case static_cast<long long>(kNoAuto):
+      newSelectedAuto = kNoAuto;
+      break;
+    case static_cast<long long>(kNorth2ConeChgstat):
+      newSelectedAuto = kNorth2ConeChgstat;
+      break;
+    case static_cast<long long>(kSouth2Cone):
+      newSelectedAuto = kSouth2Cone;
+      break;
+    case static_cast<long long>(kMid1ConeChgstat):
+      newSelectedAuto = kMid1ConeChgstat;
+      break;
+    default:
+      newSelectedAuto = kNoAuto;
+      break;
+  }
+
+  m_currentSelectedAuto = newSelectedAuto;
 }
 
 void RobotContainer::GamePieceLED() {

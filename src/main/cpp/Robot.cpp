@@ -56,7 +56,7 @@ void Robot::AutonomousInit() {
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
   if (m_autonomousCommand) {
-    m_autonomousCommand->Schedule();
+    (*m_autonomousCommand)->Schedule();
   }
 }
 
@@ -64,7 +64,7 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
   if (m_autonomousCommand) {
-    m_autonomousCommand->Cancel();
+    (*m_autonomousCommand)->Cancel();
   }
 }
 
