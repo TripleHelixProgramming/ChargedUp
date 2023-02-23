@@ -20,21 +20,21 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(0.9_s),
       DriveTrajectory(m_drive,
-                      &m_trajManager->GetTrajectory("north_place_grid3x1")),
+                      &m_trajManager->GetTrajectory("north-2cone-chgstat_0_place9")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       frc2::WaitCommand(0.1_s),
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
-                          &m_trajManager->GetTrajectory("north_pick4")),
+                          &m_trajManager->GetTrajectory("north-2cone-chgstat_1_pick4")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
 
       DriveTrajectory(m_drive, &m_trajManager->GetTrajectory(
-                                   "north-2cone-chgstat_3_align7")),
+                                   "north-2cone-chgstat_2_align7")),
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive, &m_trajManager->GetTrajectory(
                                        "north-2cone-chgstat_3_place7")),
