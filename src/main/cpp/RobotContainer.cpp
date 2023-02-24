@@ -232,16 +232,16 @@ void RobotContainer::UpdateAutoSelected() {
     newSelectedAuto = kNoAuto;
   }
   switch (*selectionOpt) {
-    case static_cast<long long>(kNoAuto):
+    case static_cast<int64_t>(kNoAuto):
       newSelectedAuto = kNoAuto;
       break;
-    case static_cast<long long>(kNorth2ConeChgstat):
+    case static_cast<int64_t>(kNorth2ConeChgstat):
       newSelectedAuto = kNorth2ConeChgstat;
       break;
-    case static_cast<long long>(kSouth2Cone):
+    case static_cast<int64_t>(kSouth2Cone):
       newSelectedAuto = kSouth2Cone;
       break;
-    case static_cast<long long>(kMid1ConeChgstat):
+    case static_cast<int64_t>(kMid1ConeChgstat):
       newSelectedAuto = kMid1ConeChgstat;
       break;
     default:

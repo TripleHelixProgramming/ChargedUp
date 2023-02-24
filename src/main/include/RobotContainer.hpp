@@ -3,6 +3,7 @@
 #pragma once
 
 #include <optional>
+#include <tuple>
 
 #include <frc/AddressableLED.h>
 #include <frc/Compressor.h>
@@ -25,7 +26,7 @@
 
 class RobotContainer {
  public:
-  RobotContainer(std::function<bool(void)> isDisabled);
+  explicit RobotContainer(std::function<bool(void)> isDisabled);
 
   std::optional<frc2::Command*> GetAutonomousCommand();
 
