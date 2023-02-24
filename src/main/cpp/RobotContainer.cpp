@@ -3,6 +3,8 @@
 #include "RobotContainer.hpp"
 
 #include <iostream>
+#include <functional>
+#include <tuple>
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -14,6 +16,7 @@
 #include <wpi/json.h>
 
 #include "Constants.hpp"
+#include "Robot.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
@@ -27,8 +30,9 @@ using namespace frc2;
 using namespace OIConstants;
 using namespace units;
 
-RobotContainer::RobotContainer()
-    : m_north2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager),
+RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
+    : m_isDisabled(isDisabled),
+      m_north2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager),
       m_south2Cone(&m_drive, &m_superstructure, &m_trajManager),
       m_mid1ConeChgstat(&m_drive, &m_superstructure, &m_trajManager),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
@@ -187,7 +191,11 @@ void RobotContainer::SuperstructurePeriodic() {
 }
 
 void RobotContainer::LED() {
-  if (m_superstructure.HasGamePiece()) {
+  if (m_isDisabled()) {
+    // ApplyLEDSingleStrip({std::tuple{255, 255, 255}, {100, 0, 0}, {100, 0, 0}, {100, 0, 0}});
+    AutoLED();
+    // SnakeBOI();
+  } else if (m_superstructure.HasGamePiece()) {
     GamePieceLED();
   } else {
     if (!m_superstructure.m_expanded) {
@@ -196,13 +204,13 @@ void RobotContainer::LED() {
       Yellow();
     }
   }
-  // Rainbow();
   m_leds.SetData(m_ledBuffer);
 }
 
 std::optional<size_t> RobotContainer::GetAutoSwitchIndex() const {
   for (size_t switchIndex = 0; switchIndex < ElectricalConstants::kAutoSwitchPorts.size(); switchIndex++) {
     if (!m_autoSwitch[switchIndex].Get()) {
+      SmartDashboard::PutNumber("Auto Rotary Switch Index", switchIndex);
       return switchIndex;
     }
   }
@@ -236,6 +244,35 @@ void RobotContainer::UpdateAutoSelected() {
   }
 
   m_currentSelectedAuto = newSelectedAuto;
+}
+
+void RobotContainer::ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>& stripBuffer) {
+  // our strips are weirdly wired, sorry
+
+  static constexpr auto kStripLen = kLEDBuffLength / 4;
+  for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
+    size_t firstLEDIdx = stripIdx * kStripLen;
+    bool stripDirection = kStripDirections[stripIdx];
+    for (size_t stripBuffIdx = 0; stripBuffIdx < kStripLen; stripBuffIdx++) {
+      if (stripDirection) { // if goes down
+        m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
+            std::get<0>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
+            std::get<1>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
+            std::get<2>(stripBuffer[kStripLen - 1 - stripBuffIdx]));
+      } else { // if goes up
+        m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
+          std::get<0>(stripBuffer[stripBuffIdx]),
+          std::get<1>(stripBuffer[stripBuffIdx]),
+          std::get<2>(stripBuffer[stripBuffIdx]));
+      }
+    }
+  }
+}
+
+void RobotContainer::ClearLED() {
+  for (size_t clrIdx = 0; clrIdx < kLEDBuffLength; clrIdx++) {
+    m_ledBuffer[clrIdx].SetRGB(0, 0, 0);
+  }
 }
 
 void RobotContainer::GamePieceLED() {
@@ -272,4 +309,25 @@ void RobotContainer::Purple() {
   for (int i = 0; i < kLEDBuffLength; i++) {
     m_ledBuffer[i].SetRGB(150, 0, 255);
   }
+}
+
+void RobotContainer::SnakeBOI() {
+  ClearLED();
+  if (m_previousSnakeIndex == kLEDBuffLength - 1) {
+    m_previousSnakeIndex = 0;
+  } else {
+    m_previousSnakeIndex++;
+  }
+  m_ledBuffer[m_previousSnakeIndex].SetRGB(255, 0, 0);
+}
+
+void RobotContainer::AutoLED() {
+  auto selectedAutoID = static_cast<size_t>(m_currentSelectedAuto);
+  std::array<std::tuple<int, int, int>, kLEDBuffLength / 4> stripBuffer;
+  for (size_t selectedAutoIdx = 0; selectedAutoIdx < selectedAutoID; selectedAutoIdx++) {
+    for (size_t chunkIdx = 0; chunkIdx < 3; chunkIdx++) {
+      stripBuffer[selectedAutoIdx * 4 + chunkIdx] = {255, 0, 0};
+    }
+  }
+  ApplyLEDSingleStrip(stripBuffer);
 }

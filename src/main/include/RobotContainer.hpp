@@ -25,7 +25,7 @@
 
 class RobotContainer {
  public:
-  RobotContainer();
+  RobotContainer(std::function<bool(void)> isDisabled);
 
   std::optional<frc2::Command*> GetAutonomousCommand();
 
@@ -34,13 +34,6 @@ class RobotContainer {
   void RunDisabled();
 
   void SuperstructurePeriodic();
-
-  void GamePieceLED();
-  void Yellow();
-  void Green();
-  void Purple();
-
-  void LED();
 
   /**
    * Query the RIO's digital input pins to detect currently selected auto routine index.
@@ -51,7 +44,11 @@ class RobotContainer {
 
   void UpdateAutoSelected();
 
+  void LED();
+
  private:
+  std::function<bool(void)> m_isDisabled;
+
   // Subsystems
   SwerveDrive m_drive;
   Superstructure m_superstructure;
@@ -99,7 +96,20 @@ class RobotContainer {
 
   /// LED strip
   static constexpr int kLEDBuffLength = 88;
+  static constexpr bool kStripDirections[] = {false, true, true, true}; // false means up, true means down
   frc::AddressableLED m_leds{0};
   std::array<frc::AddressableLED::LEDData, kLEDBuffLength> m_ledBuffer;
-  int firstPixelHue;
+
+  void ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>& stripBuffer);
+  
+  void ClearLED();
+  void GamePieceLED();
+  void Yellow();
+  void Green();
+  void Purple();
+  int m_previousSnakeIndex = -1;
+  /// Used to test the order of the lights
+  void SnakeBOI();
+  void AutoLED();
+
 };

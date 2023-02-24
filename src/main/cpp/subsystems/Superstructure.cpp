@@ -183,6 +183,14 @@ void Superstructure::SuperstructurePeriodic() {
   if (HasGamePiece() && !m_lastBeamBreakDetection) {
     m_armPosition =
         degree_t{std::max(m_armPosition.value(), kMinArmPickupPosition.value())};
+    m_intakePop.Set(frc::DoubleSolenoid::kForward);
+    m_intakePopTimer.Reset();
+    m_intakePopTimer.Start();
+  }
+
+  if (m_intakePopTimer.HasElapsed(0.00001_s)) {
+    m_intakePop.Set(frc::DoubleSolenoid::kReverse);
+    m_intakePopTimer.Stop();
   }
 
   double intakeWheelSpeed = m_intakeWheelSpeed;
