@@ -3,16 +3,16 @@
         "default": "Charged Up"
     },
     "paths": {
-        "charge_station": {
+        "chgstat": {
             "obstacles": [],
             "waypoints": [
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 20,
+                    "control_interval_count": 0,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "place",
+                    "name": "place 6",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": true,
@@ -21,7 +21,7 @@
                     "waypoint_type": "custom",
                     "x": 14.65,
                     "x_constrained": true,
-                    "y": 5.0,
+                    "y": 3.32,
                     "y_constrained": true
                 },
                 {
@@ -30,34 +30,16 @@
                     "control_interval_count": 30,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "Custom Waypoint 3",
-                    "velocity_magnitude_constrained": false,
+                    "name": "stop",
+                    "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
-                    "velocity_x_constrained": false,
+                    "velocity_x_constrained": true,
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 14.333036529317347,
+                    "x": 14.11,
                     "x_constrained": true,
-                    "y": 4.062612580577689,
-                    "y_constrained": true
-                },
-                {
-                    "angular_velocity": 0.0,
-                    "angular_velocity_constrained": true,
-                    "control_interval_count": 30,
-                    "heading": 0.0,
-                    "heading_constrained": true,
-                    "name": "align",
-                    "velocity_magnitude_constrained": false,
-                    "velocity_x": 1.0,
-                    "velocity_x_constrained": true,
-                    "velocity_y": 0.0,
-                    "velocity_y_constrained": true,
-                    "waypoint_type": "custom",
-                    "x": 14.122022923583959,
-                    "x_constrained": true,
-                    "y": 3.25,
+                    "y": 3.32,
                     "y_constrained": true
                 },
                 {
@@ -66,16 +48,16 @@
                     "control_interval_count": 40,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "drive onto",
+                    "name": "go on chgstat",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": true,
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 12.65,
+                    "x": 12.0952,
                     "x_constrained": true,
-                    "y": 3.250167860703827,
+                    "y": 3.32,
                     "y_constrained": true
                 }
             ]
@@ -86,8 +68,8 @@
         "bumper_width": 0.903,
         "mass": 46.7,
         "moment_of_inertia": 5.6,
-        "motor_max_angular_speed": 20.94395102393195,
-        "motor_max_torque": 0.4,
+        "motor_max_angular_speed": 41.8879020478639,
+        "motor_max_torque": 1.0,
         "team_number": 2363,
         "wheel_horizontal_distance": 0.622,
         "wheel_radius": 0.051,

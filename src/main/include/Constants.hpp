@@ -41,6 +41,11 @@ constexpr int kIntakeRightWheelPort = 17;
 
 constexpr int kArmEncoderPort = 0;
 
+/// Maps rotary switch positions/indices to digital input pins on the RIO
+constexpr std::array<int, 8> kAutoSwitchPorts = {11, 12, 13, 18,
+                                                 19, 20, 21, 22};
+constexpr int kRedBlueSwitchPort = 10;
+
 }  // namespace ElectricalConstants
 
 namespace DriveConstants {
@@ -78,7 +83,7 @@ constexpr double kSteerGearRatio = 12.8;
 namespace SuperstructureConstants {
 
 constexpr auto kMinArmPosition = 0.0_deg;
-constexpr auto kMinArmPickupPosition = 3.0_deg;
+constexpr auto kMinArmPickupPosition = 5.0_deg;
 constexpr auto kMaxArmPosition = 1.0_rad;
 
 constexpr double kArmFF = 0;
@@ -86,7 +91,7 @@ constexpr double kArmP = 20.0;
 constexpr double kArmI = 0;
 constexpr double kArmD = 4.0;
 
-constexpr double kArmEncoderOffset = 17;
+constexpr double kArmEncoderOffset = 17 - 64;
 constexpr double kArmEncoderGearRatio = 1 / 5.0;
 
 }  // namespace SuperstructureConstants
@@ -102,7 +107,7 @@ const frc::Transform3d kRobotToLeftCam(frc::Translation3d(10.984_in, 12.749_in,
 const frc::Transform3d kRobotToRightCam(frc::Translation3d(10.984_in,
                                                            -12.749_in,
                                                            24.671_in),
-                                        frc::Rotation3d(0_deg, 0_deg, 45_deg));
+                                        frc::Rotation3d(0_deg, 0_deg, 42_deg));
 
 // NOLINT
 const frc::Transform3d kRobotToBackCam(frc::Translation3d(-11.760_in, 0.000_in,

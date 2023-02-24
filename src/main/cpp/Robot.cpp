@@ -12,7 +12,9 @@
 
 using namespace frc;
 
-Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms} {
+Robot::Robot()
+    : frc::TimesliceRobot{2_ms, 5_ms},
+      m_container([&]() { return IsDisabled(); }) {
   // Schedule periodic functions
   Schedule(
       [=, this] {
@@ -42,6 +44,8 @@ void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
 
   m_container.UpdateTelemetry();
+
+  m_container.LED();
 }
 
 void Robot::DisabledInit() {}
@@ -54,7 +58,7 @@ void Robot::AutonomousInit() {
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
   if (m_autonomousCommand) {
-    m_autonomousCommand->Schedule();
+    (*m_autonomousCommand)->Schedule();
   }
 }
 
@@ -62,7 +66,7 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
   if (m_autonomousCommand) {
-    m_autonomousCommand->Cancel();
+    (*m_autonomousCommand)->Cancel();
   }
 }
 

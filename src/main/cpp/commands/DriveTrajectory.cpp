@@ -9,9 +9,10 @@
 using namespace units;
 
 DriveTrajectory::DriveTrajectory(SwerveDrive* drive,
-                                 const Trajectory* trajectory)
+                                 const Trajectory* trajectory, bool useVision)
     : m_drive{drive},
       m_trajectory{trajectory},
+      m_useVision(useVision),
       m_timestampLog("Trajectory/Timestamp"),
       m_xSetpointLog("Trajectory/X Setpoint"),
       m_ySetpointLog("Trajectory/Y Setpoint"),
@@ -26,12 +27,15 @@ void DriveTrajectory::Initialize() {
   m_controllerRotation.EnableContinuousInput(-std::numbers::pi,
                                              std::numbers::pi);
 
-  // m_drive->ResetOdometry(m_trajectory->GetInitialPose());
+  if (!m_useVision) {
+    m_drive->ResetOdometry(m_trajectory->GetInitialPose());
+  }
 }
 
 void DriveTrajectory::Execute() {
   auto state = m_trajectory->Sample(m_timestamp.Get());
-  auto currentPose = m_drive->GetPose();
+  auto currentPose =
+      m_useVision ? m_drive->GetPose() : m_drive->GetOdometryPose();
 
   m_controllerX.SetSetpoint(state.pose.X().value());
   m_controllerY.SetSetpoint(state.pose.Y().value());
@@ -51,10 +55,12 @@ void DriveTrajectory::Execute() {
   m_thetaSetpointLog.Append(state.pose.Rotation().Radians().value());
 
   m_drive->Drive(frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-      vx, vy, omega, m_drive->GetPose().Rotation()));
+      vx, vy, omega, currentPose.Rotation()));
 }
 
 void DriveTrajectory::End(bool interrupted) {
+  m_drive->ResetOdometry(
+      m_trajectory->Sample(m_trajectory->GetTotalTime()).pose);
   m_drive->Brake();
 }
 

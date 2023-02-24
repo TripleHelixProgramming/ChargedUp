@@ -5,6 +5,7 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc/DutyCycleEncoder.h>
 #include <frc/Encoder.h>
+#include <frc/Timer.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SubsystemBase.h>
@@ -20,17 +21,17 @@ class Superstructure : public frc2::SubsystemBase {
  public:
   Superstructure();
 
-  void PositionCubeHigh();
+  void PositionHigh();
 
-  void PositionCubeMedium();
-
-  void PositionConeHigh();
-
-  void PositionConeMedium();
+  void PositionMedium();
 
   void IntakeCube();
 
   void IntakeCone();
+
+  void IntakeCubeStation();
+
+  void IntakeConeStation();
 
   void SetIntakeWheelSpeed(double speed);
 
@@ -46,6 +47,10 @@ class Superstructure : public frc2::SubsystemBase {
 
   double GetAbsoluteStringPosition();
 
+  units::degree_t RawPosition();
+
+  double GetRelativePosition();
+
   units::degree_t GetStringAngle();
 
   double RawString();
@@ -54,13 +59,15 @@ class Superstructure : public frc2::SubsystemBase {
 
   void SuperstructurePeriodic();
 
-  bool m_driverLockControl = false;
+  // Modes for picking up tipped cones
+  bool m_flipConeMode = false;
+  bool m_flipConeUp = false;
+  bool m_expanded = true;
 
  private:
   // State variables
   double m_intakeWheelSpeed = 0.0;
   units::degree_t m_armPosition = 0.0_rad;
-  bool m_expanded = true;
 
   double m_integral = 0.0;
   double m_kI = 0.002;
@@ -68,6 +75,8 @@ class Superstructure : public frc2::SubsystemBase {
   double m_outputBound = 0.0;
 
   double m_seed = 0.0;
+
+  bool m_lastBeamBreakDetection = false;
 
   // Strint pot lookup table
   std::array<double, 13> m_encoderPositions{0.835, 2.315,  4.275, 7.05,   10.60,
@@ -98,9 +107,14 @@ class Superstructure : public frc2::SubsystemBase {
 
   frc::DutyCycleEncoder m_armEncoder{ElectricalConstants::kArmEncoderPort};
 
+  frc::Encoder m_relativeEncoder{1, 2, false, frc::Encoder::EncodingType::k4X};
+
   frc::Encoder m_stringEncoder{3, 4, false, frc::Encoder::EncodingType::k4X};
 
   rev::SparkMaxLimitSwitch m_beamBreak;
 
-  frc::DoubleSolenoid m_expander{frc::PneumaticsModuleType::REVPH, 0, 1};
+  frc::DoubleSolenoid m_expander{frc::PneumaticsModuleType::REVPH, 0,
+                                 1};  // TODO should be in constants
+  frc::DoubleSolenoid m_intakePop{frc::PneumaticsModuleType::REVPH, 2, 3};
+  frc::Timer m_intakePopTimer;
 };

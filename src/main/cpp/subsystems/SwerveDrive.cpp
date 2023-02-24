@@ -51,10 +51,16 @@ SwerveDrive::SwerveDrive()
                               kAbsEncoderPorts[2]),
                  SwerveModule(kDriveMotorPorts[3], kSteerMotorPorts[3],
                               kAbsEncoderPorts[3])}},
-      m_driveKinematics{{Translation2d{kWheelBase / 2, kTrackWidth / 2},
-                         Translation2d{kWheelBase / 2, -kTrackWidth / 2},
-                         Translation2d{-kWheelBase / 2, kTrackWidth / 2},
-                         Translation2d{-kWheelBase / 2, -kTrackWidth / 2}}},
+      m_driveKinematics{{
+          Translation2d{kWheelBase / 2, kTrackWidth / 2},
+          Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+          Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+          Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
+          //  Translation2d{8_in, 13_in},
+          //  Translation2d{kWheelBase / 2, -kTrackWidth / 2},
+          //  Translation2d{-kWheelBase / 2, kTrackWidth / 2},
+          //  Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
+      }},
       m_odometry{m_driveKinematics,
                  Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
@@ -84,21 +90,42 @@ SwerveDrive::SwerveDrive()
   if constexpr (RobotBase::IsSimulation()) {
     SmartDashboard::PutData("Sim Field", &m_simPoseField);
   }
+
+  m_gyro.Calibrate();
+
+  angle = Rotation2d(degree_t{-m_gyro.GetYaw()});
+  lastAngle = -m_gyro.GetYaw();
 }
 
 Pose2d SwerveDrive::GetPose() const {
   return m_poseEstimator.GetEstimatedPosition();
-  // return m_odometry.GetPose();
+}
+
+Pose2d SwerveDrive::GetOdometryPose() const {
+  return m_odometry.GetPose();
+}
+
+Rotation2d SwerveDrive::GetGyroHeading() {
+  double newAngle = -m_gyro.GetYaw();
+  double delta =
+      std::fmod(std::fmod((newAngle - lastAngle + 180), 360) + 360, 360) -
+      180;  // NOLINT
+  lastAngle = newAngle;
+  angle = angle + Rotation2d(degree_t{delta * 1.02466666667});
+  SmartDashboard::PutNumber("Raw angle", newAngle);
+  SmartDashboard::PutNumber("Fused angle", -m_gyro.GetFusedHeading());
+  SmartDashboard::PutNumber("Angle", angle.Degrees().value());
+  return angle;
 }
 
 void SwerveDrive::ResetOdometry(const Pose2d& pose) {
   m_odometry.ResetPosition(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
   m_poseEstimator.ResetPosition(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
@@ -110,7 +137,8 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
       fieldRelative
           ? ChassisSpeeds::FromFieldRelativeSpeeds(
                 joystickDrive * kMaxVelocityX, joystickStrafe * kMaxVelocityY,
-                joystickRotate * kMaxVelocityAngular, GetPose().Rotation())
+                joystickRotate * kMaxVelocityAngular,
+                m_odometry.GetPose().Rotation())
           : ChassisSpeeds{joystickDrive * kMaxVelocityX,
                           joystickStrafe * kMaxVelocityY,
                           joystickRotate * kMaxVelocityAngular};
@@ -156,11 +184,11 @@ void SwerveDrive::Brake() {
 
 void SwerveDrive::Periodic() {
   m_odometry.Update(  // TODO: Remove odometry
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   m_poseEstimator.Update(
-      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+      GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 

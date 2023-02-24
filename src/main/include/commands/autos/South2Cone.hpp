@@ -9,12 +9,11 @@
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
 
-class North2ConeCharge
-    : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 North2ConeCharge> {
+class South2Cone
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup, South2Cone> {
  public:
-  North2ConeCharge(SwerveDrive* drive, Superstructure* superstructure,
-                   const TrajectoryManager* trajManager);
+  South2Cone(SwerveDrive* drive, Superstructure* superstructure,
+             const TrajectoryManager* trajManager);
 
  private:
   SwerveDrive* m_drive;
