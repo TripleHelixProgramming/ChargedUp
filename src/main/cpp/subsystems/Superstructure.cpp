@@ -182,12 +182,12 @@ void Superstructure::SuperstructurePeriodic() {
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece() && !m_lastBeamBreakDetection) {
     if (m_armPosition.value() != kMinArmPickupPosition.value()) {
-      m_intakePop.Set(frc::DoubleSolenoid::kForward); // pop out intake
+      m_intakePop.Set(frc::DoubleSolenoid::kForward);  // pop out intake
       m_intakePopTimer.Reset();
       m_intakePopTimer.Start();
     }
-    m_armPosition =
-        degree_t{std::max(m_armPosition.value(), kMinArmPickupPosition.value())};
+    m_armPosition = degree_t{
+        std::max(m_armPosition.value(), kMinArmPickupPosition.value())};
   }
 
   if (m_intakePopTimer.HasElapsed(0.6_s)) {
@@ -258,7 +258,8 @@ void Superstructure::SuperstructurePeriodic() {
       volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
                       commandedVoltage.value())};
 
-  if (armPosition.value() == kMinArmPickupPosition.value() && currentAngle < 2.0) {
+  if (armPosition.value() == kMinArmPickupPosition.value() &&
+      currentAngle < 2.0) {
     commandedVoltage = volt_t{6};
   }
 

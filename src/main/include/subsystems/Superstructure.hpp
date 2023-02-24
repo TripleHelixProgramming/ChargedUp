@@ -5,6 +5,7 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc/DutyCycleEncoder.h>
 #include <frc/Encoder.h>
+#include <frc/Timer.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SubsystemBase.h>
@@ -15,7 +16,6 @@
 #include <units/angular_velocity.h>
 
 #include "Constants.hpp"
-#include "frc/Timer.h"
 
 class Superstructure : public frc2::SubsystemBase {
  public:
@@ -113,7 +113,8 @@ class Superstructure : public frc2::SubsystemBase {
 
   rev::SparkMaxLimitSwitch m_beamBreak;
 
-  frc::DoubleSolenoid m_expander{frc::PneumaticsModuleType::REVPH, 0, 1}; // TODO should be in constants
+  frc::DoubleSolenoid m_expander{frc::PneumaticsModuleType::REVPH, 0,
+                                 1};  // TODO should be in constants
   frc::DoubleSolenoid m_intakePop{frc::PneumaticsModuleType::REVPH, 2, 3};
   frc::Timer m_intakePopTimer;
 };

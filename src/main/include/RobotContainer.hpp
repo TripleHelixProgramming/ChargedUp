@@ -36,9 +36,11 @@ class RobotContainer {
   void SuperstructurePeriodic();
 
   /**
-   * Query the RIO's digital input pins to detect currently selected auto routine index.
-   * 
-   * @return the auto rotary switch index if detected, if not nullopt is returned
+   * Query the RIO's digital input pins to detect currently selected auto
+   * routine index.
+   *
+   * @return the auto rotary switch index if detected, if not nullopt is
+   * returned
    */
   std::optional<size_t> GetAutoSwitchIndex() const;
 
@@ -63,7 +65,7 @@ class RobotContainer {
    * Maps auto routines to auto rotary switch indices
    */
   enum class SelectedAuto {
-    kNoAuto = 0, // In case we can't find an auto that works with our alliance
+    kNoAuto = 0,  // In case we can't find an auto that works with our alliance
     kNorth2ConeChgstat = 1,
     kSouth2Cone = 2,
     kMid1ConeChgstat = 3,
@@ -73,17 +75,18 @@ class RobotContainer {
   SelectedAuto m_currentSelectedAuto = SelectedAuto::kNorth2ConeChgstat;
   bool m_isBlue = true;
 
-  const std::array<frc::DigitalInput, 8> m_autoSwitch =
-      {frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[0]),
-       frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[1]),
-       frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[2]),
-       frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[3]),
-       frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[4]),
-       frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[5]),
-       frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[6]),
-       frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[7])};
+  const std::array<frc::DigitalInput, 8> m_autoSwitch = {
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[0]),
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[1]),
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[2]),
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[3]),
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[4]),
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[5]),
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[6]),
+      frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[7])};
 
-  const frc::DigitalInput m_redBlueSwitch{ElectricalConstants::kRedBlueSwitchPort};
+  const frc::DigitalInput m_redBlueSwitch{
+      ElectricalConstants::kRedBlueSwitchPort};
 
   TrajectoryManager m_trajManager;
 
@@ -100,12 +103,14 @@ class RobotContainer {
 
   /// LED strip
   static constexpr int kLEDBuffLength = 88;
-  static constexpr bool kStripDirections[] = {false, true, true, true}; // false means up, true means down
+  static constexpr bool kStripDirections[] = {
+      false, true, true, true};  // false means up, true means down
   frc::AddressableLED m_leds{0};
   std::array<frc::AddressableLED::LEDData, kLEDBuffLength> m_ledBuffer;
 
-  void ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>& stripBuffer);
-  
+  void ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>,
+                                            kLEDBuffLength / 4>& stripBuffer);
+
   void ClearLED();
   void GamePieceLED();
   void Yellow();
@@ -115,5 +120,4 @@ class RobotContainer {
   /// Used to test the order of the lights
   void SnakeBOI();
   void AutoLED();
-
 };

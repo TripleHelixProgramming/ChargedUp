@@ -2,12 +2,13 @@
 
 #include "RobotContainer.hpp"
 
-#include <iostream>
 #include <functional>
+#include <iostream>
 #include <tuple>
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
@@ -22,7 +23,6 @@
 #include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/OneConeChgstat.hpp"
 #include "commands/autos/South2Cone.hpp"
-#include "frc2/command/Command.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace frc;
@@ -97,7 +97,7 @@ void RobotContainer::UpdateTelemetry() {
                             m_superstructure.GetRelativePosition());
   SmartDashboard::PutNumber("Raw relative angle",
                             m_superstructure.RawPosition().value());
-  
+
   auto previousAutoSelected = m_currentSelectedAuto;
   UpdateAutoSelected();
   UpdateIsBlue();
@@ -194,7 +194,8 @@ void RobotContainer::SuperstructurePeriodic() {
 
 void RobotContainer::LED() {
   if (m_isDisabled()) {
-    // ApplyLEDSingleStrip({std::tuple{255, 255, 255}, {100, 0, 0}, {100, 0, 0}, {100, 0, 0}});
+    // ApplyLEDSingleStrip({std::tuple{255, 255, 255}, {100, 0, 0}, {100, 0, 0},
+    // {100, 0, 0}});
     AutoLED();
     // SnakeBOI();
   } else if (m_superstructure.HasGamePiece()) {
@@ -210,7 +211,9 @@ void RobotContainer::LED() {
 }
 
 std::optional<size_t> RobotContainer::GetAutoSwitchIndex() const {
-  for (size_t switchIndex = 0; switchIndex < ElectricalConstants::kAutoSwitchPorts.size(); switchIndex++) {
+  for (size_t switchIndex = 0;
+       switchIndex < ElectricalConstants::kAutoSwitchPorts.size();
+       switchIndex++) {
     if (!m_autoSwitch[switchIndex].Get()) {
       SmartDashboard::PutNumber("Auto Rotary Switch Index", switchIndex);
       return switchIndex;
@@ -221,7 +224,8 @@ std::optional<size_t> RobotContainer::GetAutoSwitchIndex() const {
 
 void RobotContainer::UpdateAutoSelected() {
   auto selectionOpt = GetAutoSwitchIndex();
-  // std::optional<size_t> selectionOpt = static_cast<size_t>(SmartDashboard::GetNumber("Selected Auto", 0.0));
+  // std::optional<size_t> selectionOpt =
+  // static_cast<size_t>(SmartDashboard::GetNumber("Selected Auto", 0.0));
   SelectedAuto newSelectedAuto;
   using enum SelectedAuto;
   if (!selectionOpt) {
@@ -252,7 +256,9 @@ void RobotContainer::UpdateIsBlue() {
   m_isBlue = !m_redBlueSwitch.Get();
 }
 
-void RobotContainer::ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>& stripBuffer) {
+void RobotContainer::ApplyLEDSingleStrip(
+    const std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>&
+        stripBuffer) {
   // our strips are weirdly wired, sorry
 
   static constexpr auto kStripLen = kLEDBuffLength / 4;
@@ -260,16 +266,16 @@ void RobotContainer::ApplyLEDSingleStrip(const std::array<std::tuple<int, int, i
     size_t firstLEDIdx = stripIdx * kStripLen;
     bool stripDirection = kStripDirections[stripIdx];
     for (size_t stripBuffIdx = 0; stripBuffIdx < kStripLen; stripBuffIdx++) {
-      if (stripDirection) { // if goes down
+      if (stripDirection) {  // if goes down
         m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
             std::get<0>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
             std::get<1>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
             std::get<2>(stripBuffer[kStripLen - 1 - stripBuffIdx]));
-      } else { // if goes up
+      } else {  // if goes up
         m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
-          std::get<0>(stripBuffer[stripBuffIdx]),
-          std::get<1>(stripBuffer[stripBuffIdx]),
-          std::get<2>(stripBuffer[stripBuffIdx]));
+            std::get<0>(stripBuffer[stripBuffIdx]),
+            std::get<1>(stripBuffer[stripBuffIdx]),
+            std::get<2>(stripBuffer[stripBuffIdx]));
       }
     }
   }
@@ -330,9 +336,11 @@ void RobotContainer::SnakeBOI() {
 void RobotContainer::AutoLED() {
   auto selectedAutoID = static_cast<size_t>(m_currentSelectedAuto);
   std::array<std::tuple<int, int, int>, kLEDBuffLength / 4> stripBuffer;
-  for (size_t selectedAutoIdx = 0; selectedAutoIdx < selectedAutoID; selectedAutoIdx++) {
+  for (size_t selectedAutoIdx = 0; selectedAutoIdx < selectedAutoID;
+       selectedAutoIdx++) {
     for (size_t chunkIdx = 0; chunkIdx < 3; chunkIdx++) {
-      stripBuffer[selectedAutoIdx * 4 + chunkIdx] = {m_isBlue ? 0 : 255, 0, m_isBlue ? 255 : 0};
+      stripBuffer[selectedAutoIdx * 4 + chunkIdx] = {m_isBlue ? 0 : 255, 0,
+                                                     m_isBlue ? 255 : 0};
     }
   }
   ApplyLEDSingleStrip(stripBuffer);

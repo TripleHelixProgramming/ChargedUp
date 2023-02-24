@@ -12,7 +12,9 @@
 
 using namespace frc;
 
-Robot::Robot() : frc::TimesliceRobot{2_ms, 5_ms}, m_container([&](){return IsDisabled();}) {
+Robot::Robot()
+    : frc::TimesliceRobot{2_ms, 5_ms},
+      m_container([&]() { return IsDisabled(); }) {
   // Schedule periodic functions
   Schedule(
       [=, this] {
