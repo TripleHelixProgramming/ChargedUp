@@ -32,8 +32,8 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
                                          superstructure->IntakeCone();
                                        }))),
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(m_drive,
-                          &m_trajManager->GetTrajectory("south-2cone_2_place3")),
+          DriveTrajectory(
+              m_drive, &m_trajManager->GetTrajectory("south-2cone_2_place3")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(4.0_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
