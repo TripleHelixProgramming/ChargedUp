@@ -19,21 +19,21 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(0.9_s),
       DriveTrajectory(m_drive,
-                      &m_trajManager->GetTrajectory("south-2cone-place1")),
+                      &m_trajManager->GetTrajectory("south-2cone_0_place1")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       frc2::WaitCommand(0.1_s),
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
-                          &m_trajManager->GetTrajectory("south-2cone-pick1")),
+                          &m_trajManager->GetTrajectory("south-2cone_1_pick1")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(m_drive,
-                          &m_trajManager->GetTrajectory("south-2cone-place3")),
+                          &m_trajManager->GetTrajectory("south-2cone_2_place3")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(4.0_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
