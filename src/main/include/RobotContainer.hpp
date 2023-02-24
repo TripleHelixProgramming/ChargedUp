@@ -16,8 +16,9 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.hpp"
+#include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
-#include "commands/autos/OneConeChgstat.hpp"
+#include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/South2Cone.hpp"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
@@ -91,9 +92,13 @@ class RobotContainer {
 
   TrajectoryManager m_trajManager;
 
-  North2ConeChgstat m_north2ConeChgstat;
-  South2Cone m_south2Cone;
-  OneConeChgstat m_mid1ConeChgstat;
+  North2ConeChgstat m_blueNorth2ConeChgstat;
+  South2Cone m_blueSouth2Cone;
+  Mid1ConeChgstat m_blueMid1ConeChgstat;
+
+  North2ConeChgstat m_redNorth2ConeChgstat;
+  South2Cone m_redSouth2Cone;
+  Mid1ConeChgstat m_redMid1ConeChgstat;
 
   void ConfigureBindings();
 
