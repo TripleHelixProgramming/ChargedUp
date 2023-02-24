@@ -181,14 +181,16 @@ units::degree_t Superstructure::GetStringAngle() {
 void Superstructure::SuperstructurePeriodic() {
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece() && !m_lastBeamBreakDetection) {
+    if (m_armPosition.value() != kMinArmPickupPosition.value()) {
+      m_intakePop.Set(frc::DoubleSolenoid::kForward); // pop out intake
+      m_intakePopTimer.Reset();
+      m_intakePopTimer.Start();
+    }
     m_armPosition =
         degree_t{std::max(m_armPosition.value(), kMinArmPickupPosition.value())};
-    m_intakePop.Set(frc::DoubleSolenoid::kForward);
-    m_intakePopTimer.Reset();
-    m_intakePopTimer.Start();
   }
 
-  if (m_intakePopTimer.HasElapsed(0.00001_s)) {
+  if (m_intakePopTimer.HasElapsed(0.6_s)) {
     m_intakePop.Set(frc::DoubleSolenoid::kReverse);
     m_intakePopTimer.Stop();
   }

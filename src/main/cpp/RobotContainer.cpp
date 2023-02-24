@@ -68,6 +68,7 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
   UpdateAutoSelected();
+  UpdateIsBlue();
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
       return &m_north2ConeChgstat;
@@ -99,6 +100,7 @@ void RobotContainer::UpdateTelemetry() {
   
   auto previousAutoSelected = m_currentSelectedAuto;
   UpdateAutoSelected();
+  UpdateIsBlue();
   if (previousAutoSelected != m_currentSelectedAuto) {
     m_autoSwitchIndexLog.Append(static_cast<int>(m_currentSelectedAuto));
   }
@@ -246,6 +248,10 @@ void RobotContainer::UpdateAutoSelected() {
   m_currentSelectedAuto = newSelectedAuto;
 }
 
+void RobotContainer::UpdateIsBlue() {
+  m_isBlue = !m_redBlueSwitch.Get();
+}
+
 void RobotContainer::ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>& stripBuffer) {
   // our strips are weirdly wired, sorry
 
@@ -326,7 +332,7 @@ void RobotContainer::AutoLED() {
   std::array<std::tuple<int, int, int>, kLEDBuffLength / 4> stripBuffer;
   for (size_t selectedAutoIdx = 0; selectedAutoIdx < selectedAutoID; selectedAutoIdx++) {
     for (size_t chunkIdx = 0; chunkIdx < 3; chunkIdx++) {
-      stripBuffer[selectedAutoIdx * 4 + chunkIdx] = {255, 0, 0};
+      stripBuffer[selectedAutoIdx * 4 + chunkIdx] = {m_isBlue ? 0 : 255, 0, m_isBlue ? 255 : 0};
     }
   }
   ApplyLEDSingleStrip(stripBuffer);

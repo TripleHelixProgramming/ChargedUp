@@ -43,6 +43,7 @@ class RobotContainer {
   std::optional<size_t> GetAutoSwitchIndex() const;
 
   void UpdateAutoSelected();
+  void UpdateIsBlue();
 
   void LED();
 
@@ -70,6 +71,7 @@ class RobotContainer {
   };
 
   SelectedAuto m_currentSelectedAuto = SelectedAuto::kNorth2ConeChgstat;
+  bool m_isBlue = true;
 
   const std::array<frc::DigitalInput, 8> m_autoSwitch =
       {frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[0]),
@@ -80,6 +82,8 @@ class RobotContainer {
        frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[5]),
        frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[6]),
        frc::DigitalInput(ElectricalConstants::kAutoSwitchPorts[7])};
+
+  const frc::DigitalInput m_redBlueSwitch{ElectricalConstants::kRedBlueSwitchPort};
 
   TrajectoryManager m_trajManager;
 

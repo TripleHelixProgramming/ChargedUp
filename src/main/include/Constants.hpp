@@ -43,6 +43,7 @@ constexpr int kArmEncoderPort = 0;
 
 /// Maps rotary switch positions/indices to digital input pins on the RIO
 constexpr std::array<int, 8> kAutoSwitchPorts = {11, 12, 13, 18, 19, 20, 21, 22};
+constexpr int kRedBlueSwitchPort = 10;
 
 }  // namespace ElectricalConstants
 
