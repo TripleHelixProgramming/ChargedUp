@@ -22,7 +22,8 @@
 #include <wpi/json.h>
 
 #include "Constants.hpp"
-#include "util/photonlib2/PhotonPoseEstimator.hpp"
+#include "util/cadmia/CadmiaCamera.hpp"
+#include "util/cadmia/CadmiaPoseEstimator.hpp"
 
 using namespace frc;
 using namespace photonlib;
@@ -44,7 +45,7 @@ Vision::Vision()
     : m_poseEstimator(LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
                       // CustomFieldLayout(),
                       m_cameraMatrix, m_distortionCoefficients,
-                      photonlib::PhotonCamera{"left"}, kRobotToRightCam) {
+                      cadmia::CadmiaCamera{"video0"}, kRobotToRightCam) {
   json j = m_poseEstimator.GetFieldLayout();
 }
 

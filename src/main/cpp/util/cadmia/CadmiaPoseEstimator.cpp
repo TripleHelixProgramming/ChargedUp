@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "util/photonlib2/PhotonPoseEstimator.hpp"
+#include "util/cadmia/CadmiaPoseEstimator.hpp"
 
 #include <chrono>
 #include <cmath>
@@ -25,7 +25,6 @@
 #include <opencv2/core/mat.hpp>
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPipelineResult.h>
-#include <photonlib/PhotonPoseEstimator.h>
 #include <photonlib/PhotonTrackedTarget.h>
 #include <units/angle.h>
 #include <units/length.h>
@@ -35,11 +34,11 @@
 using namespace frc;
 using namespace units;
 
-namespace photonlib2 {
+namespace cadmia {
 
-PhotonPoseEstimator::PhotonPoseEstimator(
+CadmiaPoseEstimator::CadmiaPoseEstimator(
     frc::AprilTagFieldLayout aprilTagLayout, cv::Mat cameraMatrix,
-    cv::Mat distortionCoefficients, photonlib::PhotonCamera&& camera,
+    cv::Mat distortionCoefficients, cadmia::CadmiaCamera&& camera,
     frc::Transform3d robotToCamera)
     : m_aprilTagLayout(std::move(aprilTagLayout)),
       m_cameraMatrix(std::move(cameraMatrix)),
@@ -51,30 +50,25 @@ PhotonPoseEstimator::PhotonPoseEstimator(
   SmartDashboard::PutData("Pose Est 2", &m_pose2Field);
 }
 
-frc::AprilTagFieldLayout PhotonPoseEstimator::GetFieldLayout() const {
+frc::AprilTagFieldLayout CadmiaPoseEstimator::GetFieldLayout() const {
   return m_aprilTagLayout;
 }
 
-frc::Pose3d PhotonPoseEstimator::GetReferencePose() const {
+frc::Pose3d CadmiaPoseEstimator::GetReferencePose() const {
   return m_referencePose;
 }
 
-void PhotonPoseEstimator::SetReferencePose(frc::Pose3d referencePose) {
+void CadmiaPoseEstimator::SetReferencePose(frc::Pose3d referencePose) {
   m_referencePose = referencePose;
 }
 
-photonlib::PhotonCamera& PhotonPoseEstimator::GetCamera() {
+cadmia::CadmiaCamera& CadmiaPoseEstimator::GetCamera() {
   return m_camera;
 }
 
-std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
-  auto result = m_camera.GetLatestResult();
-
-  if (!result.HasTargets()) {
-    return std::nullopt;
-  }
-
-  auto targets = result.GetTargets();
+std::optional<photonlib::EstimatedRobotPose> CadmiaPoseEstimator::Update() {
+  auto result = m_camera.GetResult();
+  auto targets = result.targets;
 
   // List of corners mapped from 3d space (meters) to the 2d camera screen
   // (pixels).
@@ -83,9 +77,9 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
 
   // Add all target corners to main list of corners
   for (auto target : targets) {
-    int id = target.GetFiducialId();
+    int id = target.fiducialID;
     if (auto tagCorners = CalcTagCorners(id); tagCorners.has_value()) {
-      auto targetCorners = target.GetDetectedCorners();
+      auto targetCorners = target.corners;
       for (size_t cornerIdx = 0; cornerIdx < 4; ++cornerIdx) {
         imagePoints.emplace_back(targetCorners[cornerIdx].first,
                                  targetCorners[cornerIdx].second);
@@ -108,26 +102,6 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
 
   auto begin = std::chrono::system_clock::now();
 
-  // if (objectPoints.size() <= 4) { // single target
-  //   // std::vector<cv::Mat> rvecs{2};
-  //   // std::vector<cv::Mat> tvecs{2};
-
-  //   cv::Mat rvec(3, 1, cv::DataType<double>::type);
-  //   cv::Mat tvec(3, 1, cv::DataType<double>::type);
-
-  //   cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
-  //              m_distortionCoefficients, rvec, tvec, false,
-  //              cv::SOLVEPNP_IPPE_SQUARE);
-
-  //   SmartDashboard::PutNumber("", objectPoints[0].x);
-
-  //   // pose1 = ToPose3d(tvecs[0], rvecs[0]);
-  //   // pose2 = ToPose3d(tvecs[1], rvecs[1]); // TODO change order to match
-  //   OpenCV
-
-  //   pose1 = pose2 = ToPose3d(tvec, rvec);
-
-  // } else { // multi target
   if (objectPoints.size() >= 8) {
     cv::Mat rvec(3, 1, cv::DataType<double>::type);
     cv::Mat tvec(3, 1, cv::DataType<double>::type);
@@ -165,15 +139,15 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
     return std::nullopt;
   }
 
-  return photonlib::EstimatedRobotPose(pose1, result.GetTimestamp());
+  return photonlib::EstimatedRobotPose(pose1, result.time);
 }
 
-cv::Point3d PhotonPoseEstimator::ToPoint3d(const Translation3d& translation) {
+cv::Point3d CadmiaPoseEstimator::ToPoint3d(const Translation3d& translation) {
   return cv::Point3d(-translation.Y().value(), -translation.Z().value(),
                      +translation.X().value());
 }
 
-Pose3d PhotonPoseEstimator::ToPose3d(const cv::Mat& tvec, const cv::Mat& rvec) {
+Pose3d CadmiaPoseEstimator::ToPose3d(const cv::Mat& tvec, const cv::Mat& rvec) {
   cv::Mat R;
   cv::Rodrigues(rvec, R);  // R is 3x3
 
@@ -197,7 +171,7 @@ Pose3d PhotonPoseEstimator::ToPose3d(const cv::Mat& tvec, const cv::Mat& rvec) {
                     rv, radian_t{rv.norm()}));
 }
 
-cv::Point3d PhotonPoseEstimator::TagCornerToObjectPoint(meter_t cornerX,
+cv::Point3d CadmiaPoseEstimator::TagCornerToObjectPoint(meter_t cornerX,
                                                         meter_t cornerY,
                                                         frc::Pose3d tagPose) {
   Translation3d cornerTrans =
@@ -206,7 +180,7 @@ cv::Point3d PhotonPoseEstimator::TagCornerToObjectPoint(meter_t cornerX,
   return ToPoint3d(cornerTrans);
 }
 
-std::optional<std::array<cv::Point3d, 4>> PhotonPoseEstimator::CalcTagCorners(
+std::optional<std::array<cv::Point3d, 4>> CadmiaPoseEstimator::CalcTagCorners(
     int tagID) {
   if (auto tagPose = m_aprilTagLayout.GetTagPose(tagID); tagPose.has_value()) {
     return std::array{
@@ -221,4 +195,4 @@ std::optional<std::array<cv::Point3d, 4>> PhotonPoseEstimator::CalcTagCorners(
   }
 }
 
-}  // namespace photonlib2
+}  // namespace cadmia

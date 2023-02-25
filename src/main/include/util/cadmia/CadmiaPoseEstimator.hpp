@@ -13,19 +13,20 @@
 #include <frc/smartdashboard/Field2d.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/core/types.hpp>
+#include "util/cadmia/CadmiaCamera.hpp"
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
 
-namespace photonlib2 {
+namespace cadmia {
 
 /**
  * Triple Helix's custom multi-tag PNP pose estimator. This is close to a
  * drop-in replacement for photonlib's pose estimator.
  */
-class PhotonPoseEstimator {
+class CadmiaPoseEstimator {
  public:
   /**
-   * Create a new PhotonPoseEstimator. Since PV doesn't publish camera
+   * Create a new CadmiaPoseEstimator. Since PV doesn't publish camera
    * intrinsics to NetworkTables, they must be specified here.
    *
    * @param aprilTagLayout an AprilTagFieldLayout linking AprilTag IDs to
@@ -38,9 +39,9 @@ class PhotonPoseEstimator {
    * @param robotToCamera transform from the center of the robot to the camera
    * mount positions (ie, robot -> camera)
    */
-  PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTagLayout,
+  CadmiaPoseEstimator(frc::AprilTagFieldLayout aprilTagLayout,
                       cv::Mat cameraMatrix, cv::Mat distortionCoefficients,
-                      photonlib::PhotonCamera&& camera,
+                      cadmia::CadmiaCamera&& camera,
                       frc::Transform3d robotToCamera);
 
   /**
@@ -69,7 +70,7 @@ class PhotonPoseEstimator {
    *
    * @return a reference to the camera
    */
-  photonlib::PhotonCamera& GetCamera();
+  cadmia::CadmiaCamera& GetCamera();
 
   /**
    * Update the pose estimator. Internally grabs a new PhotonPipelineResult from
@@ -96,7 +97,7 @@ class PhotonPoseEstimator {
   /**
    * the camera being used for pose estimation
    */
-  photonlib::PhotonCamera m_camera;
+  cadmia::CadmiaCamera m_camera;
 
   /**
    * transform from the center of the robot to the camera
@@ -160,4 +161,4 @@ class PhotonPoseEstimator {
   std::optional<std::array<cv::Point3d, 4>> CalcTagCorners(int tagID);
 };
 
-}  // namespace photonlib2
+}  // namespace cadmia

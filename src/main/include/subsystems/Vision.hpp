@@ -11,7 +11,7 @@
 #include <photonlib/PhotonPoseEstimator.h>
 #include <units/time.h>
 
-#include "util/photonlib2/PhotonPoseEstimator.hpp"
+#include "util/cadmia/CadmiaPoseEstimator.hpp"
 
 class Vision : public frc2::SubsystemBase {
  public:
@@ -55,5 +55,5 @@ class Vision : public frc2::SubsystemBase {
   //  0.288184500781687, -1.03063206816648, -0.0044067255497647895,
   //  -0.0013635121873952262, 1.2849267796860973);
 
-  photonlib2::PhotonPoseEstimator m_poseEstimator;
+  cadmia::CadmiaPoseEstimator m_poseEstimator;
 };
