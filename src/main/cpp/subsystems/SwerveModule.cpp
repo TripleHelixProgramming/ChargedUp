@@ -91,7 +91,10 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
                              180);  // convert to rad
 
   m_driveMotor.EnableVoltageCompensation(12.0);
-  m_driveMotor.EnableVoltageCompensation(12.0);
+  m_steerMotor.EnableVoltageCompensation(12.0);
+
+  m_driveMotor.SetSmartCurrentLimit(80);
+  m_steerMotor.SetSmartCurrentLimit(80);
 
   if constexpr (RobotBase::IsSimulation()) {
     m_simTimer.Start();
