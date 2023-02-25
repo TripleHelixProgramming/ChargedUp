@@ -18,7 +18,6 @@
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
 #include <units/time.h>
-#include <units/current.h>
 #include <wpi/DataLog.h>
 
 #include "Constants.hpp"
