@@ -32,12 +32,10 @@ using namespace units;
 
 RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
     : m_isDisabled(isDisabled),
-      m_blueNorth2ConeChgstat(&m_drive, &m_superstructure,
-                              true),
+      m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, true),
       m_blueSouth2Cone(&m_drive, &m_superstructure, true),
       m_blueMid1ConeChgstat(&m_drive, &m_superstructure, true),
-      m_redNorth2ConeChgstat(&m_drive, &m_superstructure,
-                             false),
+      m_redNorth2ConeChgstat(&m_drive, &m_superstructure, false),
       m_redSouth2Cone(&m_drive, &m_superstructure, false),
       m_redMid1ConeChgstat(&m_drive, &m_superstructure, false),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
@@ -352,10 +350,11 @@ bool _poseWithin(const Pose2d& pose1, const Pose2d& pose2) {
   auto diff = pose1 - pose2;
   SmartDashboard::PutNumber("Auto Error/X (m)", diff.X().value());
   SmartDashboard::PutNumber("Auto Error/Y (m)", diff.Y().value());
-  SmartDashboard::PutNumber("Auto Error/Theta (deg)", diff.Rotation().Degrees().value());
-  return units::math::abs(diff.X()) < 3_in
-      && units::math::abs(diff.Y()) < 3_in
-      && units::math::abs(diff.Rotation().Degrees()) < 2_deg;
+  SmartDashboard::PutNumber("Auto Error/Theta (deg)",
+                            diff.Rotation().Degrees().value());
+  return units::math::abs(diff.X()) < 3_in &&
+         units::math::abs(diff.Y()) < 3_in &&
+         units::math::abs(diff.Rotation().Degrees()) < 2_deg;
 }
 
 void RobotContainer::AutoLED() {
@@ -372,19 +371,23 @@ void RobotContainer::AutoLED() {
   bool inGoodPose = false;
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
-      inGoodPose = _poseWithin(currentPose, North2ConeChgstat::GetStartingPose(m_isBlue));
+      inGoodPose = _poseWithin(currentPose,
+                               North2ConeChgstat::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kSouth2Cone:
-      inGoodPose = _poseWithin(currentPose, South2Cone::GetStartingPose(m_isBlue));
+      inGoodPose =
+          _poseWithin(currentPose, South2Cone::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kMid1ConeChgstat:
-      inGoodPose = _poseWithin(currentPose, Mid1ConeChgstat::GetStartingPose(m_isBlue));
+      inGoodPose =
+          _poseWithin(currentPose, Mid1ConeChgstat::GetStartingPose(m_isBlue));
       break;
     default:
       break;
   }
   if (inGoodPose) {
-    for (size_t goodPoseIdx = kLEDBuffLength / 4 - 1; goodPoseIdx >= kLEDBuffLength / 4 - 1 - 4; goodPoseIdx--) {
+    for (size_t goodPoseIdx = kLEDBuffLength / 4 - 1;
+         goodPoseIdx >= kLEDBuffLength / 4 - 1 - 4; goodPoseIdx--) {
       stripBuffer[goodPoseIdx] = {0, 255, 0};
     }
   }

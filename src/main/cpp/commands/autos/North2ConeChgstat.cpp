@@ -21,9 +21,9 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(0.9_s),
-      DriveTrajectory(
-          drive, &TrajectoryManager::GetInstance().GetTrajectory(allianceSidePrefix +
-                                             "north-2cone-chgstat_0_place9")),
+      DriveTrajectory(drive,
+                      &TrajectoryManager::GetInstance().GetTrajectory(
+                          allianceSidePrefix + "north-2cone-chgstat_0_place9")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       frc2::WaitCommand(0.1_s),
@@ -37,9 +37,9 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                                          superstructure->IntakeCone();
                                        }))),
 
-      DriveTrajectory(
-          drive, &TrajectoryManager::GetInstance().GetTrajectory(allianceSidePrefix +
-                                             "north-2cone-chgstat_2_align7")),
+      DriveTrajectory(drive,
+                      &TrajectoryManager::GetInstance().GetTrajectory(
+                          allianceSidePrefix + "north-2cone-chgstat_2_align7")),
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetInstance().GetTrajectory(
@@ -54,8 +54,8 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
-              &TrajectoryManager::GetInstance().GetTrajectory(allianceSidePrefix +
-                                          "north-2cone-chgstat_4_chgstat"),
+              &TrajectoryManager::GetInstance().GetTrajectory(
+                  allianceSidePrefix + "north-2cone-chgstat_4_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
@@ -69,8 +69,16 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
 }
 
 frc::Pose2d North2ConeChgstat::GetStartingPose(bool isBlue) {
-  static auto blueStartingPose = TrajectoryManager::GetInstance().GetTrajectory("blue-north-2cone-chgstat_0_place9").GetInitialPose();
-  static auto redStartingPose = TrajectoryManager::GetInstance().GetTrajectory("red-north-2cone-chgstat_0_place9").GetInitialPose();
-  if (isBlue) return blueStartingPose;
-  else return redStartingPose;
+  static auto blueStartingPose =
+      TrajectoryManager::GetInstance()
+          .GetTrajectory("blue-north-2cone-chgstat_0_place9")
+          .GetInitialPose();
+  static auto redStartingPose =
+      TrajectoryManager::GetInstance()
+          .GetTrajectory("red-north-2cone-chgstat_0_place9")
+          .GetInitialPose();
+  if (isBlue)
+    return blueStartingPose;
+  else
+    return redStartingPose;
 }

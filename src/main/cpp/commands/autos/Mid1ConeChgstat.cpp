@@ -4,6 +4,7 @@
 
 #include <string>
 
+#include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/ChassisSpeeds.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/ParallelDeadlineGroup.h>
@@ -12,30 +13,28 @@
 #include <frc2/command/WaitCommand.h>
 
 #include "commands/DriveTrajectory.hpp"
-#include "frc/geometry/Pose2d.h"
 #include "subsystems/Superstructure.hpp"
 #include "util/Trajectory.hpp"
 #include "util/TrajectoryManager.hpp"
 
 Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
-                                 Superstructure* superstructure,
-                                 bool isBlue) {
+                                 Superstructure* superstructure, bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(1.25_s),
-      DriveTrajectory(
-          drive, &TrajectoryManager::GetInstance().GetTrajectory(allianceSidePrefix +
-                                             "mid-1cone-chgstat_0_place6")),
+      DriveTrajectory(drive,
+                      &TrajectoryManager::GetInstance().GetTrajectory(
+                          allianceSidePrefix + "mid-1cone-chgstat_0_place6")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
-              &TrajectoryManager::GetInstance().GetTrajectory(allianceSidePrefix +
-                                          "mid-1cone-chgstat_1_chgstat"),
+              &TrajectoryManager::GetInstance().GetTrajectory(
+                  allianceSidePrefix + "mid-1cone-chgstat_1_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
                                        frc2::InstantCommand([superstructure]() {
@@ -49,8 +48,16 @@ Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
 }
 
 frc::Pose2d Mid1ConeChgstat::GetStartingPose(bool isBlue) {
-  static auto blueStartingPose = TrajectoryManager::GetInstance().GetTrajectory("blue-mid-1cone-chgstat_0_place6").GetInitialPose();
-  static auto redStartingPose = TrajectoryManager::GetInstance().GetTrajectory("red-mid-1cone-chgstat_0_place6").GetInitialPose();
-  if (isBlue) return blueStartingPose;
-  else return redStartingPose;
+  static auto blueStartingPose =
+      TrajectoryManager::GetInstance()
+          .GetTrajectory("blue-mid-1cone-chgstat_0_place6")
+          .GetInitialPose();
+  static auto redStartingPose =
+      TrajectoryManager::GetInstance()
+          .GetTrajectory("red-mid-1cone-chgstat_0_place6")
+          .GetInitialPose();
+  if (isBlue)
+    return blueStartingPose;
+  else
+    return redStartingPose;
 }
