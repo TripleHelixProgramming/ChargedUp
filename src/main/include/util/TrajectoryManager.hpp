@@ -14,7 +14,7 @@
 
 class TrajectoryManager {
  public:
-  TrajectoryManager();
+  static TrajectoryManager& GetInstance();
 
   const Trajectory& GetTrajectory(const std::string& name) const;
 
@@ -24,4 +24,11 @@ class TrajectoryManager {
   static Trajectory LoadFile(const std::filesystem::path& trajPath);
 
   std::map<std::string, Trajectory> m_trajectories;
+
+  TrajectoryManager();
+
+  static TrajectoryManager s_instance;
+
+  TrajectoryManager(const TrajectoryManager& other) = delete;
+  TrajectoryManager& operator=(const TrajectoryManager& other) = delete;
 };

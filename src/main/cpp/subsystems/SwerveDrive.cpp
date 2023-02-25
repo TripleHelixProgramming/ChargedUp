@@ -243,6 +243,12 @@ void SwerveDrive::ResetAbsoluteEncoders() {
   }
 }
 
+void SwerveDrive::SyncAbsoluteEncoders() {
+  for (auto& _module : m_modules) {
+    _module.SyncEncoders();
+  }
+}
+
 wpi::array<SwerveModulePosition, 4> SwerveDrive::GetModulePositions() const {
   wpi::array<SwerveModulePosition, 4> modulePositions(wpi::empty_array);
   for (size_t modIdx = 0; modIdx < 4; modIdx++) {

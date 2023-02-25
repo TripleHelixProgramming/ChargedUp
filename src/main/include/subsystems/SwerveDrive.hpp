@@ -80,6 +80,8 @@ class SwerveDrive : public frc2::SubsystemBase {
    */
   void ResetAbsoluteEncoders();
 
+  void SyncAbsoluteEncoders();
+
  private:
   /**
    * Get the positions of all swerve modules, as an array.

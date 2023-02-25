@@ -13,6 +13,7 @@ class North2ConeChgstat
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  North2ConeChgstat> {
  public:
-  North2ConeChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                    const TrajectoryManager* trajManager, bool isBlue);
+  North2ConeChgstat(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
+
+  static frc::Pose2d GetStartingPose(bool isBlue);
 };
