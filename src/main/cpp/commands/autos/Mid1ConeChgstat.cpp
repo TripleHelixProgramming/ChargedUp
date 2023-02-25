@@ -15,21 +15,25 @@
 #include "subsystems/Superstructure.hpp"
 
 Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
-                               Superstructure* superstructure,
-                               const TrajectoryManager* trajManager, bool isBlue) {
+                                 Superstructure* superstructure,
+                                 const TrajectoryManager* trajManager,
+                                 bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(1.25_s),
-      DriveTrajectory(drive,
-                      &trajManager->GetTrajectory(allianceSidePrefix + "mid-1cone-chgstat_0_place6")),
+      DriveTrajectory(
+          drive, &trajManager->GetTrajectory(allianceSidePrefix +
+                                             "mid-1cone-chgstat_0_place6")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
-              drive, &trajManager->GetTrajectory(allianceSidePrefix + "mid-1cone-chgstat_1_chgstat"),
+              drive,
+              &trajManager->GetTrajectory(allianceSidePrefix +
+                                          "mid-1cone-chgstat_1_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
                                        frc2::InstantCommand([superstructure]() {

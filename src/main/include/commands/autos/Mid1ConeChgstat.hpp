@@ -9,9 +9,9 @@
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
 
-class Mid1ConeChgstat
-    : public frc2::CommandHelper<frc2::SequentialCommandGroup, Mid1ConeChgstat> {
+class Mid1ConeChgstat : public frc2::CommandHelper<frc2::SequentialCommandGroup,
+                                                   Mid1ConeChgstat> {
  public:
   Mid1ConeChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                 const TrajectoryManager* trajManager, bool isBlue);
+                  const TrajectoryManager* trajManager, bool isBlue);
 };

@@ -18,7 +18,6 @@
 #include "Constants.hpp"
 #include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
-#include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/South2Cone.hpp"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"

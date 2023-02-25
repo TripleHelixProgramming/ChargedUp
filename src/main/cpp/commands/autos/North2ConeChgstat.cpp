@@ -22,25 +22,29 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(0.9_s),
-      DriveTrajectory(drive, &trajManager->GetTrajectory(
-                                   allianceSidePrefix + "north-2cone-chgstat_0_place9")),
+      DriveTrajectory(
+          drive, &trajManager->GetTrajectory(allianceSidePrefix +
+                                             "north-2cone-chgstat_0_place9")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       frc2::WaitCommand(0.1_s),
 
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive, &trajManager->GetTrajectory(
-                                       allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
+          DriveTrajectory(
+              drive, &trajManager->GetTrajectory(
+                         allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
 
-      DriveTrajectory(drive, &trajManager->GetTrajectory(
-                                   allianceSidePrefix + "north-2cone-chgstat_2_align7")),
+      DriveTrajectory(
+          drive, &trajManager->GetTrajectory(allianceSidePrefix +
+                                             "north-2cone-chgstat_2_align7")),
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive, &trajManager->GetTrajectory(
-                                       allianceSidePrefix + "north-2cone-chgstat_3_place7")),
+          DriveTrajectory(
+              drive, &trajManager->GetTrajectory(
+                         allianceSidePrefix + "north-2cone-chgstat_3_place7")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.1_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
@@ -51,7 +55,8 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
-              &trajManager->GetTrajectory(allianceSidePrefix + "north-2cone-chgstat_4_chgstat"),
+              &trajManager->GetTrajectory(allianceSidePrefix +
+                                          "north-2cone-chgstat_4_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {

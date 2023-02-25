@@ -20,8 +20,8 @@
 #include "Robot.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
-#include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/Mid1ConeChgstat.hpp"
+#include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/South2Cone.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
@@ -32,10 +32,12 @@ using namespace units;
 
 RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
     : m_isDisabled(isDisabled),
-      m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager, true),
+      m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager,
+                              true),
       m_blueSouth2Cone(&m_drive, &m_superstructure, &m_trajManager, true),
       m_blueMid1ConeChgstat(&m_drive, &m_superstructure, &m_trajManager, true),
-      m_redNorth2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager, false),
+      m_redNorth2ConeChgstat(&m_drive, &m_superstructure, &m_trajManager,
+                             false),
       m_redSouth2Cone(&m_drive, &m_superstructure, &m_trajManager, false),
       m_redMid1ConeChgstat(&m_drive, &m_superstructure, &m_trajManager, false),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
@@ -74,14 +76,20 @@ std::optional<Command*> RobotContainer::GetAutonomousCommand() {
   UpdateIsBlue();
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
-      if (m_isBlue) return &m_blueNorth2ConeChgstat;
-      else return &m_redNorth2ConeChgstat;
+      if (m_isBlue)
+        return &m_blueNorth2ConeChgstat;
+      else
+        return &m_redNorth2ConeChgstat;
     case SelectedAuto::kSouth2Cone:
-      if (m_isBlue) return &m_blueSouth2Cone;
-      else return &m_redSouth2Cone;
+      if (m_isBlue)
+        return &m_blueSouth2Cone;
+      else
+        return &m_redSouth2Cone;
     case SelectedAuto::kMid1ConeChgstat:
-      if (m_isBlue) return &m_blueMid1ConeChgstat;
-      else return &m_redMid1ConeChgstat;
+      if (m_isBlue)
+        return &m_blueMid1ConeChgstat;
+      else
+        return &m_redMid1ConeChgstat;
     default:
       return std::nullopt;
   }
