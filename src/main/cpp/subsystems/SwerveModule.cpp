@@ -18,6 +18,7 @@
 #include <rev/RelativeEncoder.h>
 #include <rev/SparkMaxPIDController.h>
 #include <units/time.h>
+#include <units/current.h>
 #include <wpi/DataLog.h>
 
 #include "Constants.hpp"
@@ -91,7 +92,10 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
                              180);  // convert to rad
 
   m_driveMotor.EnableVoltageCompensation(12.0);
-  m_driveMotor.EnableVoltageCompensation(12.0);
+  m_steerMotor.EnableVoltageCompensation(12.0);
+
+  m_driveMotor.SetSmartCurrentLimit(80);
+  m_steerMotor.SetSmartCurrentLimit(80);
 
   if constexpr (RobotBase::IsSimulation()) {
     m_simTimer.Start();
