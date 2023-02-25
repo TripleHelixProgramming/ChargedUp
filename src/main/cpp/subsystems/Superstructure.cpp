@@ -107,6 +107,13 @@ void Superstructure::SetIntakeWheelSpeed(double speed) {
 }
 
 void Superstructure::SetExtenderPosition(bool expanded) {
+  if (expanded != m_expanded) {
+    if (m_expanded) {
+      m_expander.Set(DoubleSolenoid::kForward);
+    } else {
+      m_expander.Set(DoubleSolenoid::kReverse);
+    }
+  }
   m_expanded = expanded;
 }
 
@@ -219,11 +226,6 @@ void Superstructure::SuperstructurePeriodic() {
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
   m_rightWheel.Set(-intakeWheelSpeed);
-  if (m_expanded) {
-    m_expander.Set(DoubleSolenoid::kForward);
-  } else {
-    m_expander.Set(DoubleSolenoid::kReverse);
-  }
 
   m_integral += armPosition.value() - currentAngle;
 
