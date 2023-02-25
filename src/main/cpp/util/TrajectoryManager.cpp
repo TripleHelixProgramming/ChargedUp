@@ -19,8 +19,8 @@ using std::filesystem::directory_iterator;
 using std::filesystem::path;
 using wpi::json;
 
-TrajectoryManager::TrajectoryManager() {
-  LoadTrajectories();
+TrajectoryManager& TrajectoryManager::GetInstance() {
+  return s_instance;
 }
 
 const Trajectory& TrajectoryManager::GetTrajectory(
@@ -48,3 +48,9 @@ Trajectory TrajectoryManager::LoadFile(const path& trajPath) {
   auto parsed = json::parse(buffer.str());
   return json(parsed);
 }
+
+TrajectoryManager::TrajectoryManager() {
+  LoadTrajectories();
+}
+
+TrajectoryManager TrajectoryManager::s_instance{};

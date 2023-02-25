@@ -31,6 +31,7 @@ class SwerveModule : public frc2::SubsystemBase {
 
   void SimulationPeriodic() override;
 
+  void SyncEncoders();
   void ResetEncoders();
 
  private:

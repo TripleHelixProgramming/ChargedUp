@@ -89,8 +89,6 @@ class RobotContainer {
   const frc::DigitalInput m_redBlueSwitch{
       ElectricalConstants::kRedBlueSwitchPort};
 
-  TrajectoryManager m_trajManager;
-
   North2ConeChgstat m_blueNorth2ConeChgstat;
   South2Cone m_blueSouth2Cone;
   Mid1ConeChgstat m_blueMid1ConeChgstat;

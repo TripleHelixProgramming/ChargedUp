@@ -4,6 +4,7 @@
 
 #include <string>
 
+#include <frc/geometry/Pose2d.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/ParallelDeadlineGroup.h>
 #include <frc2/command/RunCommand.h>
@@ -14,13 +15,13 @@
 #include "subsystems/Superstructure.hpp"
 
 South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
-                       const TrajectoryManager* trajManager, bool isBlue) {
+                       bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(0.9_s),
-      DriveTrajectory(drive, &trajManager->GetTrajectory(
+      DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
                                  allianceSidePrefix + "south-2cone_0_place1")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
@@ -28,16 +29,16 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(drive,
-                          &trajManager->GetTrajectory(allianceSidePrefix +
-                                                      "south-2cone_1_pick1")),
+                          &TrajectoryManager::GetInstance().GetTrajectory(
+                              allianceSidePrefix + "south-2cone_1_pick1")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(drive,
-                          &trajManager->GetTrajectory(allianceSidePrefix +
-                                                      "south-2cone_2_place3")),
+                          &TrajectoryManager::GetInstance().GetTrajectory(
+                              allianceSidePrefix + "south-2cone_2_place3")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(4.0_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
@@ -47,8 +48,8 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
 
       // frc2::ParallelDeadlineGroup(
       //     DriveTrajectory(drive,
-      //                     &trajManager->GetTrajectory(allianceSidePrefix +
-      //                     "north-2cone-chgstat_4_chgstat"), false),
+      //                     &TrajectoryManager::GetInstance().GetTrajectory(allianceSidePrefix
+      //                     + "north-2cone-chgstat_4_chgstat"), false),
       //     frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
       //                                  frc2::InstantCommand([superstructure]()
       //                                  {
@@ -59,4 +60,17 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
       //     0.01_rad_per_s}); }, {drive}
       // )
   );
+}
+
+frc::Pose2d South2Cone::GetStartingPose(bool isBlue) {
+  static auto blueStartingPose = TrajectoryManager::GetInstance()
+                                     .GetTrajectory("blue-south-2cone_0_place1")
+                                     .GetInitialPose();
+  static auto redStartingPose = TrajectoryManager::GetInstance()
+                                    .GetTrajectory("red-south-2cone_0_place1")
+                                    .GetInitialPose();
+  if (isBlue)
+    return blueStartingPose;
+  else
+    return redStartingPose;
 }

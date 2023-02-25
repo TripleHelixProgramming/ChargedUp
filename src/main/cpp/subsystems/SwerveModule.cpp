@@ -87,8 +87,7 @@ SwerveModule::SwerveModule(int driveMotorID, int steerMotorID, int absEncoderID)
       (2 * pi * kWheelRadius / kDriveGearRatio / 60_s).value());
   m_steerEncoder.SetPositionConversionFactor(2 * pi / kSteerGearRatio);
 
-  m_steerEncoder.SetPosition(m_absEncoder.GetAbsolutePosition() * pi /
-                             180);  // convert to rad
+  SyncEncoders();
 
   m_driveMotor.EnableVoltageCompensation(12.0);
   m_steerMotor.EnableVoltageCompensation(12.0);
@@ -156,6 +155,11 @@ void SwerveModule::SimulationPeriodic() {
   m_simTimer.Reset();
   m_driveSimPosition.Set(m_driveSimPosition.Get() +
                          m_driveSimVelocity.Get() * dt.value());
+}
+
+void SwerveModule::SyncEncoders() {
+  m_steerEncoder.SetPosition(m_absEncoder.GetAbsolutePosition() * pi /
+                             180);  // convert to rad
 }
 
 void SwerveModule::ResetEncoders() {

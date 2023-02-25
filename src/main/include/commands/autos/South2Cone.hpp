@@ -12,6 +12,7 @@
 class South2Cone
     : public frc2::CommandHelper<frc2::SequentialCommandGroup, South2Cone> {
  public:
-  South2Cone(SwerveDrive* drive, Superstructure* superstructure,
-             const TrajectoryManager* trajManager, bool isBlue);
+  South2Cone(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
+
+  static frc::Pose2d GetStartingPose(bool isBlue);
 };

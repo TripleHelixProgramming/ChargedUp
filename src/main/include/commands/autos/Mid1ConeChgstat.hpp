@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <frc/geometry/Pose2d.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
@@ -13,5 +14,7 @@ class Mid1ConeChgstat : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                                    Mid1ConeChgstat> {
  public:
   Mid1ConeChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                  const TrajectoryManager* trajManager, bool isBlue);
+                  bool isBlue);
+
+  static frc::Pose2d GetStartingPose(bool isBlue);
 };

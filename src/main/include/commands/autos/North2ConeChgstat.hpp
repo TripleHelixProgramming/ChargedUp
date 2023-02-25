@@ -14,5 +14,7 @@ class North2ConeChgstat
                                  North2ConeChgstat> {
  public:
   North2ConeChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                    const TrajectoryManager* trajManager, bool isBlue);
+                    bool isBlue);
+
+  static frc::Pose2d GetStartingPose(bool isBlue);
 };
