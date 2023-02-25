@@ -13,9 +13,5 @@ class South2Cone
     : public frc2::CommandHelper<frc2::SequentialCommandGroup, South2Cone> {
  public:
   South2Cone(SwerveDrive* drive, Superstructure* superstructure,
-             const TrajectoryManager* trajManager);
-
- private:
-  SwerveDrive* m_drive;
-  const TrajectoryManager* m_trajManager;
+             const TrajectoryManager* trajManager, bool isBlue);
 };

@@ -1,6 +1,8 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "commands/autos/OneConeChgstat.hpp"
+#include "commands/autos/Mid1ConeChgstat.hpp"
+
+#include <string>
 
 #include <frc/kinematics/ChassisSpeeds.h>
 #include <frc2/command/InstantCommand.h>
@@ -12,22 +14,26 @@
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
 
-OneConeChgstat::OneConeChgstat(SwerveDrive* drive,
-                               Superstructure* superstructure,
-                               const TrajectoryManager* trajManager)
-    : m_drive(drive), m_trajManager(trajManager) {
+Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
+                                 Superstructure* superstructure,
+                                 const TrajectoryManager* trajManager,
+                                 bool isBlue) {
+  std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(1.25_s),
-      DriveTrajectory(m_drive,
-                      &m_trajManager->GetTrajectory("1cone-chgstat_place6")),
+      DriveTrajectory(
+          drive, &trajManager->GetTrajectory(allianceSidePrefix +
+                                             "mid-1cone-chgstat_0_place6")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
-              m_drive, &m_trajManager->GetTrajectory("1cone-chgstat_chgstat"),
+              drive,
+              &trajManager->GetTrajectory(allianceSidePrefix +
+                                          "mid-1cone-chgstat_1_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
                                        frc2::InstantCommand([superstructure]() {
