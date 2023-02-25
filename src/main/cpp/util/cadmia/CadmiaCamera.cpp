@@ -21,7 +21,7 @@ CadmiaPipelineResult CadmiaCamera::GetResult() {
   auto result = m_subscriber.GetAtomic();
   auto time = result.time;
   auto compressedResults = result.value;
-  wpi::SmallVector<CadmiaTrackedTarget, 10> targets;
+  m_targets.clear();
 
   for (size_t index = 0; index < compressedResults.size(); index += 9) {
     wpi::SmallVector<std::pair<double, double>, 4> corners;
@@ -29,10 +29,10 @@ CadmiaPipelineResult CadmiaCamera::GetResult() {
       corners.push_back({compressedResults[index + 2 * corner_index + 1],
                          compressedResults[index + 2 * corner_index + 2]});
     }
-    targets.push_back(
+    m_targets.push_back(
         CadmiaTrackedTarget{(int)compressedResults[index],  // Fiducial ID
                             corners});
   }
 
-  return CadmiaPipelineResult{second_t{(double)time}, targets};
+  return CadmiaPipelineResult{second_t{(double)time}, m_targets};
 }

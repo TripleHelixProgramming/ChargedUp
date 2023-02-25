@@ -27,6 +27,7 @@ class CadmiaCamera {
  private:
   std::string_view m_name;
   nt::DoubleArraySubscriber m_subscriber;
+  wpi::SmallVector<CadmiaTrackedTarget, 10> m_targets;
 };
 
 }  // namespace cadmia

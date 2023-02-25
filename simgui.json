@@ -129,9 +129,15 @@
           },
           "open": true
         },
+        "Vision Est Field": {
+          "open": true
+        },
         "oldpv": {
           "open": true
         },
+        "open": true
+      },
+      "cadmia": {
         "open": true
       },
       "photonvision": {
