@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "wpi/SmallVector.h"
+#include <wpi/SmallVector.h>
+
 namespace cadmia {
 
 struct CadmiaTrackedTarget {
@@ -10,4 +11,4 @@ struct CadmiaTrackedTarget {
   wpi::SmallVector<std::pair<double, double>, 4> corners;
 };
 
-}
+}  // namespace cadmia

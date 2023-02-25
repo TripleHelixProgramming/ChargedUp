@@ -4,10 +4,12 @@
 
 #include <span>
 #include <string_view>
-#include "util/cadmia/CadmiaTrackedTarget.hpp"
+
 #include <networktables/DoubleArrayTopic.h>
 #include <photonlib/PhotonTrackedTarget.h>
 #include <units/time.h>
+
+#include "util/cadmia/CadmiaTrackedTarget.hpp"
 
 namespace cadmia {
 
@@ -27,4 +29,4 @@ class CadmiaCamera {
   nt::DoubleArraySubscriber m_subscriber;
 };
 
-}
+}  // namespace cadmia
