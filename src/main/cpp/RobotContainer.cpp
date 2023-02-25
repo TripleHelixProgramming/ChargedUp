@@ -15,6 +15,9 @@
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
 #include <wpi/json.h>
+#include <units/math.h>
+#include <units/length.h>
+#include <units/angle.h>
 
 #include "Constants.hpp"
 #include "Robot.hpp"
@@ -34,9 +37,11 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
     : m_isDisabled(isDisabled),
       m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, true),
       m_blueSouth2Cone(&m_drive, &m_superstructure, true),
+      m_blueNorth3Cone(&m_drive, &m_superstructure, true),
       m_blueMid1ConeChgstat(&m_drive, &m_superstructure, true),
       m_redNorth2ConeChgstat(&m_drive, &m_superstructure, false),
       m_redSouth2Cone(&m_drive, &m_superstructure, false),
+      m_redNorth3Cone(&m_drive, &m_superstructure, false),
       m_redMid1ConeChgstat(&m_drive, &m_superstructure, false),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
@@ -83,6 +88,11 @@ std::optional<Command*> RobotContainer::GetAutonomousCommand() {
         return &m_blueSouth2Cone;
       else
         return &m_redSouth2Cone;
+    case SelectedAuto::kNorth3Cone:
+      if (m_isBlue)
+        return &m_blueNorth3Cone;
+      else
+        return &m_redNorth3Cone;
     case SelectedAuto::kMid1ConeChgstat:
       if (m_isBlue)
         return &m_blueMid1ConeChgstat;
@@ -254,6 +264,9 @@ void RobotContainer::UpdateAutoSelected() {
     case static_cast<int64_t>(kSouth2Cone):
       newSelectedAuto = kSouth2Cone;
       break;
+    case static_cast<int64_t>(kNorth3Cone):
+      newSelectedAuto = kNorth3Cone;
+      break;
     case static_cast<int64_t>(kMid1ConeChgstat):
       newSelectedAuto = kMid1ConeChgstat;
       break;
@@ -271,25 +284,23 @@ void RobotContainer::UpdateIsBlue() {
 
 void RobotContainer::ApplyLEDSingleStrip(
     const std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>&
-        stripBuffer) {
+        stripBuffer, int stripID) {
   // our strips are weirdly wired, sorry
 
   static constexpr auto kStripLen = kLEDBuffLength / 4;
-  for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
-    size_t firstLEDIdx = stripIdx * kStripLen;
-    bool stripDirection = kStripDirections[stripIdx];
-    for (size_t stripBuffIdx = 0; stripBuffIdx < kStripLen; stripBuffIdx++) {
-      if (stripDirection) {  // if goes down
-        m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
-            std::get<0>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
-            std::get<1>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
-            std::get<2>(stripBuffer[kStripLen - 1 - stripBuffIdx]));
-      } else {  // if goes up
-        m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
-            std::get<0>(stripBuffer[stripBuffIdx]),
-            std::get<1>(stripBuffer[stripBuffIdx]),
-            std::get<2>(stripBuffer[stripBuffIdx]));
-      }
+  size_t firstLEDIdx = stripID * kStripLen;
+  bool stripDirection = kStripDirections[stripID];
+  for (size_t stripBuffIdx = 0; stripBuffIdx < kStripLen; stripBuffIdx++) {
+    if (stripDirection) {  // if goes down
+      m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
+          std::get<0>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
+          std::get<1>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
+          std::get<2>(stripBuffer[kStripLen - 1 - stripBuffIdx]));
+    } else {  // if goes up
+      m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
+          std::get<0>(stripBuffer[stripBuffIdx]),
+          std::get<1>(stripBuffer[stripBuffIdx]),
+          std::get<2>(stripBuffer[stripBuffIdx]));
     }
   }
 }
@@ -346,50 +357,123 @@ void RobotContainer::SnakeBOI() {
   m_ledBuffer[m_previousSnakeIndex].SetRGB(255, 0, 0);
 }
 
-bool _poseWithin(const Pose2d& pose1, const Pose2d& pose2) {
-  auto diff = pose1 - pose2;
+template<typename TE, typename TT>
+int _threeWayError(TE error, TT errorTol) {
+  if (units::math::abs(error) > errorTol) {
+      if (error.value() > 0) {
+        return +1;
+      } else {
+        return -1;
+      }
+  } else {
+    return 0;
+  }
+}
+
+std::tuple<int, int, int> _poseWithin(Pose2d target, Pose2d actual) {
+  Pose2d transformedActual = actual.RelativeTo(target);
+  auto diff = Pose2d() - transformedActual;
   SmartDashboard::PutNumber("Auto Error/X (m)", diff.X().value());
   SmartDashboard::PutNumber("Auto Error/Y (m)", diff.Y().value());
   SmartDashboard::PutNumber("Auto Error/Theta (deg)",
                             diff.Rotation().Degrees().value());
-  return units::math::abs(diff.X()) < 3_in &&
-         units::math::abs(diff.Y()) < 3_in &&
-         units::math::abs(diff.Rotation().Degrees()) < 2_deg;
+  return {_threeWayError(diff.X(), 3_in),
+          _threeWayError(diff.Y(), 3_in),
+         _threeWayError(diff.Rotation().Degrees(), 2_deg)};
 }
 
 void RobotContainer::AutoLED() {
   auto selectedAutoID = static_cast<size_t>(m_currentSelectedAuto);
-  std::array<std::tuple<int, int, int>, kLEDBuffLength / 4> stripBuffer;
+  std::array<std::array<std::tuple<int, int, int>, kLEDBuffLength / 4>, 4> stripBuffers;
   for (size_t selectedAutoIdx = 0; selectedAutoIdx < selectedAutoID;
        selectedAutoIdx++) {
     for (size_t chunkIdx = 0; chunkIdx < 3; chunkIdx++) {
-      stripBuffer[selectedAutoIdx * 4 + chunkIdx] = {m_isBlue ? 0 : 255, 0,
-                                                     m_isBlue ? 255 : 0};
+      for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
+        stripBuffers[stripIdx][selectedAutoIdx * 4 + chunkIdx] = {m_isBlue ? 0 : 255, 0,
+                                                      m_isBlue ? 255 : 0};
+      }
     }
   }
   auto currentPose = m_drive.GetPose();
-  bool inGoodPose = false;
+  std::tuple<int, int, int> errors{0, 0, 0};
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
-      inGoodPose = _poseWithin(currentPose,
+      errors = _poseWithin(currentPose,
                                North2ConeChgstat::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kSouth2Cone:
-      inGoodPose =
-          _poseWithin(currentPose, South2Cone::GetStartingPose(m_isBlue));
+      errors = _poseWithin(currentPose, South2Cone::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kMid1ConeChgstat:
-      inGoodPose =
-          _poseWithin(currentPose, Mid1ConeChgstat::GetStartingPose(m_isBlue));
+      errors = _poseWithin(currentPose, Mid1ConeChgstat::GetStartingPose(m_isBlue));
       break;
     default:
       break;
   }
-  if (inGoodPose) {
+  if (std::get<0>(errors) == 0
+      && std::get<1>(errors) == 0) {
     for (size_t goodPoseIdx = kLEDBuffLength / 4 - 1;
          goodPoseIdx >= kLEDBuffLength / 4 - 1 - 4; goodPoseIdx--) {
-      stripBuffer[goodPoseIdx] = {0, 255, 0};
+      for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
+        stripBuffers[stripIdx][goodPoseIdx] = {0, 255, 0};
+      }
     }
   }
-  ApplyLEDSingleStrip(stripBuffer);
+  if (std::get<2>(errors) == 0) {
+    for (size_t goodPoseIdx = kLEDBuffLength / 4 - 1 - 3;
+         goodPoseIdx >= kLEDBuffLength / 4 - 1 - 3 - 2; goodPoseIdx--) {
+      for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
+        stripBuffers[stripIdx][goodPoseIdx] = {0, 255, 0};
+      }
+    }
+  }
+  if (std::get<0>(errors) == +1) { // if too far right
+    for (size_t badPoseIdx = kLEDBuffLength / 4 - 1;
+        badPoseIdx >= kLEDBuffLength / 4 - 1 - 2; badPoseIdx--) {
+      stripBuffers[1][badPoseIdx] = {255, 0, 0};
+      stripBuffers[2][badPoseIdx] = {255, 0, 0};
+    }
+  }
+  if (std::get<0>(errors) == -1) { // if too far left
+    for (size_t badPoseIdx = kLEDBuffLength / 4 - 1;
+        badPoseIdx >= kLEDBuffLength / 4 - 1 - 2; badPoseIdx--) {
+      stripBuffers[0][badPoseIdx] = {255, 0, 0};
+      stripBuffers[3][badPoseIdx] = {255, 0, 0};
+    }
+  }
+  if (std::get<1>(errors) == +1) { // if too far up
+    for (size_t badPoseIdx = kLEDBuffLength / 4 - 1;
+        badPoseIdx >= kLEDBuffLength / 4 - 1 - 2; badPoseIdx--) {
+      stripBuffers[2][badPoseIdx] = {255, 0, 0};
+      stripBuffers[3][badPoseIdx] = {255, 0, 0};
+    }
+  }
+  if (std::get<1>(errors) == -1) { // if too far down
+    for (size_t badPoseIdx = kLEDBuffLength / 4 - 1;
+        badPoseIdx >= kLEDBuffLength / 4 - 1 - 2; badPoseIdx--) {
+      stripBuffers[0][badPoseIdx] = {255, 0, 0};
+      stripBuffers[1][badPoseIdx] = {255, 0, 0};
+    }
+  }
+  if (std::get<2>(errors) == +1) { // if too far counterclockwise
+    for (size_t badPoseIdx = kLEDBuffLength / 4 - 1 - 3;
+        badPoseIdx >= kLEDBuffLength / 4 - 1 - 3 - 2; badPoseIdx--) {
+      stripBuffers[0][badPoseIdx] = {255, 0, 0};
+      stripBuffers[1][badPoseIdx] = {255, 0, 0};        
+      stripBuffers[2][badPoseIdx] = {255, 0, 0};
+      stripBuffers[3][badPoseIdx] = {255, 0, 0};
+    }
+  }
+  if (std::get<2>(errors) == -1) { // if too far clockwise
+    for (size_t badPoseIdx = kLEDBuffLength / 4 - 1 - 3;
+        badPoseIdx >= kLEDBuffLength / 4 - 1 - 3 - 2; badPoseIdx--) {
+      stripBuffers[0][badPoseIdx] = {0, 0, 255};
+      stripBuffers[1][badPoseIdx] = {0, 0, 255};        
+      stripBuffers[2][badPoseIdx] = {0, 0, 255};
+      stripBuffers[3][badPoseIdx] = {0, 0, 255};
+    }
+  }
+  for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
+    ApplyLEDSingleStrip(stripBuffers[stripIdx], stripIdx);
+  }
 }

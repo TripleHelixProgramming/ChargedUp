@@ -108,7 +108,7 @@ void Superstructure::SetIntakeWheelSpeed(double speed) {
 
 void Superstructure::SetExtenderPosition(bool expanded) {
   if (expanded != m_expanded) {
-    if (m_expanded) {
+    if (!m_expanded) {
       m_expander.Set(DoubleSolenoid::kForward);
     } else {
       m_expander.Set(DoubleSolenoid::kReverse);

@@ -2,6 +2,9 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Auto Error": {
+          "open": true
+        },
         "Drive": {
           "Pose Estimate": {
             "open": true
@@ -18,17 +21,24 @@
       "/SmartDashboard/Pose Est Field": "Field2d",
       "/SmartDashboard/Reset Encoders": "Command",
       "/SmartDashboard/Vision Est Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Pose Est 1": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
-    "serverTeam": "2363"
+    "serverTeam": "10.23.63.2"
   },
   "Plots": {
     "Plot <0>": {
       "plots": [
         {
-          "height": 338,
+          "height": 0,
           "series": [
             {
               "color": [

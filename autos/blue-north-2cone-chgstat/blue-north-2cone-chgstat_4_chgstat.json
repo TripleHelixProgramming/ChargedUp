@@ -32,7 +32,7 @@
                     "heading_constrained": false,
                     "name": "stop",
                     "velocity_magnitude_constrained": true,
-                    "velocity_x": 0.5999999999999996,
+                    "velocity_x": 0.4,
                     "velocity_x_constrained": true,
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
