@@ -407,7 +407,8 @@ void RobotContainer::AutoLED() {
   }
   // check if robot is staged in correct location
   auto currentPose = m_drive.GetPose();
-  std::tuple<int, int, int> errors{0, 0, 0};
+  // -2 makes sure lights aren't green if no auto selected
+  std::tuple<int, int, int> errors{-2, -2, -2};
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
       errors = _poseWithin(currentPose,
