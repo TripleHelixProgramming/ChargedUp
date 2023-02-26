@@ -16,7 +16,7 @@
 North3Cone::North3Cone(SwerveDrive* drive,
                                      Superstructure* superstructure,
                                      bool isBlue) {
-  std::string allianceSidePrefix = isBlue ? "red-" : "red-"; // TODO: <--- for testing only
+  std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
