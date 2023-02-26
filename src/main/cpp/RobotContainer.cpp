@@ -25,6 +25,7 @@
 #include "commands/ResetAbsoluteEncoders.hpp"
 #include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
+#include "commands/autos/North3Cone.hpp"
 #include "commands/autos/South2Cone.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
@@ -406,7 +407,8 @@ void RobotContainer::AutoLED() {
   }
   // check if robot is staged in correct location
   auto currentPose = m_drive.GetPose();
-  std::tuple<int, int, int> errors{0, 0, 0};
+  // -2 makes sure lights aren't green if no auto selected
+  std::tuple<int, int, int> errors{-2, -2, -2};
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
       errors = _poseWithin(currentPose,
@@ -414,6 +416,9 @@ void RobotContainer::AutoLED() {
       break;
     case SelectedAuto::kSouth2Cone:
       errors = _poseWithin(currentPose, South2Cone::GetStartingPose(m_isBlue));
+      break;
+    case SelectedAuto::kNorth3Cone:
+      errors = _poseWithin(currentPose, North3Cone::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kMid1ConeChgstat:
       errors =
