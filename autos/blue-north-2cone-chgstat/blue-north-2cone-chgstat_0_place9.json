@@ -21,7 +21,7 @@
                     "waypoint_type": "custom",
                     "x": 2.811748984000001,
                     "x_constrained": true,
-                    "y": 5.0,
+                    "y": 4.9238,
                     "y_constrained": true
                 },
                 {
@@ -39,7 +39,7 @@
                     "waypoint_type": "custom",
                     "x": 1.8917489840000012,
                     "x_constrained": true,
-                    "y": 5.0,
+                    "y": 4.9238,
                     "y_constrained": true
                 }
             ]
