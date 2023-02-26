@@ -25,6 +25,7 @@
 #include "commands/ResetAbsoluteEncoders.hpp"
 #include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
+#include "commands/autos/North3Cone.hpp"
 #include "commands/autos/South2Cone.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
@@ -414,6 +415,9 @@ void RobotContainer::AutoLED() {
       break;
     case SelectedAuto::kSouth2Cone:
       errors = _poseWithin(currentPose, South2Cone::GetStartingPose(m_isBlue));
+      break;
+    case SelectedAuto::kNorth3Cone:
+      errors = _poseWithin(currentPose, North3Cone::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kMid1ConeChgstat:
       errors =
