@@ -13,9 +13,8 @@
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
 
-North3Cone::North3Cone(SwerveDrive* drive,
-                                     Superstructure* superstructure,
-                                     bool isBlue) {
+North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
+                       bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       frc2::InstantCommand(
@@ -37,13 +36,12 @@ North3Cone::North3Cone(SwerveDrive* drive,
                                          superstructure->IntakeCone();
                                        }))),
 
-      DriveTrajectory(drive,
-                      &TrajectoryManager::GetInstance().GetTrajectory(
-                          allianceSidePrefix + "north-3cone_2_align7")),
+      DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
+                                 allianceSidePrefix + "north-3cone_2_align7")),
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive, &TrajectoryManager::GetInstance().GetTrajectory(
-                         allianceSidePrefix + "north-3cone_3_place7")),
+          DriveTrajectory(drive,
+                          &TrajectoryManager::GetInstance().GetTrajectory(
+                              allianceSidePrefix + "north-3cone_3_place7")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.1_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
@@ -52,11 +50,10 @@ North3Cone::North3Cone(SwerveDrive* drive,
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive,
-              &TrajectoryManager::GetInstance().GetTrajectory(
-                  allianceSidePrefix + "north-3cone_4_pick3"),
-              false),
+          DriveTrajectory(drive,
+                          &TrajectoryManager::GetInstance().GetTrajectory(
+                              allianceSidePrefix + "north-3cone_4_pick3"),
+                          false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
