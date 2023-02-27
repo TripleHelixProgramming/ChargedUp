@@ -18,12 +18,6 @@
 
 #include "util/log/TelemetryEntry.hpp"
 
-namespace OperatorConstants {
-
-constexpr int kDriverControllerPort = 0;
-
-}  // namespace OperatorConstants
-
 namespace ElectricalConstants {
 
 constexpr int kRobotControllerPort = 0;
@@ -123,6 +117,9 @@ const frc::Transform3d kRobotToBackCam(frc::Translation3d(-11.760_in, 0.000_in,
 }  // namespace VisionConstants
 
 namespace OIConstants {
+
+constexpr int kDriverControllerPort = 0;
+constexpr int kOperatorControllerPort = 1;
 
 // Xbox Joystick Axis
 constexpr int kXboxLeftXAxis = 0;

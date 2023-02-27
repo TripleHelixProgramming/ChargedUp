@@ -60,8 +60,8 @@ class RobotContainer {
   frc::Compressor m_compressor{1, frc::PneumaticsModuleType::REVPH};
 
   // Operator Interface (OI)
-  frc::Joystick m_driver{0};
-  frc2::CommandXboxController m_operator{1};
+  frc::Joystick m_driver{OIConstants::kDriverControllerPort};
+  frc2::CommandXboxController m_operator{OIConstants::kOperatorControllerPort};
 
   /**
    * Maps auto routines to auto rotary switch indices
