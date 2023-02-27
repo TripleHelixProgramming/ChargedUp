@@ -46,6 +46,12 @@ constexpr std::array<int, 8> kAutoSwitchPorts = {11, 12, 13, 18,
                                                  19, 20, 21, 22};
 constexpr int kRedBlueSwitchPort = 10;
 
+/// LED strip
+constexpr int kLEDBuffLength = 88;
+constexpr int kLEDStripLength = kLEDBuffLength / 4;
+constexpr bool kStripDirections[] = {
+    false, true, true, true};  // false means up, true means down
+
 }  // namespace ElectricalConstants
 
 namespace DriveConstants {

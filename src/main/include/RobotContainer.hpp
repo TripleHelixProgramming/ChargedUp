@@ -108,16 +108,11 @@ class RobotContainer {
   DoubleTelemetryEntry m_oiDriverRightYLog;
   DoubleTelemetryEntry m_autoSwitchIndexLog;
 
-  /// LED strip
-  static constexpr int kLEDBuffLength = 88;
-  static constexpr int kLEDStripLength = kLEDBuffLength / 4;
-  static constexpr bool kStripDirections[] = {
-      false, true, true, true};  // false means up, true means down
   frc::AddressableLED m_leds{0};
-  std::array<frc::AddressableLED::LEDData, kLEDBuffLength> m_ledBuffer;
+  std::array<frc::AddressableLED::LEDData, ElectricalConstants::kLEDBuffLength> m_ledBuffer;
 
   void ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>,
-                                            kLEDBuffLength / 4>& stripBuffer,
+                                            ElectricalConstants::kLEDStripLength>& stripBuffer,
                            int stripID);
 
   void ClearLED();

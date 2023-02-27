@@ -29,6 +29,7 @@
 #include "commands/autos/South2Cone.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
+using namespace ElectricalConstants;
 using namespace frc;
 using namespace frc2;
 using namespace OIConstants;
