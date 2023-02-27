@@ -57,7 +57,7 @@ class RobotContainer {
   // Subsystems
   SwerveDrive m_drive;
   Superstructure m_superstructure;
-  frc::Compressor m_compressor{1, frc::PneumaticsModuleType::REVPH};
+  frc::Compressor m_compressor{ElectricalConstants::kPHPort, frc::PneumaticsModuleType::REVPH};
 
   // Operator Interface (OI)
   frc::Joystick m_driver{OIConstants::kDriverControllerPort};

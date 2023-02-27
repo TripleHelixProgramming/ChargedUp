@@ -22,6 +22,9 @@ namespace ElectricalConstants {
 
 constexpr int kRobotControllerPort = 0;
 constexpr int kPowerDistributionPort = 1;
+
+constexpr int kPHPort = 1;
+
 // ------------------------------- {fl, fr, rl, rr};
 constexpr int kDriveMotorPorts[] = {28, 26, 10, 12};
 constexpr int kSteerMotorPorts[] = {29, 27, 11, 13};
