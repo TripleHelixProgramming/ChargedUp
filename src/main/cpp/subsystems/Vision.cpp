@@ -44,7 +44,7 @@ Vision::Vision()
     : m_poseEstimator(LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
                       // CustomFieldLayout(),
                       m_cameraMatrix, m_distortionCoefficients,
-                      photonlib::PhotonCamera{"left"}, kRobotToRightCam) {
+                      photonlib::PhotonCamera{"left"}, kRobotToLeftCam) {
   json j = m_poseEstimator.GetFieldLayout();
 }
 
