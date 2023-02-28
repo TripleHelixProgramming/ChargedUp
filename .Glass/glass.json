@@ -8,7 +8,9 @@
         "Drive": {
           "Pose Estimate": {
             "open": true
-          },
+          }
+        },
+        "Vision": {
           "open": true
         },
         "open": true

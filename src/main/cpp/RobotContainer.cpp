@@ -211,6 +211,28 @@ void RobotContainer::ConfigureBindings() {
 void RobotContainer::RunDisabled() {
   m_drive.SyncAbsoluteEncoders();
   m_superstructure.SyncEncoders();
+
+  // RED:
+    // auto 1 and 3 use left cam
+    // auto 2 use right cam
+  // BLUE: 
+    // auto 1 and 3 use right cam
+    // auto 2 use left cam
+
+  bool useLeftCam;
+
+  switch (m_currentSelectedAuto) {
+    case SelectedAuto::kNorth2ConeChgstat:
+    case SelectedAuto::kNorth3Cone:
+    default:
+      useLeftCam = !m_isBlue;
+      break;
+    case SelectedAuto::kSouth2Cone:
+      useLeftCam = m_isBlue;
+      break;
+  }
+  SmartDashboard::PutBoolean("Vision/Using Left Cam", useLeftCam);
+  m_drive.SetVisionUsingLeftCam(useLeftCam);
 }
 
 void RobotContainer::SuperstructurePeriodic() {

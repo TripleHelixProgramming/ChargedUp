@@ -82,6 +82,8 @@ class SwerveDrive : public frc2::SubsystemBase {
 
   void SyncAbsoluteEncoders();
 
+  void SetVisionUsingLeftCam(bool usingLeftCam);
+
  private:
   /**
    * Get the positions of all swerve modules, as an array.

@@ -39,9 +39,9 @@ class PhotonPoseEstimator {
    * mount positions (ie, robot -> camera)
    */
   PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTagLayout,
-                      cv::Mat cameraMatrix, cv::Mat distortionCoefficients,
+                      const cv::Mat* cameraMatrix, const cv::Mat* distortionCoefficients,
                       photonlib::PhotonCamera&& camera,
-                      frc::Transform3d robotToCamera);
+                      const frc::Transform3d* robotToCamera);
 
   /**
    * Get the AprilTagFieldLayout
@@ -71,6 +71,10 @@ class PhotonPoseEstimator {
    */
   photonlib::PhotonCamera& GetCamera();
 
+  void SetCameraMatrix(const cv::Mat* newCamMatrix);
+  void SetDistortionCoefficients(const cv::Mat* newDistCoeff);
+  void SetRobotToCamera(const frc::Transform3d* newRobotToCam);
+
   /**
    * Update the pose estimator. Internally grabs a new PhotonPipelineResult from
    * the camera and process it.
@@ -87,11 +91,12 @@ class PhotonPoseEstimator {
   /**
    * a 3x3 matrix specific to the camera hardware, from calibration
    */
-  cv::Mat m_cameraMatrix;
+  const cv::Mat* m_cameraMatrix;
+
   /**
    * a 5x1 matrix also specific to camera hardware, from calibration
    */
-  cv::Mat m_distortionCoefficients;
+  const cv::Mat* m_distortionCoefficients;
 
   /**
    * the camera being used for pose estimation
@@ -102,7 +107,7 @@ class PhotonPoseEstimator {
    * transform from the center of the robot to the camera
    * mount positions (ie, robot -> camera)
    */
-  frc::Transform3d m_robotToCamera;
+  const frc::Transform3d* m_robotToCamera;
 
   /**
    * a previously calculated reference pose to used to check ambiguous poses
