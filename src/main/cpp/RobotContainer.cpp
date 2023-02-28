@@ -213,11 +213,11 @@ void RobotContainer::RunDisabled() {
   m_superstructure.SyncEncoders();
 
   // RED:
-    // auto 1 and 3 use left cam
-    // auto 2 use right cam
-  // BLUE: 
-    // auto 1 and 3 use right cam
-    // auto 2 use left cam
+  // auto 1 and 3 use left cam
+  // auto 2 use right cam
+  // BLUE:
+  // auto 1 and 3 use right cam
+  // auto 2 use left cam
 
   bool useLeftCam;
 

@@ -10,12 +10,12 @@
 #include <frc/geometry/Rotation3d.h>
 #include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
+#include <opencv2/core/mat.hpp>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <units/math.h>
 #include <units/time.h>
 #include <units/velocity.h>
-#include <opencv2/core/mat.hpp>
 
 #include "util/log/TelemetryEntry.hpp"
 
@@ -47,8 +47,8 @@ constexpr int kRedBlueSwitchPort = 10;
 /// LED strip
 constexpr int kLEDBuffLength = 88;
 constexpr int kLEDStripLength = kLEDBuffLength / 4;
-constexpr bool kStripDirections[] = {
-    false, true, true, true};  // false means up, true means down
+constexpr bool kStripDirections[] = {false, true, true,
+                                     true};  // false means up, true means down
 
 }  // namespace ElectricalConstants
 
@@ -118,31 +118,21 @@ const frc::Transform3d kRobotToBackCam(frc::Translation3d(-11.760_in, 0.000_in,
                                                           24.671_in),
                                        frc::Rotation3d(0_deg, 0_deg, 180_deg));
 
+const cv::Mat kLeftCameraMatrix =
+    (cv::Mat_<double>(3, 3) << 737.1375625617618, 0.0, 605.0596973248307, 0.0,
+     737.332104946256, 326.2280047911644, 0.0, 0.0, 1.0);
 
-const cv::Mat kLeftCameraMatrix = (cv::Mat_<double>(3, 3) <<
-    737.1375625617618, 0.0, 605.0596973248307,
-    0.0, 737.332104946256, 326.2280047911644,
-    0.0, 0.0, 1.0);
+const cv::Mat kRightCameraMatrix =
+    (cv::Mat_<double>(3, 3) << 742.483468466319, 0.0, 637.2421086110966, 0.0,
+     741.833232408462, 401.5930628745256, 0.0, 0.0, 1.0);
 
-const cv::Mat kRightCameraMatrix = (cv::Mat_<double>(3, 3) <<
-    // Right camera
-    742.483468466319, 0.0, 637.2421086110966,
-    0.0, 741.833232408462, 401.5930628745256,
-    0.0, 0.0, 1.0);
+const cv::Mat kLeftDistortionCoefficients =
+    (cv::Mat_<double>(5, 1) << 0.048988140593189386, 0.1507107694319857,
+     -0.0013521811213351104, -8.674674516252695E-4, -0.2012522991632792);
 
-const cv::Mat kLeftDistortionCoefficients = (cv::Mat_<double>(5, 1) <<
-    0.048988140593189386,
-    0.1507107694319857,
-    -0.0013521811213351104,
-    -8.674674516252695E-4,
-    -0.2012522991632792);
-
-const cv::Mat kRightDistortionCoefficients = (cv::Mat_<double>(5, 1) <<
-    0.10050662325551381,
-    -0.048995749738143635,
-    -0.0014568776758625078,
-    0.0012852294132110506,
-    -0.15731800217755504);
+const cv::Mat kRightDistortionCoefficients =
+    (cv::Mat_<double>(5, 1) << 0.10050662325551381, -0.048995749738143635,
+     -0.0014568776758625078, 0.0012852294132110506, -0.15731800217755504);
 
 }  // namespace VisionConstants
 

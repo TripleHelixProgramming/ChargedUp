@@ -132,13 +132,15 @@ void SwerveDrive::ResetOdometry(const Pose2d& pose) {
 }
 
 void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
-                                double joystickRotate, bool fieldRelative, bool isBlue) {
+                                double joystickRotate, bool fieldRelative,
+                                bool isBlue) {
   ChassisSpeeds speeds =
       fieldRelative
           ? ChassisSpeeds::FromFieldRelativeSpeeds(
                 joystickDrive * kMaxVelocityX, joystickStrafe * kMaxVelocityY,
                 joystickRotate * kMaxVelocityAngular,
-                m_odometry.GetPose().Rotation().RotateBy(Rotation2d{isBlue ? 0_deg : 180_deg}))
+                m_odometry.GetPose().Rotation().RotateBy(
+                    Rotation2d{isBlue ? 0_deg : 180_deg}))
           : ChassisSpeeds{joystickDrive * kMaxVelocityX,
                           joystickStrafe * kMaxVelocityY,
                           joystickRotate * kMaxVelocityAngular};

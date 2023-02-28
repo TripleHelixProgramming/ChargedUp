@@ -57,7 +57,8 @@ class RobotContainer {
   // Subsystems
   SwerveDrive m_drive;
   Superstructure m_superstructure;
-  frc::Compressor m_compressor{ElectricalConstants::kPHPort, frc::PneumaticsModuleType::REVPH};
+  frc::Compressor m_compressor{ElectricalConstants::kPHPort,
+                               frc::PneumaticsModuleType::REVPH};
 
   // Operator Interface (OI)
   frc::Joystick m_driver{OIConstants::kDriverControllerPort};
@@ -109,11 +110,13 @@ class RobotContainer {
   DoubleTelemetryEntry m_autoSwitchIndexLog;
 
   frc::AddressableLED m_leds{0};
-  std::array<frc::AddressableLED::LEDData, ElectricalConstants::kLEDBuffLength> m_ledBuffer;
+  std::array<frc::AddressableLED::LEDData, ElectricalConstants::kLEDBuffLength>
+      m_ledBuffer;
 
-  void ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>,
-                                            ElectricalConstants::kLEDStripLength>& stripBuffer,
-                           int stripID);
+  void ApplyLEDSingleStrip(
+      const std::array<std::tuple<int, int, int>,
+                       ElectricalConstants::kLEDStripLength>& stripBuffer,
+      int stripID);
 
   void ClearLED();
   void GamePieceLED();

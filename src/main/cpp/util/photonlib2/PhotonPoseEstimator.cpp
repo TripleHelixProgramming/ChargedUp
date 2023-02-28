@@ -71,11 +71,13 @@ void PhotonPoseEstimator::SetCameraMatrix(const cv::Mat* newCamMatrix) {
   m_cameraMatrix = newCamMatrix;
 }
 
-void PhotonPoseEstimator::SetDistortionCoefficients(const cv::Mat* newDistCoeff) {
+void PhotonPoseEstimator::SetDistortionCoefficients(
+    const cv::Mat* newDistCoeff) {
   m_distortionCoefficients = newDistCoeff;
 }
 
-void PhotonPoseEstimator::SetRobotToCamera(const frc::Transform3d* newRobotToCam) {
+void PhotonPoseEstimator::SetRobotToCamera(
+    const frc::Transform3d* newRobotToCam) {
   m_robotToCamera = newRobotToCam;
 }
 
