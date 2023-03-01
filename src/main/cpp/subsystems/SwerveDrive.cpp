@@ -62,12 +62,12 @@ SwerveDrive::SwerveDrive()
           //  Translation2d{-kWheelBase / 2, -kTrackWidth / 2}
       }},
       m_odometry{m_driveKinematics,
-                 Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+                 Rotation2d(GetGyroHeading()),
                  {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                   m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                  Pose2d()},
       m_poseEstimator{m_driveKinematics,
-                      Rotation2d(units::degree_t{-m_gyro.GetYaw()}),
+                      Rotation2d(GetGyroHeading()),
                       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
                        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                       Pose2d(),
@@ -124,21 +124,23 @@ void SwerveDrive::ResetOdometry(const Pose2d& pose) {
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
-  m_poseEstimator.ResetPosition(
-      GetGyroHeading(),
-      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-      pose);
+  // m_poseEstimator.ResetPosition(
+  //     GetGyroHeading(),
+  //     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+  //      m_modules[2].GetPosition(), m_modules[3].GetPosition()},
+  //     pose);
 }
 
 void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
-                                double joystickRotate, bool fieldRelative) {
+                                double joystickRotate, bool fieldRelative,
+                                bool isBlue) {
   ChassisSpeeds speeds =
       fieldRelative
           ? ChassisSpeeds::FromFieldRelativeSpeeds(
                 joystickDrive * kMaxVelocityX, joystickStrafe * kMaxVelocityY,
                 joystickRotate * kMaxVelocityAngular,
-                m_odometry.GetPose().Rotation())
+                m_odometry.GetPose().Rotation().RotateBy(
+                    Rotation2d{isBlue ? 0_deg : 180_deg}))
           : ChassisSpeeds{joystickDrive * kMaxVelocityX,
                           joystickStrafe * kMaxVelocityY,
                           joystickRotate * kMaxVelocityAngular};
@@ -247,6 +249,10 @@ void SwerveDrive::SyncAbsoluteEncoders() {
   for (auto& _module : m_modules) {
     _module.SyncEncoders();
   }
+}
+
+void SwerveDrive::SetVisionUsingLeftCam(bool usingLeftCam) {
+  m_vision.SetUsingLeftCam(usingLeftCam);
 }
 
 wpi::array<SwerveModulePosition, 4> SwerveDrive::GetModulePositions() const {

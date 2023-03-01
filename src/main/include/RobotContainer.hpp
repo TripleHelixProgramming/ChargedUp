@@ -57,11 +57,12 @@ class RobotContainer {
   // Subsystems
   SwerveDrive m_drive;
   Superstructure m_superstructure;
-  frc::Compressor m_compressor{1, frc::PneumaticsModuleType::REVPH};
+  frc::Compressor m_compressor{ElectricalConstants::kPHPort,
+                               frc::PneumaticsModuleType::REVPH};
 
   // Operator Interface (OI)
-  frc::Joystick m_driver{0};
-  frc2::CommandXboxController m_operator{1};
+  frc::Joystick m_driver{OIConstants::kDriverControllerPort};
+  frc2::CommandXboxController m_operator{OIConstants::kOperatorControllerPort};
 
   /**
    * Maps auto routines to auto rotary switch indices
@@ -108,17 +109,14 @@ class RobotContainer {
   DoubleTelemetryEntry m_oiDriverRightYLog;
   DoubleTelemetryEntry m_autoSwitchIndexLog;
 
-  /// LED strip
-  static constexpr int kLEDBuffLength = 88;
-  static constexpr int kLEDStripLength = kLEDBuffLength / 4;
-  static constexpr bool kStripDirections[] = {
-      false, true, true, true};  // false means up, true means down
   frc::AddressableLED m_leds{0};
-  std::array<frc::AddressableLED::LEDData, kLEDBuffLength> m_ledBuffer;
+  std::array<frc::AddressableLED::LEDData, ElectricalConstants::kLEDBuffLength>
+      m_ledBuffer;
 
-  void ApplyLEDSingleStrip(const std::array<std::tuple<int, int, int>,
-                                            kLEDBuffLength / 4>& stripBuffer,
-                           int stripID);
+  void ApplyLEDSingleStrip(
+      const std::array<std::tuple<int, int, int>,
+                       ElectricalConstants::kLEDStripLength>& stripBuffer,
+      int stripID);
 
   void ClearLED();
   void GamePieceLED();

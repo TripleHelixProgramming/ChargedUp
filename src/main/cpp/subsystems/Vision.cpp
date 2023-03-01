@@ -43,8 +43,8 @@ AprilTagFieldLayout CustomFieldLayout() {
 Vision::Vision()
     : m_poseEstimator(LoadAprilTagLayoutField(AprilTagField::k2023ChargedUp),
                       // CustomFieldLayout(),
-                      m_cameraMatrix, m_distortionCoefficients,
-                      photonlib::PhotonCamera{"left"}, kRobotToRightCam) {
+                      &kLeftCameraMatrix, &kLeftDistortionCoefficients,
+                      photonlib::PhotonCamera{"left"}, &kRobotToLeftCam) {
   json j = m_poseEstimator.GetFieldLayout();
 }
 
@@ -54,4 +54,16 @@ std::optional<photonlib::EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
     const frc::Pose3d& prevEstimatedRobotPose) {
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
   return m_poseEstimator.Update();
+}
+
+void Vision::SetUsingLeftCam(bool usingLeftCam) {
+  if (usingLeftCam) {
+    m_poseEstimator.SetCameraMatrix(&kLeftCameraMatrix);
+    m_poseEstimator.SetDistortionCoefficients(&kLeftDistortionCoefficients);
+    m_poseEstimator.SetRobotToCamera(&kRobotToLeftCam);
+  } else {
+    m_poseEstimator.SetCameraMatrix(&kRightCameraMatrix);
+    m_poseEstimator.SetDistortionCoefficients(&kRightDistortionCoefficients);
+    m_poseEstimator.SetRobotToCamera(&kRobotToRightCam);
+  }
 }

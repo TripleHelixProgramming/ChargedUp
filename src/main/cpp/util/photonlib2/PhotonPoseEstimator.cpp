@@ -38,12 +38,12 @@ using namespace units;
 namespace photonlib2 {
 
 PhotonPoseEstimator::PhotonPoseEstimator(
-    frc::AprilTagFieldLayout aprilTagLayout, cv::Mat cameraMatrix,
-    cv::Mat distortionCoefficients, photonlib::PhotonCamera&& camera,
-    frc::Transform3d robotToCamera)
+    frc::AprilTagFieldLayout aprilTagLayout, const cv::Mat* cameraMatrix,
+    const cv::Mat* distortionCoefficients, photonlib::PhotonCamera&& camera,
+    const frc::Transform3d* robotToCamera)
     : m_aprilTagLayout(std::move(aprilTagLayout)),
-      m_cameraMatrix(std::move(cameraMatrix)),
-      m_distortionCoefficients(std::move(distortionCoefficients)),
+      m_cameraMatrix(cameraMatrix),
+      m_distortionCoefficients(distortionCoefficients),
       m_camera(std::move(camera)),
       m_robotToCamera(robotToCamera),
       m_referencePose(frc::Pose3d()) {
@@ -65,6 +65,20 @@ void PhotonPoseEstimator::SetReferencePose(frc::Pose3d referencePose) {
 
 photonlib::PhotonCamera& PhotonPoseEstimator::GetCamera() {
   return m_camera;
+}
+
+void PhotonPoseEstimator::SetCameraMatrix(const cv::Mat* newCamMatrix) {
+  m_cameraMatrix = newCamMatrix;
+}
+
+void PhotonPoseEstimator::SetDistortionCoefficients(
+    const cv::Mat* newDistCoeff) {
+  m_distortionCoefficients = newDistCoeff;
+}
+
+void PhotonPoseEstimator::SetRobotToCamera(
+    const frc::Transform3d* newRobotToCam) {
+  m_robotToCamera = newRobotToCam;
 }
 
 std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
@@ -131,8 +145,8 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
   if (objectPoints.size() >= 8) {
     cv::Mat rvec(3, 1, cv::DataType<double>::type);
     cv::Mat tvec(3, 1, cv::DataType<double>::type);
-    cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
-                 m_distortionCoefficients, rvec, tvec, false,
+    cv::solvePnP(objectPoints, imagePoints, *m_cameraMatrix,
+                 *m_distortionCoefficients, rvec, tvec, false,
                  cv::SOLVEPNP_ITERATIVE);
     pose1 = pose2 = ToPose3d(tvec, rvec);
   } else {
@@ -144,7 +158,7 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
   m_pose1Field.SetRobotPose(pose1.ToPose2d());
   m_pose2Field.SetRobotPose(Pose2d(pose1.X(), pose1.Y(), pose1.Rotation().Z()));
 
-  pose1 = pose1.TransformBy(m_robotToCamera.Inverse());
+  pose1 = pose1.TransformBy(m_robotToCamera->Inverse());
 
   SmartDashboard::PutNumber("SQPNP/Translation/X", pose1.X().value());
   SmartDashboard::PutNumber("SQPNP/Translation/Y", pose1.Y().value());

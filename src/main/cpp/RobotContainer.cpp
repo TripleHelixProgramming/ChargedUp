@@ -29,6 +29,7 @@
 #include "commands/autos/South2Cone.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
+using namespace ElectricalConstants;
 using namespace frc;
 using namespace frc2;
 using namespace OIConstants;
@@ -57,9 +58,9 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
         double rightYAxis = -m_driver.GetRawAxis(kZorroRightXAxis);
         double leftXAxis = -m_driver.GetRawAxis(kZorroLeftXAxis);
         return m_drive.JoystickDrive(
-            std::abs(rightXAxis) < 0.05 ? 0.0 : rightXAxis,
-            std::abs(rightYAxis) < 0.05 ? 0.0 : rightYAxis,
-            std::abs(leftXAxis) < 0.05 ? 0.0 : leftXAxis, true);
+            std::abs(rightXAxis) < 0.025 ? 0.0 : rightXAxis,
+            std::abs(rightYAxis) < 0.025 ? 0.0 : rightYAxis,
+            std::abs(leftXAxis) < 0.025 ? 0.0 : leftXAxis, true, m_isBlue);
       },
       {&m_drive}  // requirements
       ));
@@ -210,6 +211,28 @@ void RobotContainer::ConfigureBindings() {
 void RobotContainer::RunDisabled() {
   m_drive.SyncAbsoluteEncoders();
   m_superstructure.SyncEncoders();
+
+  // RED:
+  // auto 1 and 3 use left cam
+  // auto 2 use right cam
+  // BLUE:
+  // auto 1 and 3 use right cam
+  // auto 2 use left cam
+
+  bool useLeftCam;
+
+  switch (m_currentSelectedAuto) {
+    case SelectedAuto::kNorth2ConeChgstat:
+    case SelectedAuto::kNorth3Cone:
+    default:
+      useLeftCam = !m_isBlue;
+      break;
+    case SelectedAuto::kSouth2Cone:
+      useLeftCam = m_isBlue;
+      break;
+  }
+  SmartDashboard::PutBoolean("Vision/Using Left Cam", useLeftCam);
+  m_drive.SetVisionUsingLeftCam(useLeftCam);
 }
 
 void RobotContainer::SuperstructurePeriodic() {

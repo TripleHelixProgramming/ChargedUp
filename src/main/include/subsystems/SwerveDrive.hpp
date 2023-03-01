@@ -51,7 +51,7 @@ class SwerveDrive : public frc2::SubsystemBase {
    * Each input is a value from -1 to 1, like
    */
   void JoystickDrive(double joystickDrive, double joystickStrafe,
-                     double joystickRotate, bool fieldRelative);
+                     double joystickRotate, bool fieldRelative, bool isBlue);
 
   /**
    * @brief Command the robot to drive with the given speeds.
@@ -81,6 +81,8 @@ class SwerveDrive : public frc2::SubsystemBase {
   void ResetAbsoluteEncoders();
 
   void SyncAbsoluteEncoders();
+
+  void SetVisionUsingLeftCam(bool usingLeftCam);
 
  private:
   /**
