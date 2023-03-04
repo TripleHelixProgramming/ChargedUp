@@ -63,6 +63,7 @@ class Superstructure : public frc2::SubsystemBase {
   bool m_flipConeMode = false;
   bool m_flipConeUp = false;
   bool m_expanded = true;
+  bool m_stealth = false;
 
  private:
   // State variables

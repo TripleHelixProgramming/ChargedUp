@@ -187,7 +187,7 @@ units::degree_t Superstructure::GetStringAngle() {
 
 void Superstructure::SuperstructurePeriodic() {
   // If we have game piece, don't spin wheels and lift intake off the ground.
-  if (HasGamePiece() && !m_lastBeamBreakDetection) {
+  if (HasGamePiece() && !m_lastBeamBreakDetection && !m_stealth) {
     if (m_armPosition.value() != kMinArmPickupPosition.value()) {
       m_intakePop.Set(frc::DoubleSolenoid::kForward);  // pop out intake
       m_intakePopTimer.Reset();
