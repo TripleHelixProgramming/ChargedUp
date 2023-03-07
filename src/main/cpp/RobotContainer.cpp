@@ -204,13 +204,11 @@ void RobotContainer::ConfigureBindings() {
                              }).ToPtr());
 
   JoystickButton operatorView(&m_operator, OIConstants::kXboxView);
-  operatorView.OnTrue(InstantCommand([this]() {
-                                    m_superstructure.m_stealth = true;
-                                  }).ToPtr());
-  operatorView.OnFalse(InstantCommand([this]() {
-                                    m_superstructure.m_stealth = false;
-                                  }).ToPtr());
-    
+  operatorView.OnTrue(
+      InstantCommand([this]() { m_superstructure.m_stealth = true; }).ToPtr());
+  operatorView.OnFalse(
+      InstantCommand([this]() { m_superstructure.m_stealth = false; }).ToPtr());
+
   // m_operator.().OnTrue((InstantCommand([this]() { return
   // m_superstructure.SetIntakeWheelSpeed(0.5); })).ToPtr());
   // m_operator.RightBumper().OnFalse((InstantCommand([this]() { return
