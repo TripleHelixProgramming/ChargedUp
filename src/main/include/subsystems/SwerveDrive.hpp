@@ -24,8 +24,8 @@
 #include <units/angle.h>
 
 #include "subsystems/SwerveModule.hpp"
-#include "subsystems/Vision.hpp"
 #include "util/SimSwervePoseTracker.hpp"
+#include "util/cadmia/CadmiaCamera.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 class SwerveDrive : public frc2::SubsystemBase {
@@ -89,9 +89,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   // Subsystems:
   /// The four swerve modules.
   std::array<SwerveModule, 4> m_modules;
-  /// Vision system
-  Vision m_vision;
-
+  
   // Properties:
   /**
    * @brief NAVX gyro sensor for heading
@@ -103,7 +101,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   double lastAngle;
 
   /// The camera facing forwar
-  photonlib::PhotonCamera m_camera{"front"};
+  cadmia::CadmiaCamera m_camera{"video0"};
 
   /// Swerve drive kinematics
   frc::SwerveDriveKinematics<4> m_driveKinematics;

@@ -11,13 +11,18 @@
         "Auto Error": {
           "open": true
         },
+        "Cadmia": {
+          "Rotation": {
+            "open": true
+          },
+          "Translation": {
+            "open": true
+          }
+        },
         "Drive": {
           "Pose Estimate": {
             "open": true
           },
-          "open": true
-        },
-        "Pose Est Field": {
           "open": true
         },
         "open": true
@@ -36,6 +41,11 @@
     },
     "windows": {
       "/SmartDashboard/Reset Encoders": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Vision Est Field": {
         "window": {
           "visible": true
         }

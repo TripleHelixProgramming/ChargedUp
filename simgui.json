@@ -74,12 +74,14 @@
       "/SmartDashboard/Vision Est Field": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/Pose Est Field": {
+      "/SmartDashboard/Sim Field": {
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/Sim Field": {
+      "/SmartDashboard/Vision Est Field": {
+        "height": 9.0,
+        "width": 17.0,
         "window": {
           "visible": true
         }
@@ -92,6 +94,15 @@
         "open": true
       },
       "SmartDashboard": {
+        "Cadmia": {
+          "Rotation": {
+            "open": true
+          },
+          "Translation": {
+            "open": true
+          },
+          "open": true
+        },
         "Drive": {
           "Pose Estimate": {
             "open": true
