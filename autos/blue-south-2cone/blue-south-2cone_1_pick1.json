@@ -39,7 +39,7 @@
                     "waypoint_type": "custom",
                     "x": 3.3132414864727213,
                     "x_constrained": true,
-                    "y": 0.8209911825423041,
+                    "y": 1.049591182542304,
                     "y_constrained": true
                 },
                 {
@@ -57,7 +57,7 @@
                     "waypoint_type": "custom",
                     "x": 4.254723351615825,
                     "x_constrained": true,
-                    "y": 0.8209911825423041,
+                    "y": 1.049591182542304,
                     "y_constrained": true
                 },
                 {
@@ -75,7 +75,7 @@
                     "waypoint_type": "custom",
                     "x": 5.055357287237323,
                     "x_constrained": true,
-                    "y": 0.8929626325249014,
+                    "y": 1.1215626325249013,
                     "y_constrained": true
                 },
                 {
@@ -93,7 +93,7 @@
                     "waypoint_type": "custom",
                     "x": 5.78404717327512,
                     "x_constrained": true,
-                    "y": 0.9134891081879378,
+                    "y": 1.1420891081879379,
                     "y_constrained": true
                 },
                 {
@@ -111,7 +111,7 @@
                     "waypoint_type": "custom",
                     "x": 6.373334695739716,
                     "x_constrained": true,
-                    "y": 1.122600366334588,
+                    "y": 1.351200366334588,
                     "y_constrained": true
                 },
                 {
@@ -129,7 +129,7 @@
                     "waypoint_type": "custom",
                     "x": 7.0267204442110955,
                     "x_constrained": true,
-                    "y": 1.1228175277484524,
+                    "y": 1.3514175277484524,
                     "y_constrained": true
                 }
             ]
