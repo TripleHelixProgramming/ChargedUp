@@ -78,6 +78,11 @@ void Superstructure::PositionMedium() {
   SetArmPosition(m_expanded ? 28.0_deg : 25.0_deg);
 }
 
+void Superstructure::PositionLow() {
+  // Cone angle is higher than cube placing angle
+  SetArmPosition(-7.5_deg);
+}
+
 void Superstructure::IntakeCone() {
   SetArmPosition(-7.5_deg);
   SetIntakeWheelSpeed(0.5);
@@ -188,18 +193,8 @@ units::degree_t Superstructure::GetStringAngle() {
 void Superstructure::SuperstructurePeriodic() {
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece() && !m_lastBeamBreakDetection && !m_stealth) {
-    if (m_armPosition.value() != kMinArmPickupPosition.value()) {
-      m_intakePop.Set(frc::DoubleSolenoid::kForward);  // pop out intake
-      m_intakePopTimer.Reset();
-      m_intakePopTimer.Start();
-    }
     m_armPosition = degree_t{
         std::max(m_armPosition.value(), kMinArmPickupPosition.value())};
-  }
-
-  if (m_intakePopTimer.HasElapsed(0.6_s)) {
-    m_intakePop.Set(frc::DoubleSolenoid::kReverse);
-    m_intakePopTimer.Stop();
   }
 
   double intakeWheelSpeed = m_intakeWheelSpeed;
@@ -210,8 +205,10 @@ void Superstructure::SuperstructurePeriodic() {
     armPosition = m_flipConeUp ? 11_deg : 6_deg;
   }
 
-  if (HasGamePiece()) {
-    intakeWheelSpeed = units::math::min(intakeWheelSpeed, 0.0);
+  m_intakePop.Set(m_armPosition == kMinArmPickupPosition ? frc::DoubleSolenoid::kForward : frc::DoubleSolenoid::kReverse);  // pop out intake
+
+  if (HasGamePiece() && intakeWheelSpeed >= 0.0) {
+    intakeWheelSpeed = 0.05;
   }
 
   // Ensure arm position bounds are not violated.
