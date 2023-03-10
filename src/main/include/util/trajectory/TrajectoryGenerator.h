@@ -15,7 +15,6 @@
 
 namespace trajectory {
 
-Trajectory Generate(frc::Pose2d start, frc::Pose2d end,
-                    TrajectoryConfig& config);
+Trajectory Generate(frc::Pose2d start, frc::Pose2d end, TrajectoryConfig& config);
 
 }  // namespace trajectory

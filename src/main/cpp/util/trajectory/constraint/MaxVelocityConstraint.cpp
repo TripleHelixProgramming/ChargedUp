@@ -3,6 +3,7 @@
 #include "util/trajectory/constraint/MaxVelocityConstraint.h"
 
 #include <limits>
+#include <iostream>
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/ChassisSpeeds.h>
@@ -37,16 +38,20 @@ double MaxVelocityConstraint::MaxVelocityNormForward(
 double MaxVelocityConstraint::MaxVelocityNormBackward(
     Pose2d currentPose, Pose2d endPose, ChassisSpeeds startVelocityHat,
     ChassisSpeeds endVelocityHat, double endVelocityNorm) {
+  std::cout << "Begin velocity backward" << std::endl;
   double v_norm = std::numeric_limits<double>::infinity();
-  if (startVelocityHat.vx.value() != 0.0) {
-    v_norm = std::min(v_norm, (m_maxVelocityX / startVelocityHat.vx).value());
+  double vx = startVelocityHat.vx.value();
+  double vy = startVelocityHat.vx.value();
+  double omega = startVelocityHat.vx.value();
+  if (vx != 0.0) {
+    v_norm = std::min(v_norm, (m_maxVelocityX / vx).value());
   }
-  if (startVelocityHat.vy.value() != 0.0) {
-    v_norm = std::min(v_norm, (m_maxVelocityY / startVelocityHat.vy).value());
+  if (vy != 0.0) {
+    v_norm = std::min(v_norm, (m_maxVelocityY / vy).value());
   }
-  if (startVelocityHat.omega.value() != 0.0) {
-    v_norm = std::min(
-        v_norm, (m_maxRotationalVelocity / startVelocityHat.omega).value());
+  if (omega != 0.0) {
+    v_norm = std::min(v_norm, (m_maxRotationalVelocity / omega).value());
   }
+  std::cout << "End velocity backward" << std::endl;
   return v_norm;
 }

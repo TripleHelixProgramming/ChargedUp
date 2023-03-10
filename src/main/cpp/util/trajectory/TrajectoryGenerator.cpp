@@ -11,6 +11,7 @@
 #include <units/angular_velocity.h>
 #include <units/length.h>
 #include <units/velocity.h>
+#include <iostream>
 
 #include "util/trajectory/Trajectory.h"
 #include "util/trajectory/TrajectoryConfig.h"
@@ -19,9 +20,19 @@
 using namespace frc;
 using namespace units;
 
-namespace trajectory {
+double ChassisSpeedsNorm(const ChassisSpeeds& speeds) {
+  return std::hypot(speeds.vx.value(), speeds.vy.value(), speeds.omega.value());
+}
 
-Trajectory Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
+ChassisSpeeds NormalizeChassisSpeeds(const ChassisSpeeds& speeds) {
+  double norm = ChassisSpeedsNorm(speeds);
+  return ChassisSpeeds{
+      meters_per_second_t{speeds.vx.value() / norm},
+      meters_per_second_t{speeds.vy.value() / norm},
+      radians_per_second_t{speeds.omega.value() / norm}};
+}
+
+Trajectory trajectory::Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
   // Given C₂ continous functions x(t), y(t), θ(t) where t ∈ [0, 1]. Time is
   // denoted τ.
   //
@@ -103,6 +114,8 @@ Trajectory Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
     v_hats.push_back(linearVHat);
   }
 
+  v_norms.push_back(0);
+
   // Rotate velocities to be robot relative, this makes the generator math
   // easier.
   for (int index = 0; index < N; ++index) {
@@ -111,28 +124,51 @@ Trajectory Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
         poses[index].Rotation());
   }
 
+  std::cout << "Begin passes" << std::endl;
+
   // Forward pass
-  for (int index = 0; index < N - 1; ++index) {
+  for (int index = 0; index < v_hats.size() - 1; ++index) {
     double maxVelocityNorm = std::numeric_limits<double>::infinity();
     for (auto& constraint : config.Constraints()) {
       maxVelocityNorm = std::min(
           maxVelocityNorm, constraint->MaxVelocityNormForward(
                                poses[index], poses[index + 1], v_hats[index],
                                v_norms[index], v_hats[index + 1]));
-      v_norms[index + 1] = maxVelocityNorm;
+      v_norms.push_back(maxVelocityNorm);
     }
   }
 
+  std::cout << "Finished forward pass" << std::endl;
+  std::cout << "v_norms size: " << v_norms.size() << std::endl;
+
   // Backward pass
-  for (int index = N - 1; index >= 0; --index) {
+  for (int index = v_norms.size() - 2; index >= 0; --index) {
     double maxVelocityNorm = v_norms[index];
     for (auto& constraint : config.Constraints()) {
+      std::cout << "Starting backward velocity" << std::endl;
       maxVelocityNorm = std::min(
           maxVelocityNorm, constraint->MaxVelocityNormBackward(
                                poses[index], poses[index + 1], v_hats[index],
                                v_hats[index + 1], v_norms[index + 1]));
+      std::cout << "Finished backward velocity" << std::endl;
+      std::cout << "norms size: " << v_norms.size() << std::endl;
+      std::cout << "index: " << index << std::endl;
       v_norms[index] = maxVelocityNorm;
     }
+  }
+
+  std::cout << "Finished passes" << std::endl;
+
+  for (auto norm : v_norms) {
+    std::cout << norm << std::endl;
+  }
+
+  for (auto speed : v_hats) {
+    std::cout << speed.vx.value() << std::endl;
+  }
+
+  for (auto pose : poses) {
+    std::cout << pose.X().value() << std::endl;
   }
 
   // Convert set of poses, v_hats, and v_norms into a time-parameterized
@@ -142,7 +178,7 @@ Trajectory Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
       0.0_s, poses[0],
       ChassisSpeeds{v_norms[0] * v_hats[0].vx, v_norms[0] * v_hats[0].vy,
                     v_norms[0] * v_hats[0].omega}};
-  for (size_t index = 1; index < poses.size(); ++index) {
+  for (int index = 1; index < poses.size(); ++index) {
     Twist2d delta = poses[index - 1].Log(poses[index]);
     second_t dt;
     Trajectory::State state;
@@ -160,6 +196,8 @@ Trajectory Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
                            2.0);
     }
 
+    std::cout << dt.value() << std::endl;
+
     trajectoryStates[index] = {
         second_t{dt} + trajectoryStates[index - 1].t, poses[index],
         // Convert velocity back into field relative from robot relative.
@@ -167,9 +205,11 @@ Trajectory Generate(Pose2d start, Pose2d end, TrajectoryConfig& config) {
             v_norms[index] * v_hats[index].vx,
             v_norms[index] * v_hats[index].vy,
             v_norms[index] * v_hats[index].omega, -poses[index].Rotation())};
+
+    std::cout << "index: " << index << std::endl;
   }
 
-  return Trajectory(trajectoryStates);
-}
+  std::cout << "Done" << std::endl;
 
+  return Trajectory(trajectoryStates);
 }

@@ -3,6 +3,7 @@
 #include "util/trajectory/constraint/MaxAccelerationConstraint.h"
 
 #include <limits>
+#include <iostream>
 
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Twist2d.h>
@@ -76,6 +77,7 @@ double MaxAccelerationConstraint::MaxVelocityNormForward(
 double MaxAccelerationConstraint::MaxVelocityNormBackward(
     Pose2d currentPose, Pose2d endPose, ChassisSpeeds startVelocityHat,
     ChassisSpeeds endVelocityHat, double endVelocityNorm) {
+  std::cout << "Begin acceleration backward" << std::endl;
   double v_norm = std::numeric_limits<double>::infinity();
   Twist2d delta = currentPose.Log(endPose);
   double dx = delta.dx.value();
@@ -84,44 +86,39 @@ double MaxAccelerationConstraint::MaxVelocityNormBackward(
   double vx_hat = startVelocityHat.vx.value();
   double vy_hat = startVelocityHat.vy.value();
   double omega_hat = startVelocityHat.omega.value();
-  if (startVelocityHat.vx.value() != 0.0) {
-    if (vx_hat > 0.0) {
-      double v =
-          std::sqrt(2.0 * dx * m_maxAccelerationX +
-                    std::pow(endVelocityNorm * endVelocityHat.vx.value(), 2));
-      v_norm = std::min(v_norm, std::abs(v / startVelocityHat.vx.value()));
-    } else {
-      double v =
-          std::sqrt(2.0 * dx * -m_maxAccelerationX +
-                    std::pow(endVelocityNorm * endVelocityHat.vx.value(), 2));
-      v_norm = std::min(v_norm, std::abs(v / startVelocityHat.vx.value()));
-    }
+  if (vx_hat > 0.0) {
+    double v =
+        std::sqrt(2.0 * dx * m_maxAccelerationX +
+                  std::pow(endVelocityNorm * endVelocityHat.vx.value(), 2));
+    v_norm = std::min(v_norm, std::abs(v / vx_hat));
+  } else if (vx_hat < 0.0) {
+    double v =
+        std::sqrt(2.0 * dx * -m_maxAccelerationX +
+                  std::pow(endVelocityNorm * endVelocityHat.vx.value(), 2));
+    v_norm = std::min(v_norm, std::abs(v / vx_hat));
   }
-  if (startVelocityHat.vy.value() != 0.0) {
-    if (vy_hat > 0.0) {
-      double v =
-          std::sqrt(2.0 * dy * m_maxAccelerationY +
-                    std::pow(endVelocityNorm * endVelocityHat.vy.value(), 2));
-      v_norm = std::min(v_norm, std::abs(v / startVelocityHat.vy.value()));
-    } else {
-      double v =
-          std::sqrt(2.0 * dy * -m_maxAccelerationY +
-                    std::pow(endVelocityNorm * endVelocityHat.vy.value(), 2));
-      v_norm = std::min(v_norm, std::abs(v / startVelocityHat.vy.value()));
-    }
+  if (vy_hat > 0.0) {
+    double v =
+        std::sqrt(2.0 * dy * m_maxAccelerationY +
+                  std::pow(endVelocityNorm * endVelocityHat.vy.value(), 2));
+    v_norm = std::min(v_norm, std::abs(v / startVelocityHat.vy.value()));
+  } else if (vy_hat < 0.0) {
+    double v =
+        std::sqrt(2.0 * dy * -m_maxAccelerationY +
+                  std::pow(endVelocityNorm * endVelocityHat.vy.value(), 2));
+    v_norm = std::min(v_norm, std::abs(v / startVelocityHat.vy.value()));
   }
-  if (startVelocityHat.omega.value() != 0.0) {
-    if (omega_hat > 0.0) {
-      double v = std::sqrt(
-          2.0 * dtheta * m_maxRotationalAcceleration +
-          std::pow(endVelocityNorm * endVelocityHat.omega.value(), 2));
-      v_norm = std::min(v_norm, std::abs(v / startVelocityHat.omega.value()));
-    } else {
-      double v = std::sqrt(
-          2.0 * dtheta * -m_maxRotationalAcceleration +
-          std::pow(endVelocityNorm * endVelocityHat.omega.value(), 2));
-      v_norm = std::min(v_norm, std::abs(v / startVelocityHat.omega.value()));
-    }
+  if (omega_hat > 0.0) {
+    double v = std::sqrt(
+        2.0 * dtheta * m_maxRotationalAcceleration +
+        std::pow(endVelocityNorm * endVelocityHat.omega.value(), 2));
+    v_norm = std::min(v_norm, std::abs(v / startVelocityHat.omega.value()));
+  } else if (omega_hat < 0.0) {
+    double v = std::sqrt(
+        2.0 * dtheta * -m_maxRotationalAcceleration +
+        std::pow(endVelocityNorm * endVelocityHat.omega.value(), 2));
+    v_norm = std::min(v_norm, std::abs(v / startVelocityHat.omega.value()));
   }
+  std::cout << "End acceleration backward" << std::endl;
   return v_norm;
 }

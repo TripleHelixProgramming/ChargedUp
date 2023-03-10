@@ -14,26 +14,26 @@
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
 #include <wpi/json.h>
+#include <iostream>
 
 #include "Constants.h"
 #include "commands/DriveTrajectory.h"
 #include "commands/ResetAbsoluteEncoders.h"
 #include "util/log/DoubleTelemetryEntry.h"
+#include "util/trajectory/Trajectory.h"
 #include "util/trajectory/TrajectoryConfig.h"
 #include "util/trajectory/TrajectoryGenerator.h"
 #include "util/trajectory/constraint/MaxAccelerationConstraint.h"
 #include "util/trajectory/constraint/MaxVelocityConstraint.h"
 #include "util/trajectory/constraint/TrajectoryConstraint.h"
 
-using namespace frc;
-using namespace frc2;
 using namespace OIConstants;
 
 RobotContainer::RobotContainer()
     : m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
       m_oiDriverRightYLog("OI/Driver/Right Y") {
-  m_drive.SetDefaultCommand(RunCommand(
+  m_drive.SetDefaultCommand(frc2::RunCommand(
       [this] {  // onExecute
         // Right stick up on xbox is negative, right stick down is postive.
         // Right stick right on xbox is negative, right stick left is postive.
@@ -50,13 +50,13 @@ RobotContainer::RobotContainer()
 
   m_trajManager.LoadTrajectories();
 
-  SmartDashboard::PutData("Reset Encoders",
+  frc::SmartDashboard::PutData("Reset Encoders",
                           new ResetAbsoluteEncoders(&m_drive));
 }
 
-std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
-  Pose2d startPose(0_m, 0_m, 0_rad);
-  Pose2d endPose(1_m, 0_m, 0_rad);
+std::optional<frc2::CommandPtr> RobotContainer::GetAutonomousCommand() {
+  frc::Pose2d startPose(0_m, 0_m, 0_rad);
+  frc::Pose2d endPose(1_m, 0_m, 0_rad);
 
   TrajectoryConfig config;
   auto maxVelocityConstraint = MaxVelocityConstraint(
@@ -64,13 +64,11 @@ std::optional<CommandPtr> RobotContainer::GetAutonomousCommand() {
       units::radians_per_second_t{1.0});
   auto maxAccelerationConstraint = MaxAccelerationConstraint(1.0, 1.0, 1.0);
   config.ApplyConstraint(maxVelocityConstraint);
-  config.ApplyConstraint(maxAccelerationConstraint);
+  // config.ApplyConstraint(maxAccelerationConstraint);
 
-  wpi::json j = trajectory::Generate(startPose, endPose, config);
-  std::cout << j.dump() << std::endl;
+  Trajectory j = trajectory::Generate(startPose, endPose, config);
 
-  return CommandPtr(
-      DriveTrajectory(&m_drive, &m_trajManager.GetTrajectory("traj")));
+  return frc2::CommandPtr(DriveTrajectory(&m_drive, &j));
 }
 
 void RobotContainer::UpdateTelemetry() {
@@ -80,9 +78,9 @@ void RobotContainer::UpdateTelemetry() {
 }
 
 void RobotContainer::ConfigureBindings() {
-  JoystickButton zorroGIn{&m_driver, kZorroGIn};
-  zorroGIn.OnTrue(InstantCommand([this]() {
-                    return m_drive.ResetOdometry(Pose2d());
+  frc2::JoystickButton zorroGIn{&m_driver, kZorroGIn};
+  zorroGIn.OnTrue(frc2::InstantCommand([this]() {
+                    return m_drive.ResetOdometry(frc::Pose2d());
                   }).ToPtr());
 
   // m_operator.X().OnTrue(IntakeCone(&m_gripper).ToPtr());
