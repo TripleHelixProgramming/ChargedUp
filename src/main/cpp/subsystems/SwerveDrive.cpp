@@ -124,11 +124,11 @@ void SwerveDrive::ResetOdometry(const Pose2d& pose) {
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
       pose);
-  // m_poseEstimator.ResetPosition(
-  //     GetGyroHeading(),
-  //     {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-  //      m_modules[2].GetPosition(), m_modules[3].GetPosition()},
-  //     pose);
+  m_poseEstimator.ResetPosition(
+      GetGyroHeading(),
+      {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
+       m_modules[2].GetPosition(), m_modules[3].GetPosition()},
+      pose);
 }
 
 void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,

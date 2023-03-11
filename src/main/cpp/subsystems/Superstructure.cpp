@@ -124,9 +124,16 @@ void Superstructure::SetExtenderPosition(bool expanded) {
 
 void Superstructure::Outtake() {
   if (!m_expanded) {
-    SetIntakeWheelSpeed(-0.5);
+    SetIntakeWheelSpeed(-0.8);
   }
-  SetExtenderPosition(false);
+  if (m_armPosition.value() > 15) {
+    SetExtenderPosition(false);
+  } else {
+    SetIntakeWheelSpeed(-0.35);
+    if (m_expanded) {
+      m_armPosition = 9_deg;
+    }
+  }
 }
 
 void Superstructure::SetArmPosition(radian_t position) {
@@ -259,9 +266,8 @@ void Superstructure::SuperstructurePeriodic() {
       volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
                       commandedVoltage.value())};
 
-  if (armPosition.value() == kMinArmPickupPosition.value() &&
-      currentAngle < 2.0) {
-    commandedVoltage = volt_t{6};
+  if (armPosition.value() == kMinArmPickupPosition.value()) {
+    commandedVoltage = volt_t{-1.5};
   }
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
