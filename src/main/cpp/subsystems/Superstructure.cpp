@@ -205,7 +205,9 @@ void Superstructure::SuperstructurePeriodic() {
     armPosition = m_flipConeUp ? 11_deg : 6_deg;
   }
 
-  m_intakePop.Set(m_armPosition == kMinArmPickupPosition ? frc::DoubleSolenoid::kForward : frc::DoubleSolenoid::kReverse);  // pop out intake
+  m_intakePop.Set(m_armPosition == kMinArmPickupPosition
+                      ? frc::DoubleSolenoid::kForward
+                      : frc::DoubleSolenoid::kReverse);  // pop out intake
 
   if (HasGamePiece() && intakeWheelSpeed >= 0.0) {
     intakeWheelSpeed = 0.05;
