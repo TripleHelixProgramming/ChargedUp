@@ -145,20 +145,6 @@ void RobotContainer::ConfigureBindings() {
                             return m_superstructure.SetIntakeWheelSpeed(0.0);
                           })).ToPtr());
 
-  // m_operator.X().OnTrue(IntakeCone(&m_gripper).ToPtr());
-  // m_operator.X().OnFalse(
-  //     InstantCommand([this]() { return m_gripper.Retract(); },
-  //     {&m_gripper}).ToPtr());
-  // m_operator.Y().OnTrue(IntakeCube(&m_gripper).ToPtr());
-  // m_operator.Y().OnFalse(
-  //     InstantCommand([this]() { return m_gripper.Retract(); },
-  //     {&m_gripper}).ToPtr());
-  // m_operator.A().OnTrue(
-  //     InstantCommand([this]() { return m_gripper.EjectGamePiece(); },
-  //     {&m_gripper}).ToPtr());
-  // m_operator.A().OnFalse(
-  //     InstantCommand([this]() { return m_gripper.Retract(); },
-  //     {&m_gripper}).ToPtr());
   m_operator.X().OnTrue(
       (InstantCommand([this]() { m_superstructure.IntakeCone(); })).ToPtr());
   m_operator.X().OnFalse((InstantCommand([this]() {
@@ -169,11 +155,14 @@ void RobotContainer::ConfigureBindings() {
   m_operator.Y().OnFalse((InstantCommand([this]() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
-  m_operator.A().OnTrue((InstantCommand([this]() {
-                          m_superstructure.PositionMedium();
-                        })).ToPtr());
-  m_operator.B().OnTrue(
-      (InstantCommand([this]() { m_superstructure.PositionHigh(); })).ToPtr());
+  m_operator.A().WhileTrue(
+      (RunCommand([this]() { m_superstructure.PositionMedium(); })).ToPtr());
+  m_operator.A().OnFalse(
+      (InstantCommand([this]() { m_superstructure.PositionLow(); })).ToPtr());
+  m_operator.B().WhileTrue(
+      (RunCommand([this]() { m_superstructure.PositionHigh(); })).ToPtr());
+  m_operator.B().OnFalse(
+      (InstantCommand([this]() { m_superstructure.PositionLow(); })).ToPtr());
   m_operator.LeftBumper().OnTrue((InstantCommand([this]() {
                                    m_superstructure.IntakeCubeStation();
                                  })).ToPtr());
@@ -202,6 +191,13 @@ void RobotContainer::ConfigureBindings() {
   driverRightTrigger.OnFalse(InstantCommand([this]() {
                                m_superstructure.m_flipConeUp = false;
                              }).ToPtr());
+
+  JoystickButton operatorView(&m_operator, OIConstants::kXboxView);
+  operatorView.OnTrue(
+      InstantCommand([this]() { m_superstructure.m_stealth = true; }).ToPtr());
+  operatorView.OnFalse(
+      InstantCommand([this]() { m_superstructure.m_stealth = false; }).ToPtr());
+
   // m_operator.().OnTrue((InstantCommand([this]() { return
   // m_superstructure.SetIntakeWheelSpeed(0.5); })).ToPtr());
   // m_operator.RightBumper().OnFalse((InstantCommand([this]() { return
