@@ -52,11 +52,11 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
 frc::Pose2d North3Cube::GetStartingPose(bool isBlue) {
   static auto blueStartingPose =
       TrajectoryManager::GetInstance()
-          .GetTrajectory("blue-north-2cone-chgstat_0_place9")
+          .GetTrajectory("blue-north-3cube_0_pick4")
           .GetInitialPose();
   static auto redStartingPose =
       TrajectoryManager::GetInstance()
-          .GetTrajectory("red-north-2cone-chgstat_0_place9")
+          .GetTrajectory("red-north-3cube_0_pick4")
           .GetInitialPose();
   if (isBlue)
     return blueStartingPose;

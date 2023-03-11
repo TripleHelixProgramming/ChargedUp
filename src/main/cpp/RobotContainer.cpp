@@ -450,6 +450,9 @@ void RobotContainer::AutoLED() {
     case SelectedAuto::kNorth3Cone:
       errors = _poseWithin(currentPose, North3Cone::GetStartingPose(m_isBlue));
       break;
+    case SelectedAuto::kNorth3Cube:
+      errors = _poseWithin(currentPose, North3Cube::GetStartingPose(m_isBlue));
+      break;
     case SelectedAuto::kMid1ConeChgstat:
       errors =
           _poseWithin(currentPose, Mid1ConeChgstat::GetStartingPose(m_isBlue));
