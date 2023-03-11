@@ -13,51 +13,40 @@
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
 
+using namespace frc2;
+
 North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
                        bool isBlue) {
-  std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
+  std::string allianceSidePrefix =
+      isBlue ? "red-" : "red-";  // TODO until we have a blue one
   AddCommands(
-      frc2::InstantCommand(
-          [superstructure]() { superstructure->PositionHigh(); }),
-      frc2::WaitCommand(0.9_s),
-      DriveTrajectory(drive,
-                      &TrajectoryManager::GetInstance().GetTrajectory(
-                          allianceSidePrefix + "north-2cone-chgstat_0_place9")),
-      frc2::InstantCommand(
-          [superstructure]() { superstructure->SetExtenderPosition(false); }),
-      frc2::WaitCommand(0.1_s),
-
-      frc2::ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive, &TrajectoryManager::GetInstance().GetTrajectory(
-                         allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
-                                       frc2::InstantCommand([superstructure]() {
-                                         superstructure->IntakeCone();
-                                       }))),
-
+    ParallelDeadlineGroup(
       DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
-                                 allianceSidePrefix + "north-3cone_2_align7")),
-      frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetInstance().GetTrajectory(
-                              allianceSidePrefix + "north-3cone_3_place7")),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.1_s),
-                                       frc2::InstantCommand([superstructure]() {
-                                         superstructure->PositionHigh();
-                                       }))),
-      frc2::InstantCommand(
-          [superstructure]() { superstructure->SetExtenderPosition(false); }),
-
-      frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetInstance().GetTrajectory(
-                              allianceSidePrefix + "north-3cone_4_pick3"),
-                          false),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
-                                       frc2::InstantCommand([superstructure]() {
-                                         superstructure->IntakeCone();
-                                       }))));
+                        allianceSidePrefix + "north-3cube_0_pick4")),
+      SequentialCommandGroup(
+        InstantCommand([superstructure]() {
+                               superstructure->SetIntakeWheelSpeed(-0.5);
+                             }),
+                             WaitCommand(1_s),
+                             InstantCommand([superstructure]() {
+                               superstructure->IntakeCube();
+                             }))),
+    DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
+                                 allianceSidePrefix + "north-3cube_1_place8")),
+    ParallelDeadlineGroup(
+      DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
+                        allianceSidePrefix + "north-3cube_2_pick3")),
+      SequentialCommandGroup(
+        InstantCommand([superstructure]() {
+                               superstructure->SetIntakeWheelSpeed(-0.5);
+                             }),
+                             WaitCommand(1_s),
+                             InstantCommand([superstructure]() {
+                               superstructure->IntakeCube();
+                             }))),
+    DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
+                                 allianceSidePrefix + "north-3cube_3_place7")),
+    InstantCommand([superstructure]() {superstructure->SetIntakeWheelSpeed(-0.5);}));
 }
 
 frc::Pose2d North3Cube::GetStartingPose(bool isBlue) {
