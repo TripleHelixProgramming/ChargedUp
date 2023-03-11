@@ -40,10 +40,12 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
       m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, true),
       m_blueSouth2Cone(&m_drive, &m_superstructure, true),
       m_blueNorth3Cone(&m_drive, &m_superstructure, true),
+      m_blueNorth3Cube(&m_drive, &m_superstructure, true),
       m_blueMid1ConeChgstat(&m_drive, &m_superstructure, true),
       m_redNorth2ConeChgstat(&m_drive, &m_superstructure, false),
       m_redSouth2Cone(&m_drive, &m_superstructure, false),
       m_redNorth3Cone(&m_drive, &m_superstructure, false),
+      m_redNorth3Cube(&m_drive, &m_superstructure, false),
       m_redMid1ConeChgstat(&m_drive, &m_superstructure, false),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
@@ -95,6 +97,11 @@ std::optional<Command*> RobotContainer::GetAutonomousCommand() {
         return &m_blueNorth3Cone;
       else
         return &m_redNorth3Cone;
+    case SelectedAuto::kNorth3Cube:
+      if (m_isBlue)
+        return &m_blueNorth3Cube;
+      else
+        return &m_redNorth3Cube;
     case SelectedAuto::kMid1ConeChgstat:
       if (m_isBlue)
         return &m_blueMid1ConeChgstat;
@@ -220,6 +227,7 @@ void RobotContainer::RunDisabled() {
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
     case SelectedAuto::kNorth3Cone:
+    case SelectedAuto::kNorth3Cube:
     default:
       useLeftCam = !m_isBlue;
       break;
@@ -286,6 +294,9 @@ void RobotContainer::UpdateAutoSelected() {
       break;
     case static_cast<int64_t>(kNorth3Cone):
       newSelectedAuto = kNorth3Cone;
+      break;
+    case static_cast<int64_t>(kNorth3Cube):
+      newSelectedAuto = kNorth3Cube;
       break;
     case static_cast<int64_t>(kMid1ConeChgstat):
       newSelectedAuto = kMid1ConeChgstat;
@@ -417,9 +428,9 @@ void RobotContainer::AutoLED() {
   // show which auto is selected
   for (size_t selectedAutoIdx = 0; selectedAutoIdx < selectedAutoID;
        selectedAutoIdx++) {
-    for (size_t chunkIdx = 0; chunkIdx < 3; chunkIdx++) {
+    for (size_t chunkIdx = 0; chunkIdx < 2; chunkIdx++) {
       for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
-        stripBuffers[stripIdx][selectedAutoIdx * 4 + chunkIdx] = {
+        stripBuffers[stripIdx][selectedAutoIdx * 3 + chunkIdx] = {
             m_isBlue ? 0 : 255, 0, m_isBlue ? 255 : 0};
       }
     }
