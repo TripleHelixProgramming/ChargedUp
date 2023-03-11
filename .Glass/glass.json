@@ -6,6 +6,9 @@
     "Retained Values": {
       "open": false
     },
+    "Transitory Values": {
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
         "Auto Error": {
@@ -40,6 +43,11 @@
       "/SmartDashboard/Vision Est Field": "Field2d"
     },
     "windows": {
+      "/SmartDashboard/Pose Est Field": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Reset Encoders": {
         "window": {
           "visible": true

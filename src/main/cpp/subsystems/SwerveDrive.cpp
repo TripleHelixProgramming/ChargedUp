@@ -193,8 +193,8 @@ void SwerveDrive::Periodic() {
 
   auto visionResult = m_camera.GetResult();
   if (visionResult.has_value()) {
-    // Pose3d pose = visionResult.value().estimatedPose.TransformBy(VisionConstants::kRobotToLeftCam.Inverse());
-    Pose3d pose = visionResult.value().estimatedPose;
+    Pose3d pose = visionResult.value().estimatedPose.TransformBy(VisionConstants::kRobotToRightCam.Inverse());
+    // Pose3d pose = visionResult.value().estimatedPose;
     SmartDashboard::PutNumber("/Cadmia/Translation/X", pose.X().value());
     SmartDashboard::PutNumber("/Cadmia/Translation/Y", pose.Y().value());
     SmartDashboard::PutNumber("/Cadmia/Translation/Z", pose.Z().value());
