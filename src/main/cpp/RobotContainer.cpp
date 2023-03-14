@@ -203,12 +203,6 @@ void RobotContainer::ConfigureBindings() {
                              }).ToPtr());
   frc2::Trigger operatorPOVUp =
       frc2::Trigger([&]() { return m_operator.GetPOV() == 0; });
-  // JoystickButton operatorUP = JoystickButton() {
-  //   @Override
-  //   public boolean get() {
-  //     return (operator.getPOV() == 180);
-  //   }
-  // }
   operatorPOVUp.OnTrue(InstantCommand([this]() {
                          m_superstructure.m_flipConeMode = true;
                        }).ToPtr());
