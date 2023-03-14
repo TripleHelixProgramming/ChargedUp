@@ -76,6 +76,8 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
   m_leds.SetLength(kLEDBuffLength);
   m_leds.SetData(m_ledBuffer);
   m_leds.Start();
+
+  m_lastGamePieceIntake.Start();
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
@@ -199,6 +201,17 @@ void RobotContainer::ConfigureBindings() {
   driverRightTrigger.OnFalse(InstantCommand([this]() {
                                m_superstructure.m_flipConeUp = false;
                              }).ToPtr());
+  frc2::Trigger operatorPOVUp = frc2::Trigger([&]() {return m_operator.GetPOV() == 0;});
+  // JoystickButton operatorUP = JoystickButton() {
+  //   @Override
+  //   public boolean get() {
+  //     return (operator.getPOV() == 180);
+  //   }
+  // }
+  operatorPOVUp.OnTrue(
+      InstantCommand([this]() { m_superstructure.m_flipConeMode = true; }).ToPtr());
+  operatorPOVUp.OnFalse(
+      InstantCommand([this]() { m_superstructure.m_flipConeMode = false; }).ToPtr());
 
   JoystickButton operatorView(&m_operator, OIConstants::kXboxView);
   operatorView.OnTrue(
@@ -245,13 +258,25 @@ void RobotContainer::SuperstructurePeriodic() {
 }
 
 void RobotContainer::LED() {
+  if (m_superstructure.HasGamePiece() && !m_lastIntake) {
+    m_lastGamePieceIntake.Reset();
+    m_lastIntake = true;
+  }
+  if (!m_superstructure.HasGamePiece()) {
+    m_lastIntake = false;
+  }
+
   if (m_isDisabled()) {
     // ApplyLEDSingleStrip({std::tuple{255, 255, 255}, {100, 0, 0}, {100, 0, 0},
     // {100, 0, 0}});
     AutoLED();
     // SnakeBOI();
   } else if (m_superstructure.HasGamePiece()) {
-    GamePieceLED();
+    if (m_lastGamePieceIntake.HasElapsed(1_s)) {
+      GamePieceLED();
+    } else {
+      Green();
+    }
   } else {
     if (!m_superstructure.m_expanded) {
       Purple();

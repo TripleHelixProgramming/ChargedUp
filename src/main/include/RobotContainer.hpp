@@ -131,4 +131,8 @@ class RobotContainer {
   /// Used to test the order of the lights
   void SnakeBOI();
   void AutoLED();
+
+ private:
+  frc::Timer m_lastGamePieceIntake;
+  bool m_lastIntake = false;
 };

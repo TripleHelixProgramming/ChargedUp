@@ -59,7 +59,7 @@ constexpr units::meter_t kTrackWidth = 0.5715_m;
 
 constexpr auto kMaxVelocityX = 4.0_mps;
 constexpr auto kMaxVelocityY = 4.0_mps;
-constexpr auto kMaxVelocityAngular = 4.0_rad_per_s;
+constexpr auto kMaxVelocityAngular = 5.0_rad_per_s;
 
 }  // namespace DriveConstants
 
@@ -86,8 +86,8 @@ constexpr double kSteerGearRatio = 12.8;
 
 namespace SuperstructureConstants {
 
-constexpr auto kMinArmPosition = 0.0_deg;
-constexpr auto kMinArmPickupPosition = 5.0_deg;
+constexpr auto kMinArmPosition = -7.5_deg;
+constexpr auto kMinArmPickupPosition = -1.0_deg;
 constexpr auto kMaxArmPosition = 1.0_rad;
 
 constexpr double kArmFF = 0;

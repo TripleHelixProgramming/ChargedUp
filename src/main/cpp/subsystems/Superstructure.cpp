@@ -70,39 +70,39 @@ double Superstructure::RawString() {
 
 void Superstructure::PositionHigh() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 36_deg : 30_deg);
+  SetArmPosition(m_expanded ? 33_deg : 30_deg);
 }
 
 void Superstructure::PositionMedium() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 28.0_deg : 25.0_deg);
+  SetArmPosition(m_expanded ? 25.0_deg : 23.0_deg);
 }
 
 void Superstructure::PositionLow() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(-7.5_deg);
+  SetArmPosition(kMinArmPosition);
 }
 
 void Superstructure::IntakeCone() {
-  SetArmPosition(-7.5_deg);
+  SetArmPosition(kMinArmPosition);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(true);
 }
 
 void Superstructure::IntakeCube() {
-  SetArmPosition(-7.5_deg);
+  SetArmPosition(kMinArmPosition);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
 }
 
 void Superstructure::IntakeCubeStation() {
-  SetArmPosition(28.0_deg);
+  SetArmPosition(25.25_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
 }
 
 void Superstructure::IntakeConeStation() {
-  SetArmPosition(28.0_deg);
+  SetArmPosition(25.25_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(true);
 }
@@ -112,12 +112,10 @@ void Superstructure::SetIntakeWheelSpeed(double speed) {
 }
 
 void Superstructure::SetExtenderPosition(bool expanded) {
-  if (expanded != m_expanded) {
-    if (!m_expanded) {
-      m_expander.Set(DoubleSolenoid::kForward);
-    } else {
-      m_expander.Set(DoubleSolenoid::kReverse);
-    }
+  if (expanded) {
+    m_expander.Set(DoubleSolenoid::kForward);
+  } else {
+    m_expander.Set(DoubleSolenoid::kReverse);
   }
   m_expanded = expanded;
 }
@@ -130,9 +128,6 @@ void Superstructure::Outtake() {
     SetExtenderPosition(false);
   } else {
     SetIntakeWheelSpeed(-0.35);
-    if (m_expanded) {
-      m_armPosition = 9_deg;
-    }
   }
 }
 
@@ -150,53 +145,6 @@ bool Superstructure::HasGamePiece() {
   return m_beamBreak.Get();
 }
 
-double Superstructure::GetAbsoluteStringPosition() {
-  double position = GetRelativePosition();
-
-  if (position <= m_encoderPositions[0]) {
-    return m_stringPositions[0];
-  }
-
-  if (position >= m_encoderPositions[m_encoderPositions.size() - 1]) {
-    return m_stringPositions[m_stringPositions.size() - 1];
-  }
-
-  for (size_t index = 0; index < m_encoderPositions.size(); ++index) {
-    if (m_encoderPositions[index] > position) {
-      double t = (position - m_encoderPositions[index - 1]) /
-                 (m_encoderPositions[index] - m_encoderPositions[index - 1]);
-      return (m_stringPositions[index] - m_stringPositions[index - 1]) * t +
-             m_stringPositions[index - 1];
-    }
-  }
-
-  return 0.0;
-}
-
-units::degree_t Superstructure::GetStringAngle() {
-  double position = GetAbsoluteArmPosition().value();
-
-  if (position <= m_stringPositions[0]) {
-    return degree_t{m_encoderPositions[0]};
-  }
-
-  if (position >= m_stringPositions[m_stringPositions.size() - 1]) {
-    return degree_t{m_encoderPositions[m_encoderPositions.size() - 1]};
-  }
-
-  for (size_t index = 0; index < m_stringPositions.size(); ++index) {
-    if (m_stringPositions[index] > position) {
-      double t = (position - m_stringPositions[index - 1]) /
-                 (m_stringPositions[index] - m_stringPositions[index - 1]);
-      return degree_t{
-          (m_encoderPositions[index] - m_encoderPositions[index - 1]) * t +
-          m_encoderPositions[index - 1]};
-    }
-  }
-
-  return 0.0_deg;
-}
-
 void Superstructure::SuperstructurePeriodic() {
   // If we have game piece, don't spin wheels and lift intake off the ground.
   if (HasGamePiece() && !m_lastBeamBreakDetection && !m_stealth) {
@@ -212,7 +160,7 @@ void Superstructure::SuperstructurePeriodic() {
     armPosition = m_flipConeUp ? 11_deg : 6_deg;
   }
 
-  m_intakePop.Set(m_armPosition == kMinArmPickupPosition
+  m_intakePop.Set(m_armPosition != kMinArmPosition
                       ? frc::DoubleSolenoid::kForward
                       : frc::DoubleSolenoid::kReverse);  // pop out intake
 
@@ -226,7 +174,8 @@ void Superstructure::SuperstructurePeriodic() {
 
   SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
   SmartDashboard::PutBoolean("Extended", m_expanded);
-  SmartDashboard::PutNumber("Arm current", m_armLeader.GetOutputCurrent());
+  SmartDashboard::PutNumber("Left arm current", m_armLeader.GetOutputCurrent());
+  SmartDashboard::PutNumber("Right arm current", m_armFollower.GetOutputCurrent());
   SmartDashboard::PutNumber("Error", armPosition.value() - currentAngle);
 
   // Set state of hardware.
@@ -254,7 +203,7 @@ void Superstructure::SuperstructurePeriodic() {
   auto commandedVoltage = volt_t{
       m_armController.Calculate(degree_t{currentAngle}) + m_integral * m_kI};
 
-  if (currentAngle < 3.0 && armPosition.value() < 5.0) {
+  if (currentAngle < 4.0 && armPosition == kMinArmPosition) {
     commandedVoltage = volt_t{-0.6};
   }
 
@@ -266,8 +215,8 @@ void Superstructure::SuperstructurePeriodic() {
       volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
                       commandedVoltage.value())};
 
-  if (armPosition.value() == kMinArmPickupPosition.value()) {
-    commandedVoltage = volt_t{-1.5};
+  if (armPosition.value() == kMinArmPickupPosition.value() && currentAngle < 1.0) {
+    commandedVoltage = volt_t{-0.5};
   }
 
   SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());

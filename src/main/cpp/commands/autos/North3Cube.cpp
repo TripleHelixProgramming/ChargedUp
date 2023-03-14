@@ -23,7 +23,7 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
   AddCommands(
     ParallelDeadlineGroup(
       SequentialCommandGroup(
-        WaitCommand(0.5_s),
+        WaitCommand(0.0_s),
         DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
                           allianceSidePrefix + "north-3cube_0_pick4"))
       ),
@@ -33,13 +33,13 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
                              }),
                              WaitCommand(1_s),
                              InstantCommand([superstructure]() {
-                               superstructure->IntakeCube();
+                               superstructure->IntakeCone();
                              }))),
     DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
                                  allianceSidePrefix + "north-3cube_1_place8")),
     ParallelDeadlineGroup(
       SequentialCommandGroup(
-        WaitCommand(0.5_s),
+        WaitCommand(0.1_s),
         DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
                         allianceSidePrefix + "north-3cube_2_pick3"))
       ),
@@ -49,11 +49,22 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
                              }),
                              WaitCommand(1_s),
                              InstantCommand([superstructure]() {
-                               superstructure->IntakeCube();
+                               superstructure->IntakeCone();
                              }))),
     DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
                                  allianceSidePrefix + "north-3cube_3_place7")),
-    InstantCommand([superstructure]() {superstructure->Outtake();}));
+    InstantCommand([superstructure]() {superstructure->Outtake();}),
+    ParallelDeadlineGroup(
+      DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
+                                 allianceSidePrefix + "north-3cube_4_chgst")),
+      SequentialCommandGroup(
+            WaitCommand(0.75_s),
+            InstantCommand([superstructure]() {
+              superstructure->PositionLow();
+            }))                        
+    )
+    
+    );
 }
 
 frc::Pose2d North3Cube::GetStartingPose(bool isBlue) {

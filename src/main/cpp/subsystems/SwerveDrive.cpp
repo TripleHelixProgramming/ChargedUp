@@ -139,7 +139,7 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
           ? ChassisSpeeds::FromFieldRelativeSpeeds(
                 joystickDrive * kMaxVelocityX, joystickStrafe * kMaxVelocityY,
                 joystickRotate * kMaxVelocityAngular,
-                m_odometry.GetPose().Rotation().RotateBy(
+                m_poseEstimator.GetEstimatedPosition().Rotation().RotateBy(
                     Rotation2d{isBlue ? 0_deg : 180_deg}))
           : ChassisSpeeds{joystickDrive * kMaxVelocityX,
                           joystickStrafe * kMaxVelocityY,
