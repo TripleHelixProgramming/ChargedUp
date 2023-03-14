@@ -177,7 +177,8 @@ void Superstructure::SuperstructurePeriodic() {
   SmartDashboard::PutNumber("Arm/Left current", m_armLeader.GetOutputCurrent());
   SmartDashboard::PutNumber("Arm/Right current",
                             m_armFollower.GetOutputCurrent());
-  SmartDashboard::PutNumber("Arm/State error", armPosition.value() - currentAngle);
+  SmartDashboard::PutNumber("Arm/State error",
+                            armPosition.value() - currentAngle);
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
