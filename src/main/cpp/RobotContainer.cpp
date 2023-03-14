@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <iostream>
+#include <optional>
 #include <tuple>
 
 #include <frc/geometry/Pose2d.h>
@@ -81,7 +82,6 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
-  m_drive.ResetOdometry(frc::Pose2d(14.65_m, 5.0_m, 0_rad));
   UpdateAutoSelected();
   UpdateIsBlue();
   switch (m_currentSelectedAuto) {
@@ -111,7 +111,7 @@ std::optional<Command*> RobotContainer::GetAutonomousCommand() {
       else
         return &m_redMid1ConeChgstat;
     default:
-      return &m_blueNorth3Cube;
+      return std::nullopt;
   }
 }
 
