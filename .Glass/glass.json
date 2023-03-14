@@ -1,18 +1,48 @@
 {
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
         "Auto Error": {
           "open": true
         },
-        "Drive": {
-          "Pose Estimate": {
+        "Cadmia": {
+          "Rotation": {
+            "open": true
+          },
+          "Translation": {
             "open": true
           }
         },
-        "Vision": {
+        "Drive": {
+          "Modules": {
+            "Front Left": {
+              "open": true
+            },
+            "Front Right": {
+              "open": true
+            },
+            "Rear Left": {
+              "open": true
+            },
+            "Rear Right": {
+              "open": true
+            },
+            "open": true
+          },
+          "Pose Estimate": {
+            "open": true
+          },
           "open": true
         },
+        "open": true
+      },
+      "cadmia": {
         "open": true
       }
     },
@@ -25,7 +55,17 @@
       "/SmartDashboard/Vision Est Field": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/Pose Est 1": {
+      "/SmartDashboard/Pose Est Field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Reset Encoders": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Vision Est Field": {
         "window": {
           "visible": true
         }
@@ -34,13 +74,13 @@
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
-    "serverTeam": "10.23.63.2"
+    "serverTeam": "2363"
   },
   "Plots": {
     "Plot <0>": {
       "plots": [
         {
-          "height": 0,
+          "height": 338,
           "series": [
             {
               "color": [

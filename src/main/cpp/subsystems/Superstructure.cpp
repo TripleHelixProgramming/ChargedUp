@@ -70,39 +70,39 @@ double Superstructure::RawString() {
 
 void Superstructure::PositionHigh() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 36_deg : 30_deg);
+  SetArmPosition(m_expanded ? 33_deg : 30_deg);
 }
 
 void Superstructure::PositionMedium() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 28.0_deg : 25.0_deg);
+  SetArmPosition(m_expanded ? 25.0_deg : 23.0_deg);
 }
 
 void Superstructure::PositionLow() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(-7.5_deg);
+  SetArmPosition(kMinArmPosition);
 }
 
 void Superstructure::IntakeCone() {
-  SetArmPosition(-7.5_deg);
+  SetArmPosition(kMinArmPosition);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(true);
 }
 
 void Superstructure::IntakeCube() {
-  SetArmPosition(-7.5_deg);
+  SetArmPosition(kMinArmPosition);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
 }
 
 void Superstructure::IntakeCubeStation() {
-  SetArmPosition(28.0_deg);
+  SetArmPosition(25.25_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
 }
 
 void Superstructure::IntakeConeStation() {
-  SetArmPosition(28.0_deg);
+  SetArmPosition(25.25_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(true);
 }
@@ -112,21 +112,23 @@ void Superstructure::SetIntakeWheelSpeed(double speed) {
 }
 
 void Superstructure::SetExtenderPosition(bool expanded) {
-  if (expanded != m_expanded) {
-    if (!m_expanded) {
-      m_expander.Set(DoubleSolenoid::kForward);
-    } else {
-      m_expander.Set(DoubleSolenoid::kReverse);
-    }
+  if (expanded) {
+    m_expander.Set(DoubleSolenoid::kForward);
+  } else {
+    m_expander.Set(DoubleSolenoid::kReverse);
   }
   m_expanded = expanded;
 }
 
 void Superstructure::Outtake() {
   if (!m_expanded) {
-    SetIntakeWheelSpeed(-0.5);
+    SetIntakeWheelSpeed(-0.8);
   }
-  SetExtenderPosition(false);
+  if (m_armPosition.value() > 15) {
+    SetExtenderPosition(false);
+  } else {
+    SetIntakeWheelSpeed(-0.35);
+  }
 }
 
 void Superstructure::SetArmPosition(radian_t position) {
@@ -141,53 +143,6 @@ degree_t Superstructure::GetAbsoluteArmPosition() {
 
 bool Superstructure::HasGamePiece() {
   return m_beamBreak.Get();
-}
-
-double Superstructure::GetAbsoluteStringPosition() {
-  double position = GetRelativePosition();
-
-  if (position <= m_encoderPositions[0]) {
-    return m_stringPositions[0];
-  }
-
-  if (position >= m_encoderPositions[m_encoderPositions.size() - 1]) {
-    return m_stringPositions[m_stringPositions.size() - 1];
-  }
-
-  for (size_t index = 0; index < m_encoderPositions.size(); ++index) {
-    if (m_encoderPositions[index] > position) {
-      double t = (position - m_encoderPositions[index - 1]) /
-                 (m_encoderPositions[index] - m_encoderPositions[index - 1]);
-      return (m_stringPositions[index] - m_stringPositions[index - 1]) * t +
-             m_stringPositions[index - 1];
-    }
-  }
-
-  return 0.0;
-}
-
-units::degree_t Superstructure::GetStringAngle() {
-  double position = GetAbsoluteArmPosition().value();
-
-  if (position <= m_stringPositions[0]) {
-    return degree_t{m_encoderPositions[0]};
-  }
-
-  if (position >= m_stringPositions[m_stringPositions.size() - 1]) {
-    return degree_t{m_encoderPositions[m_encoderPositions.size() - 1]};
-  }
-
-  for (size_t index = 0; index < m_stringPositions.size(); ++index) {
-    if (m_stringPositions[index] > position) {
-      double t = (position - m_stringPositions[index - 1]) /
-                 (m_stringPositions[index] - m_stringPositions[index - 1]);
-      return degree_t{
-          (m_encoderPositions[index] - m_encoderPositions[index - 1]) * t +
-          m_encoderPositions[index - 1]};
-    }
-  }
-
-  return 0.0_deg;
 }
 
 void Superstructure::SuperstructurePeriodic() {
@@ -205,7 +160,7 @@ void Superstructure::SuperstructurePeriodic() {
     armPosition = m_flipConeUp ? 11_deg : 6_deg;
   }
 
-  m_intakePop.Set(m_armPosition == kMinArmPickupPosition
+  m_intakePop.Set(m_armPosition != kMinArmPosition
                       ? frc::DoubleSolenoid::kForward
                       : frc::DoubleSolenoid::kReverse);  // pop out intake
 
@@ -217,10 +172,13 @@ void Superstructure::SuperstructurePeriodic() {
   armPosition = units::math::min(
       kMaxArmPosition, units::math::max(kMinArmPosition, armPosition));
 
-  SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
-  SmartDashboard::PutBoolean("Extended", m_expanded);
-  SmartDashboard::PutNumber("Arm current", m_armLeader.GetOutputCurrent());
-  SmartDashboard::PutNumber("Error", armPosition.value() - currentAngle);
+  SmartDashboard::PutNumber("Arm/Intake wheel speed", intakeWheelSpeed);
+  SmartDashboard::PutBoolean("Arm/Intake expanded", m_expanded);
+  SmartDashboard::PutNumber("Arm/Left current", m_armLeader.GetOutputCurrent());
+  SmartDashboard::PutNumber("Arm/Right current",
+                            m_armFollower.GetOutputCurrent());
+  SmartDashboard::PutNumber("Arm/State error",
+                            armPosition.value() - currentAngle);
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
@@ -247,11 +205,11 @@ void Superstructure::SuperstructurePeriodic() {
   auto commandedVoltage = volt_t{
       m_armController.Calculate(degree_t{currentAngle}) + m_integral * m_kI};
 
-  if (currentAngle < 3.0 && armPosition.value() < 5.0) {
+  if (currentAngle < 4.0 && armPosition == kMinArmPosition) {
     commandedVoltage = volt_t{-0.6};
   }
 
-  SmartDashboard::PutNumber("Target angle", armPosition.value());
+  SmartDashboard::PutNumber("Arm/Target angle", armPosition.value());
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
@@ -260,11 +218,11 @@ void Superstructure::SuperstructurePeriodic() {
                       commandedVoltage.value())};
 
   if (armPosition.value() == kMinArmPickupPosition.value() &&
-      currentAngle < 2.0) {
-    commandedVoltage = volt_t{6};
+      currentAngle < 1.0) {
+    commandedVoltage = volt_t{-0.5};
   }
 
-  SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
+  SmartDashboard::PutNumber("Arm/Applied voltage", commandedVoltage.value());
 
   m_armLeader.SetVoltage(commandedVoltage);
 }

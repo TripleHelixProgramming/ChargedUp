@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <iostream>
+#include <optional>
 #include <tuple>
 
 #include <frc/geometry/Pose2d.h>
@@ -40,10 +41,12 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
       m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, true),
       m_blueSouth2Cone(&m_drive, &m_superstructure, true),
       m_blueNorth3Cone(&m_drive, &m_superstructure, true),
+      m_blueNorth3Cube(&m_drive, &m_superstructure, true),
       m_blueMid1ConeChgstat(&m_drive, &m_superstructure, true),
       m_redNorth2ConeChgstat(&m_drive, &m_superstructure, false),
       m_redSouth2Cone(&m_drive, &m_superstructure, false),
       m_redNorth3Cone(&m_drive, &m_superstructure, false),
+      m_redNorth3Cube(&m_drive, &m_superstructure, false),
       m_redMid1ConeChgstat(&m_drive, &m_superstructure, false),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
@@ -74,6 +77,8 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
   m_leds.SetLength(kLEDBuffLength);
   m_leds.SetData(m_ledBuffer);
   m_leds.Start();
+
+  m_lastGamePieceIntake.Start();
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
@@ -95,6 +100,11 @@ std::optional<Command*> RobotContainer::GetAutonomousCommand() {
         return &m_blueNorth3Cone;
       else
         return &m_redNorth3Cone;
+    case SelectedAuto::kNorth3Cube:
+      if (m_isBlue)
+        return &m_blueNorth3Cube;
+      else
+        return &m_redNorth3Cube;
     case SelectedAuto::kMid1ConeChgstat:
       if (m_isBlue)
         return &m_blueMid1ConeChgstat;
@@ -191,6 +201,14 @@ void RobotContainer::ConfigureBindings() {
   driverRightTrigger.OnFalse(InstantCommand([this]() {
                                m_superstructure.m_flipConeUp = false;
                              }).ToPtr());
+  frc2::Trigger operatorPOVUp =
+      frc2::Trigger([&]() { return m_operator.GetPOV() == 0; });
+  operatorPOVUp.OnTrue(InstantCommand([this]() {
+                         m_superstructure.m_flipConeMode = true;
+                       }).ToPtr());
+  operatorPOVUp.OnFalse(InstantCommand([this]() {
+                          m_superstructure.m_flipConeMode = false;
+                        }).ToPtr());
 
   JoystickButton operatorView(&m_operator, OIConstants::kXboxView);
   operatorView.OnTrue(
@@ -220,6 +238,7 @@ void RobotContainer::RunDisabled() {
   switch (m_currentSelectedAuto) {
     case SelectedAuto::kNorth2ConeChgstat:
     case SelectedAuto::kNorth3Cone:
+    case SelectedAuto::kNorth3Cube:
     default:
       useLeftCam = !m_isBlue;
       break;
@@ -236,13 +255,25 @@ void RobotContainer::SuperstructurePeriodic() {
 }
 
 void RobotContainer::LED() {
+  if (m_superstructure.HasGamePiece() && !m_lastIntake) {
+    m_lastGamePieceIntake.Reset();
+    m_lastIntake = true;
+  }
+  if (!m_superstructure.HasGamePiece()) {
+    m_lastIntake = false;
+  }
+
   if (m_isDisabled()) {
     // ApplyLEDSingleStrip({std::tuple{255, 255, 255}, {100, 0, 0}, {100, 0, 0},
     // {100, 0, 0}});
     AutoLED();
     // SnakeBOI();
   } else if (m_superstructure.HasGamePiece()) {
-    GamePieceLED();
+    if (m_lastGamePieceIntake.HasElapsed(1_s)) {
+      GamePieceLED();
+    } else {
+      Green();
+    }
   } else {
     if (!m_superstructure.m_expanded) {
       Purple();
@@ -286,6 +317,9 @@ void RobotContainer::UpdateAutoSelected() {
       break;
     case static_cast<int64_t>(kNorth3Cone):
       newSelectedAuto = kNorth3Cone;
+      break;
+    case static_cast<int64_t>(kNorth3Cube):
+      newSelectedAuto = kNorth3Cube;
       break;
     case static_cast<int64_t>(kMid1ConeChgstat):
       newSelectedAuto = kMid1ConeChgstat;
@@ -417,9 +451,9 @@ void RobotContainer::AutoLED() {
   // show which auto is selected
   for (size_t selectedAutoIdx = 0; selectedAutoIdx < selectedAutoID;
        selectedAutoIdx++) {
-    for (size_t chunkIdx = 0; chunkIdx < 3; chunkIdx++) {
+    for (size_t chunkIdx = 0; chunkIdx < 2; chunkIdx++) {
       for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
-        stripBuffers[stripIdx][selectedAutoIdx * 4 + chunkIdx] = {
+        stripBuffers[stripIdx][selectedAutoIdx * 3 + chunkIdx] = {
             m_isBlue ? 0 : 255, 0, m_isBlue ? 255 : 0};
       }
     }
