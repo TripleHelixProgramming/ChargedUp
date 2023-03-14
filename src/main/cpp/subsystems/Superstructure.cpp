@@ -172,12 +172,12 @@ void Superstructure::SuperstructurePeriodic() {
   armPosition = units::math::min(
       kMaxArmPosition, units::math::max(kMinArmPosition, armPosition));
 
-  SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
-  SmartDashboard::PutBoolean("Extended", m_expanded);
-  SmartDashboard::PutNumber("Left arm current", m_armLeader.GetOutputCurrent());
-  SmartDashboard::PutNumber("Right arm current",
+  SmartDashboard::PutNumber("Arm/Intake wheel speed", intakeWheelSpeed);
+  SmartDashboard::PutBoolean("Arm/Intake expanded", m_expanded);
+  SmartDashboard::PutNumber("Arm/Left current", m_armLeader.GetOutputCurrent());
+  SmartDashboard::PutNumber("Arm/Right current",
                             m_armFollower.GetOutputCurrent());
-  SmartDashboard::PutNumber("Error", armPosition.value() - currentAngle);
+  SmartDashboard::PutNumber("Arm/State error", armPosition.value() - currentAngle);
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
@@ -208,7 +208,7 @@ void Superstructure::SuperstructurePeriodic() {
     commandedVoltage = volt_t{-0.6};
   }
 
-  SmartDashboard::PutNumber("Target angle", armPosition.value());
+  SmartDashboard::PutNumber("Arm/Target angle", armPosition.value());
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
@@ -221,7 +221,7 @@ void Superstructure::SuperstructurePeriodic() {
     commandedVoltage = volt_t{-0.5};
   }
 
-  SmartDashboard::PutNumber("Applied voltage", commandedVoltage.value());
+  SmartDashboard::PutNumber("Arm/Applied voltage", commandedVoltage.value());
 
   m_armLeader.SetVoltage(commandedVoltage);
 }
