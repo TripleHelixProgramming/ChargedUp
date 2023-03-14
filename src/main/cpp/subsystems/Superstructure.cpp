@@ -175,7 +175,8 @@ void Superstructure::SuperstructurePeriodic() {
   SmartDashboard::PutNumber("Intake wheel speed", intakeWheelSpeed);
   SmartDashboard::PutBoolean("Extended", m_expanded);
   SmartDashboard::PutNumber("Left arm current", m_armLeader.GetOutputCurrent());
-  SmartDashboard::PutNumber("Right arm current", m_armFollower.GetOutputCurrent());
+  SmartDashboard::PutNumber("Right arm current",
+                            m_armFollower.GetOutputCurrent());
   SmartDashboard::PutNumber("Error", armPosition.value() - currentAngle);
 
   // Set state of hardware.
@@ -215,7 +216,8 @@ void Superstructure::SuperstructurePeriodic() {
       volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
                       commandedVoltage.value())};
 
-  if (armPosition.value() == kMinArmPickupPosition.value() && currentAngle < 1.0) {
+  if (armPosition.value() == kMinArmPickupPosition.value() &&
+      currentAngle < 1.0) {
     commandedVoltage = volt_t{-0.5};
   }
 

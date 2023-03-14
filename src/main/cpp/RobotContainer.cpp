@@ -201,17 +201,20 @@ void RobotContainer::ConfigureBindings() {
   driverRightTrigger.OnFalse(InstantCommand([this]() {
                                m_superstructure.m_flipConeUp = false;
                              }).ToPtr());
-  frc2::Trigger operatorPOVUp = frc2::Trigger([&]() {return m_operator.GetPOV() == 0;});
+  frc2::Trigger operatorPOVUp =
+      frc2::Trigger([&]() { return m_operator.GetPOV() == 0; });
   // JoystickButton operatorUP = JoystickButton() {
   //   @Override
   //   public boolean get() {
   //     return (operator.getPOV() == 180);
   //   }
   // }
-  operatorPOVUp.OnTrue(
-      InstantCommand([this]() { m_superstructure.m_flipConeMode = true; }).ToPtr());
-  operatorPOVUp.OnFalse(
-      InstantCommand([this]() { m_superstructure.m_flipConeMode = false; }).ToPtr());
+  operatorPOVUp.OnTrue(InstantCommand([this]() {
+                         m_superstructure.m_flipConeMode = true;
+                       }).ToPtr());
+  operatorPOVUp.OnFalse(InstantCommand([this]() {
+                          m_superstructure.m_flipConeMode = false;
+                        }).ToPtr());
 
   JoystickButton operatorView(&m_operator, OIConstants::kXboxView);
   operatorView.OnTrue(
