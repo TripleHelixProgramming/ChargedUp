@@ -42,12 +42,6 @@ Superstructure::Superstructure()
   m_armEncoder.SetPositionOffset(kArmEncoderOffset);
 
   m_relativeEncoder.SetDistancePerPulse(1.0 / 2048.0);
-
-  double pos = GetAbsoluteArmPosition().value();
-
-  SmartDashboard::PutNumber("Initial pos", pos);
-
-  SmartDashboard::PutNumber("pot", 0.0);
 }
 
 void Superstructure::SyncEncoders() {
@@ -172,13 +166,11 @@ void Superstructure::SuperstructurePeriodic() {
   armPosition = units::math::min(
       kMaxArmPosition, units::math::max(kMinArmPosition, armPosition));
 
-  SmartDashboard::PutNumber("Arm/Intake wheel speed", intakeWheelSpeed);
-  SmartDashboard::PutBoolean("Arm/Intake expanded", m_expanded);
-  SmartDashboard::PutNumber("Arm/Left current", m_armLeader.GetOutputCurrent());
-  SmartDashboard::PutNumber("Arm/Right current",
-                            m_armFollower.GetOutputCurrent());
-  SmartDashboard::PutNumber("Arm/State error",
-                            armPosition.value() - currentAngle);
+  m_intakeWheelSpeedLog.Append(intakeWheelSpeed);
+  m_intakeExpandedLog.Append(m_expanded);
+  m_armLeftCurrentLog.Append(m_armLeader.GetOutputCurrent());
+  m_armRightCurrentLog.Append(m_armFollower.GetOutputCurrent());
+  m_armStateErrorLog.Append(armPosition.value() - currentAngle);
 
   // Set state of hardware.
   m_leftWheel.Set(intakeWheelSpeed);
@@ -209,7 +201,7 @@ void Superstructure::SuperstructurePeriodic() {
     commandedVoltage = volt_t{-0.6};
   }
 
-  SmartDashboard::PutNumber("Arm/Target angle", armPosition.value());
+  m_armTargetAngleLog.Append(armPosition.value());
 
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
@@ -222,7 +214,7 @@ void Superstructure::SuperstructurePeriodic() {
     commandedVoltage = volt_t{-0.5};
   }
 
-  SmartDashboard::PutNumber("Arm/Applied voltage", commandedVoltage.value());
+  m_armAppliedVoltageLog.Append(commandedVoltage.value());
 
   m_armLeader.SetVoltage(commandedVoltage);
 }

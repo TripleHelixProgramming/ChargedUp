@@ -113,7 +113,7 @@ class RobotContainer {
   DoubleTelemetryEntry m_oiDriverRightYLog;
   DoubleTelemetryEntry m_autoSwitchIndexLog;
 
-  frc::AddressableLED m_leds{0};
+  frc::AddressableLED m_leds{ElectricalConstants::kLEDPort};
   std::array<frc::AddressableLED::LEDData, ElectricalConstants::kLEDBuffLength>
       m_ledBuffer;
 

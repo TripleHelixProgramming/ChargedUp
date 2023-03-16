@@ -16,6 +16,8 @@
 #include <units/angular_velocity.h>
 
 #include "Constants.hpp"
+#include "util/log/BoolTelemetryEntry.hpp"
+#include "util/log/DoubleTelemetryEntry.hpp"
 
 class Superstructure : public frc2::SubsystemBase {
  public:
@@ -120,4 +122,13 @@ class Superstructure : public frc2::SubsystemBase {
                                  1};  // TODO should be in constants
   frc::DoubleSolenoid m_intakePop{frc::PneumaticsModuleType::REVPH, 2, 3};
   frc::Timer m_intakePopTimer;
+
+  // Logging
+  DoubleTelemetryEntry m_intakeWheelSpeedLog{"Intake/Wheel Speed"};
+  BoolTelemetryEntry m_intakeExpandedLog{"Intake/Is Expanded"};
+  DoubleTelemetryEntry m_armLeftCurrentLog{"Arm/Left Current"};
+  DoubleTelemetryEntry m_armRightCurrentLog{"Arm/Right Current"};
+  DoubleTelemetryEntry m_armStateErrorLog{"Arm/State Error"};
+  DoubleTelemetryEntry m_armTargetAngleLog{"Arm/Target Angle (deg)"};
+  DoubleTelemetryEntry m_armAppliedVoltageLog{"Arm/Applied Voltage"};
 };
