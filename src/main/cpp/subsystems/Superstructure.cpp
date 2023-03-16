@@ -214,11 +214,15 @@ void Superstructure::SuperstructurePeriodic() {
   commandedVoltage = volt_t{std::min(commandedVoltage.value(), 3.0)};
 
   commandedVoltage =
-      volt_t{std::max(std::pow(((30 - currentAngle) / 30.0), 2) * -2 - 1,
+      volt_t{std::max(std::pow((currentAngle / 30.0), 2) * -2 - 1.25,
                       commandedVoltage.value())};
 
+  if (HasGamePiece() && armPosition <= kMinArmPickupPosition) {
+    commandedVoltage = volt_t{commandedVoltage.value() * 0.75};
+  }
+
   if (armPosition.value() == kMinArmPickupPosition.value() &&
-      currentAngle < 1.0) {
+      currentAngle < 4.0) {
     commandedVoltage = volt_t{-0.5};
   }
 
