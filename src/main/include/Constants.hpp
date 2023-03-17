@@ -47,7 +47,7 @@ constexpr int kRedBlueSwitchPort = 10;
 /// LED strip
 constexpr int kLEDStripLength = 22;
 constexpr int kAltLEDStripLength = 18;
-constexpr int kLEDBuffLength = kLEDStripLength * 4 + kAltLEDStripLength * 4;
+constexpr int kLEDBuffLength = kLEDStripLength * 4 + kAltLEDStripLength;
 constexpr bool kStripDirections[] = {false, true, true,
                                      true};  // false means up, true means down
 
