@@ -19,7 +19,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 1.8917489840000012,
+                    "x": 1.9933489840000012,
                     "x_constrained": true,
                     "y": 4.9238,
                     "y_constrained": true
@@ -27,7 +27,7 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 30,
+                    "control_interval_count": 20,
                     "heading": 3.141592653589793,
                     "heading_constrained": true,
                     "name": "Custom Waypoint 5",
@@ -37,15 +37,15 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 2.9447695237255456,
+                    "x": 3.0839143370840536,
                     "x_constrained": true,
-                    "y": 4.840446570897677,
+                    "y": 4.776871149340968,
                     "y_constrained": true
                 },
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": false,
-                    "control_interval_count": 30,
+                    "control_interval_count": 20,
                     "heading": 3.141592653589793,
                     "heading_constrained": false,
                     "name": "mid",
@@ -63,7 +63,7 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 30,
+                    "control_interval_count": 20,
                     "heading": 6.283185307179586,
                     "heading_constrained": true,
                     "name": "orient",
