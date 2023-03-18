@@ -53,7 +53,12 @@ void Vision::Periodic() {}
 std::optional<photonlib::EstimatedRobotPose> Vision::GetEstimatedGlobalPose(
     const frc::Pose3d& prevEstimatedRobotPose) {
   m_poseEstimator.SetReferencePose(prevEstimatedRobotPose);
-  return m_poseEstimator.Update();
+  try {
+    return m_poseEstimator.Update();
+  } catch (...) {
+    SmartDashboard::PutString("Is code fucked", "yes");
+    return std::nullopt;
+  }
 }
 
 void Vision::SetUsingLeftCam(bool usingLeftCam) {

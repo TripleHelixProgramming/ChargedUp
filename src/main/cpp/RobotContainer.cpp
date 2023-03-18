@@ -324,6 +324,9 @@ void RobotContainer::UpdateAutoSelected() {
     case static_cast<int64_t>(kMid1ConeChgstat):
       newSelectedAuto = kMid1ConeChgstat;
       break;
+    case static_cast<int64_t>(kWeBeGaming):
+      newSelectedAuto = kWeBeGaming;
+      break;
     default:
       newSelectedAuto = kNoAuto;
       break;
@@ -445,6 +448,28 @@ std::tuple<int, int, int> _poseWithin(Pose2d target, Pose2d actual) {
 }
 
 void RobotContainer::AutoLED() {
+  // If auto switch 7 is selected, activate gaming mode
+  // if (m_currentSelectedAuto == SelectedAuto::kWeBeGaming) {
+  //   int firstPixelHue = 0.0;
+  //   // For every pixel
+  //   for (int i = 0; i < kLEDBuffLength; i++) {
+  //     // Calculate the hue - hue is easier for rainbows because the color
+  //     // shape is a circle so only one value needs to precess
+  //     const auto pixelHue = (firstPixelHue + (i * 180 / kLEDBuffLength)) % 180;
+  //     // Set the value
+  //     m_ledBuffer[i].SetHSV(pixelHue, 255, 128);
+
+  //     // Increase by to make the rainbow "move"
+  //     firstPixelHue += 3;
+  //     // Check bounds
+  //     firstPixelHue %= 180;
+  //   }
+  //   m_leds.SetData(m_ledBuffer);
+  //   return;
+  // }
+
+  // ClearLED();
+
   auto selectedAutoID = static_cast<size_t>(m_currentSelectedAuto);
   std::array<std::array<std::tuple<int, int, int>, kLEDStripLength>, 4>
       stripBuffers;

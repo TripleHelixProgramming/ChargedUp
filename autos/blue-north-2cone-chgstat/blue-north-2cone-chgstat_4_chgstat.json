@@ -45,7 +45,7 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 40,
+                    "control_interval_count": 30,
                     "heading": 3.141592653589793,
                     "heading_constrained": true,
                     "name": "go on chgstat",
@@ -55,7 +55,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 4.4210489840000005,
+                    "x": 4.217848984000001,
                     "x_constrained": true,
                     "y": 3.32,
                     "y_constrained": true

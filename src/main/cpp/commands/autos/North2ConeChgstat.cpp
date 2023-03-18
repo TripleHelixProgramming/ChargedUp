@@ -36,7 +36,6 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
-
       DriveTrajectory(drive,
                       &TrajectoryManager::GetInstance().GetTrajectory(
                           allianceSidePrefix + "north-2cone-chgstat_2_align7")),

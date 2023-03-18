@@ -75,6 +75,7 @@ class RobotContainer {
     kNorth3Cone = 3,
     kNorth3Cube = 4,
     kMid1ConeChgstat = 5,
+    kWeBeGaming = 7,
     kNumberOfAutos
   };
 

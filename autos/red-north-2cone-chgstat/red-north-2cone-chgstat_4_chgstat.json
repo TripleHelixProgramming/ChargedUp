@@ -37,7 +37,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 14.11,
+                    "x": 14.084599999999996,
                     "x_constrained": true,
                     "y": 3.32,
                     "y_constrained": true
@@ -55,7 +55,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 12.044499999999998,
+                    "x": 12.247699999999998,
                     "x_constrained": true,
                     "y": 3.32,
                     "y_constrained": true
