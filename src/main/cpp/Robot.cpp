@@ -9,6 +9,7 @@
 #include <networktables/NetworkTableInstance.h>
 
 #include "RobotContainer.hpp"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 using namespace frc;
 
@@ -19,7 +20,7 @@ Robot::Robot()
   Schedule(
       [=, this] {
         if (IsEnabled()) {
-          m_container.SuperstructurePeriodic();
+          m_container.SuperstructurePeriodic(); 
         }
       },
       1.5_ms);
@@ -37,7 +38,7 @@ void Robot::RobotInit() {
   DataLogManager::Start();
 
   // Record both DS control and joystick data
-  DriverStation::StartDataLog(DataLogManager::GetLog());
+  // DriverStation::StartDataLog(DataLogManager::GetLog());
 }
 
 void Robot::RobotPeriodic() {

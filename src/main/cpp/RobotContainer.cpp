@@ -41,12 +41,10 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
       m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, true),
       m_blueSouth2Cone(&m_drive, &m_superstructure, true),
       m_blueNorth3Cone(&m_drive, &m_superstructure, true),
-      m_blueNorth3Cube(&m_drive, &m_superstructure, true),
       m_blueMid1ConeChgstat(&m_drive, &m_superstructure, true),
       m_redNorth2ConeChgstat(&m_drive, &m_superstructure, false),
       m_redSouth2Cone(&m_drive, &m_superstructure, false),
       m_redNorth3Cone(&m_drive, &m_superstructure, false),
-      m_redNorth3Cube(&m_drive, &m_superstructure, false),
       m_redMid1ConeChgstat(&m_drive, &m_superstructure, false),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
@@ -100,11 +98,6 @@ std::optional<Command*> RobotContainer::GetAutonomousCommand() {
         return &m_blueNorth3Cone;
       else
         return &m_redNorth3Cone;
-    case SelectedAuto::kNorth3Cube:
-      if (m_isBlue)
-        return &m_blueNorth3Cube;
-      else
-        return &m_redNorth3Cube;
     case SelectedAuto::kMid1ConeChgstat:
       if (m_isBlue)
         return &m_blueMid1ConeChgstat;

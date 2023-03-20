@@ -19,7 +19,6 @@
 #include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/North3Cone.hpp"
-#include "commands/autos/North3Cube.hpp"
 #include "commands/autos/South2Cone.hpp"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
@@ -98,13 +97,11 @@ class RobotContainer {
   North2ConeChgstat m_blueNorth2ConeChgstat;
   South2Cone m_blueSouth2Cone;
   North3Cone m_blueNorth3Cone;
-  North3Cube m_blueNorth3Cube;
   Mid1ConeChgstat m_blueMid1ConeChgstat;
 
   North2ConeChgstat m_redNorth2ConeChgstat;
   South2Cone m_redSouth2Cone;
   North3Cone m_redNorth3Cone;
-  North3Cube m_redNorth3Cube;
   Mid1ConeChgstat m_redMid1ConeChgstat;
 
   void ConfigureBindings();

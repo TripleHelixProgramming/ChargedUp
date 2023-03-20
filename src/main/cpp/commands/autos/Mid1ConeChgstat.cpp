@@ -25,7 +25,7 @@ Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(1.25_s),
       DriveTrajectory(drive,
-                      &TrajectoryManager::GetInstance().GetTrajectory(
+                      TrajectoryManager::GetInstance().GetTrajectory(
                           allianceSidePrefix + "mid-1cone-chgstat_0_place6")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
@@ -33,7 +33,7 @@ Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
-              &TrajectoryManager::GetInstance().GetTrajectory(
+              TrajectoryManager::GetInstance().GetTrajectory(
                   allianceSidePrefix + "mid-1cone-chgstat_1_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),

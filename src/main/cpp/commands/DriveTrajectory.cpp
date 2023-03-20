@@ -9,7 +9,7 @@
 using namespace units;
 
 DriveTrajectory::DriveTrajectory(SwerveDrive* drive,
-                                 const Trajectory* trajectory, bool useVision)
+                                 const Trajectory trajectory, bool useVision)
     : m_drive{drive},
       m_trajectory{trajectory},
       m_useVision(useVision),
@@ -28,12 +28,12 @@ void DriveTrajectory::Initialize() {
                                              std::numbers::pi);
 
   if (!m_useVision) {
-    m_drive->ResetOdometry(m_trajectory->GetInitialPose());
+    m_drive->ResetOdometry(m_trajectory.GetInitialPose());
   }
 }
 
 void DriveTrajectory::Execute() {
-  auto state = m_trajectory->Sample(m_timestamp.Get());
+  auto state = m_trajectory.Sample(m_timestamp.Get());
   auto currentPose =
       m_useVision ? m_drive->GetPose() : m_drive->GetOdometryPose();
 
@@ -60,13 +60,13 @@ void DriveTrajectory::Execute() {
 
 void DriveTrajectory::End(bool interrupted) {
   m_drive->ResetOdometry(
-      m_trajectory->Sample(m_trajectory->GetTotalTime()).pose);
+      m_trajectory.Sample(m_trajectory.GetTotalTime()).pose);
   m_drive->Brake();
 }
 
 bool DriveTrajectory::IsFinished() {
   // m_timestamp.HasElapsed(m_trajectory->GetTotalTime());
   return m_timestamp.Get() >
-         m_trajectory->GetTotalTime() +
+         m_trajectory.GetTotalTime() +
              0_ms;  // add extra time at end to correct errors
 }

@@ -18,6 +18,6 @@ class DoubleTelemetryEntry {
 
  private:
   const std::string m_name;
-  wpi::log::DoubleLogEntry m_logEntry;
+  // wpi::log::DoubleLogEntry m_logEntry;
   TelemetryLevel m_level;
 };

@@ -43,10 +43,14 @@ void TrajectoryManager::LoadTrajectories() {
 
 Trajectory TrajectoryManager::LoadFile(const path& trajPath) {
   std::ifstream fileStream(trajPath);
-  std::stringstream buffer;
-  buffer << fileStream.rdbuf();
-  auto parsed = json::parse(buffer.str());
-  return json(parsed);
+  if (!fileStream.fail()) {
+    std::stringstream buffer;
+    buffer << fileStream.rdbuf();
+    auto parsed = json::parse(buffer.str());
+    return json(parsed);
+  } else {
+    throw std::runtime_error("Couldn't find a path");
+  }
 }
 
 TrajectoryManager::TrajectoryManager() {

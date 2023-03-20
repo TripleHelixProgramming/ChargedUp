@@ -188,11 +188,11 @@ void SwerveDrive::Periodic() {
   m_odometry.Update(  // TODO: Remove odometry
       GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-       m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   m_poseEstimator.Update(
       GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
-       m_modules[2].GetPosition(), m_modules[3].GetPosition()});
+      m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
   auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
       Pose3d(m_poseEstimator.GetEstimatedPosition()));

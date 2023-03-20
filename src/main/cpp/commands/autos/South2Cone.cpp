@@ -21,7 +21,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
       frc2::InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(0.9_s),
-      DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
+      DriveTrajectory(drive, TrajectoryManager::GetInstance().GetTrajectory(
                                  allianceSidePrefix + "south-2cone_0_place1")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
@@ -29,7 +29,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(drive,
-                          &TrajectoryManager::GetInstance().GetTrajectory(
+                          TrajectoryManager::GetInstance().GetTrajectory(
                               allianceSidePrefix + "south-2cone_1_pick1")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
@@ -37,7 +37,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
                                        }))),
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(drive,
-                          &TrajectoryManager::GetInstance().GetTrajectory(
+                          TrajectoryManager::GetInstance().GetTrajectory(
                               allianceSidePrefix + "south-2cone_2_place3")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(4.0_s),
                                        frc2::InstantCommand([superstructure]() {
