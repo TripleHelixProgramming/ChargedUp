@@ -448,7 +448,8 @@ void RobotContainer::AutoLED() {
   //   for (int i = 0; i < kLEDBuffLength; i++) {
   //     // Calculate the hue - hue is easier for rainbows because the color
   //     // shape is a circle so only one value needs to precess
-  //     const auto pixelHue = (firstPixelHue + (i * 180 / kLEDBuffLength)) % 180;
+  //     const auto pixelHue = (firstPixelHue + (i * 180 / kLEDBuffLength)) %
+  //     180;
   //     // Set the value
   //     m_ledBuffer[i].SetHSV(pixelHue, 255, 128);
 

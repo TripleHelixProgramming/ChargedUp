@@ -5,11 +5,11 @@
 #include <frc/DataLogManager.h>
 #include <frc/DriverStation.h>
 #include <frc/TimesliceRobot.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
 #include <networktables/NetworkTableInstance.h>
 
 #include "RobotContainer.hpp"
-#include "frc/smartdashboard/SmartDashboard.h"
 
 using namespace frc;
 
@@ -20,7 +20,7 @@ Robot::Robot()
   Schedule(
       [=, this] {
         if (IsEnabled()) {
-          m_container.SuperstructurePeriodic(); 
+          m_container.SuperstructurePeriodic();
         }
       },
       1.5_ms);
