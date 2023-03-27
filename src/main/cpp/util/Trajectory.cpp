@@ -31,8 +31,8 @@ Trajectory::Trajectory(std::vector<Trajectory::State> states)
     : m_states{states} {}
 
 Trajectory::State Trajectory::Sample(second_t t) const {
-  if (t < m_states[0].t) {
-    return m_states[0];
+  if (t < m_states.at(0).t) {
+    return m_states.at(0);
   }
   if (t > GetTotalTime()) {
     return m_states.back();
@@ -44,15 +44,15 @@ Trajectory::State Trajectory::Sample(second_t t) const {
 
   while (low != high) {
     int mid = (low + high) / 2;
-    if (m_states[mid].t < t) {
+    if (m_states.at(mid).t < t) {
       low = mid + 1;
     } else {
       high = mid;
     }
   }
 
-  auto previousState = m_states[low - 1];
-  auto currentState = m_states[low];
+  auto previousState = m_states.at(low - 1);
+  auto currentState = m_states.at(low);
 
   if ((currentState.t - previousState.t).value() == 0) {
     return currentState;
@@ -62,7 +62,7 @@ Trajectory::State Trajectory::Sample(second_t t) const {
 }
 
 Pose2d Trajectory::GetInitialPose() const {
-  return m_states[0].pose;
+  return m_states.at(0).pose;
 }
 
 second_t Trajectory::GetTotalTime() const {

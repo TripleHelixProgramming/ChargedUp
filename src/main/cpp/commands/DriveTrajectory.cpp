@@ -60,7 +60,7 @@ void DriveTrajectory::Execute() {
 
 void DriveTrajectory::End(bool interrupted) {
   m_drive->ResetOdometry(m_trajectory.Sample(m_trajectory.GetTotalTime()).pose);
-  m_drive->Brake();
+  // m_drive->Brake();
 }
 
 bool DriveTrajectory::IsFinished() {

@@ -29,6 +29,7 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
+#include "frc/geometry/Rotation3d.h"
 #include "subsystems/Vision.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
@@ -99,6 +100,10 @@ SwerveDrive::SwerveDrive()
 
 Pose2d SwerveDrive::GetPose() const {
   return m_poseEstimator.GetEstimatedPosition();
+}
+
+Rotation3d SwerveDrive::GetGyroRotation() {
+  return Rotation3d{degree_t{m_gyro.GetPitch()}, degree_t{m_gyro.GetRoll()}, degree_t{m_gyro.GetYaw()}};
 }
 
 Pose2d SwerveDrive::GetOdometryPose() const {
@@ -222,6 +227,10 @@ void SwerveDrive::Periodic() {
       m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
 
   m_poseEstField.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+  SmartDashboard::PutNumber("Gyro/Yaw", m_gyro.GetYaw());
+  SmartDashboard::PutNumber("Gyro/Pitch", m_gyro.GetPitch());
+  SmartDashboard::PutNumber("Gyro/Roll", m_gyro.GetRoll());
+  SmartDashboard::PutNumber("Gyro/Roll Acceleration", m_gyro.GetRawAccelY());
 }
 
 void SwerveDrive::SimulationPeriodic() {

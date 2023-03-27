@@ -22,12 +22,14 @@
 
 #include "Constants.hpp"
 #include "Robot.hpp"
+#include "commands/AutoBalance.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
 #include "commands/autos/Mid1ConeChgstat.hpp"
 #include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/North3Cone.hpp"
 #include "commands/autos/South2Cone.hpp"
+#include "commands/autos/TestAuto.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace ElectricalConstants;
@@ -46,6 +48,7 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
       m_redSouth2Cone(&m_drive, &m_superstructure, false),
       m_redNorth3Cone(&m_drive, &m_superstructure, false),
       m_redMid1ConeChgstat(&m_drive, &m_superstructure, false),
+      m_testAuto(&m_drive, &m_superstructure),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
       m_oiDriverRightYLog("OI/Driver/Right Y"),
@@ -80,32 +83,33 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
-  UpdateAutoSelected();
-  UpdateIsBlue();
-  switch (m_currentSelectedAuto) {
-    case SelectedAuto::kNorth2ConeChgstat:
-      if (m_isBlue)
-        return &m_blueNorth2ConeChgstat;
-      else
-        return &m_redNorth2ConeChgstat;
-    case SelectedAuto::kSouth2Cone:
-      if (m_isBlue)
-        return &m_blueSouth2Cone;
-      else
-        return &m_redSouth2Cone;
-    case SelectedAuto::kNorth3Cone:
-      if (m_isBlue)
-        return &m_blueNorth3Cone;
-      else
-        return &m_redNorth3Cone;
-    case SelectedAuto::kMid1ConeChgstat:
-      if (m_isBlue)
-        return &m_blueMid1ConeChgstat;
-      else
-        return &m_redMid1ConeChgstat;
-    default:
-      return std::nullopt;
-  }
+  return &m_testAuto;
+  // UpdateAutoSelected();
+  // UpdateIsBlue();
+  // switch (m_currentSelectedAuto) {
+  //   case SelectedAuto::kNorth2ConeChgstat:
+  //     if (m_isBlue)
+  //       return &m_blueNorth2ConeChgstat;
+  //     else
+  //       return &m_redNorth2ConeChgstat;
+  //   case SelectedAuto::kSouth2Cone:
+  //     if (m_isBlue)
+  //       return &m_blueSouth2Cone;
+  //     else
+  //       return &m_redSouth2Cone;
+  //   case SelectedAuto::kNorth3Cone:
+  //     if (m_isBlue)
+  //       return &m_blueNorth3Cone;
+  //     else
+  //       return &m_redNorth3Cone;
+  //   case SelectedAuto::kMid1ConeChgstat:
+  //     if (m_isBlue)
+  //       return &m_blueMid1ConeChgstat;
+  //     else
+  //       return &m_redMid1ConeChgstat;
+  //   default:
+  //     return std::nullopt;
+  // }
 }
 
 void RobotContainer::UpdateTelemetry() {
@@ -494,7 +498,7 @@ void RobotContainer::AutoLED() {
       break;
     case SelectedAuto::kMid1ConeChgstat:
       errors =
-          _poseWithin(currentPose, Mid1ConeChgstat::GetStartingPose(m_isBlue));
+          _poseWithin(currentPose, TestAuto::GetStartingPose(m_isBlue)); // TODO: don't override this, make a new switch for it
       break;
     default:
       break;

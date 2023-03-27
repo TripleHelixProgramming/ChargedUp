@@ -20,6 +20,7 @@
 #include "commands/autos/North2ConeChgstat.hpp"
 #include "commands/autos/North3Cone.hpp"
 #include "commands/autos/South2Cone.hpp"
+#include "commands/autos/TestAuto.hpp"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
@@ -103,6 +104,7 @@ class RobotContainer {
   South2Cone m_redSouth2Cone;
   North3Cone m_redNorth3Cone;
   Mid1ConeChgstat m_redMid1ConeChgstat;
+  TestAuto m_testAuto;
 
   void ConfigureBindings();
 

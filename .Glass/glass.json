@@ -7,6 +7,11 @@
       "open": false
     },
     "transitory": {
+      "LiveWindow": {
+        ".status": {
+          "open": true
+        }
+      },
       "SmartDashboard": {
         "Auto Error": {
           "open": true
@@ -32,12 +37,14 @@
             },
             "Rear Right": {
               "open": true
-            },
-            "open": true
+            }
           },
           "Pose Estimate": {
             "open": true
           },
+          "open": true
+        },
+        "Gyro": {
           "open": true
         },
         "open": true
@@ -56,11 +63,6 @@
     },
     "windows": {
       "/SmartDashboard/Pose Est Field": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Reset Encoders": {
         "window": {
           "visible": true
         }
@@ -90,6 +92,53 @@
                 1.0
               ],
               "id": "NT:/SmartDashboard/Angle"
+            }
+          ]
+        }
+      ]
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "min": -1.0
+            }
+          ],
+          "height": 574,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Gyro/Roll Acceleration"
+            }
+          ]
+        }
+      ]
+    },
+    "Plot <2>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "max": 5.0,
+              "min": -5.0
+            }
+          ],
+          "height": 507,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Gyro/Roll Rate"
             }
           ]
         }

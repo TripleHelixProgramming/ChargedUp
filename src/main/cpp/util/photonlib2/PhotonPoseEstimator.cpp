@@ -101,9 +101,9 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
     if (auto tagCorners = CalcTagCorners(id); tagCorners.has_value()) {
       auto targetCorners = target.GetDetectedCorners();
       for (size_t cornerIdx = 0; cornerIdx < 4; ++cornerIdx) {
-        imagePoints.emplace_back(targetCorners[cornerIdx].first,
-                                 targetCorners[cornerIdx].second);
-        objectPoints.emplace_back((*tagCorners)[cornerIdx]);
+        imagePoints.emplace_back(targetCorners.at(cornerIdx).first,
+                                 targetCorners.at(cornerIdx).second);
+        objectPoints.emplace_back((*tagCorners).at(cornerIdx));
       }
     }
   }
@@ -122,26 +122,6 @@ std::optional<photonlib::EstimatedRobotPose> PhotonPoseEstimator::Update() {
 
   auto begin = std::chrono::system_clock::now();
 
-  // if (objectPoints.size() <= 4) { // single target
-  //   // std::vector<cv::Mat> rvecs{2};
-  //   // std::vector<cv::Mat> tvecs{2};
-
-  //   cv::Mat rvec(3, 1, cv::DataType<double>::type);
-  //   cv::Mat tvec(3, 1, cv::DataType<double>::type);
-
-  //   cv::solvePnP(objectPoints, imagePoints, m_cameraMatrix,
-  //              m_distortionCoefficients, rvec, tvec, false,
-  //              cv::SOLVEPNP_IPPE_SQUARE);
-
-  //   SmartDashboard::PutNumber("", objectPoints[0].x);
-
-  //   // pose1 = ToPose3d(tvecs[0], rvecs[0]);
-  //   // pose2 = ToPose3d(tvecs[1], rvecs[1]); // TODO change order to match
-  //   OpenCV
-
-  //   pose1 = pose2 = ToPose3d(tvec, rvec);
-
-  // } else { // multi target
   if (objectPoints.size() >= 8) {
     cv::Mat rvec(3, 1, cv::DataType<double>::type);
     cv::Mat tvec(3, 1, cv::DataType<double>::type);
@@ -204,11 +184,7 @@ Pose3d PhotonPoseEstimator::ToPose3d(const cv::Mat& tvec, const cv::Mat& rvec) {
   rv[2] = +rvec.at<double>(1, 0);
 
   return Pose3d(Translation3d(meter_t{tv[0]}, meter_t{tv[1]}, meter_t{tv[2]}),
-                Rotation3d(
-                    // radian_t{rv[0]},
-                    // radian_t{rv[1]},
-                    // radian_t{rv[2]}
-                    rv, radian_t{rv.norm()}));
+                Rotation3d(rv, radian_t{rv.norm()}));
 }
 
 cv::Point3d PhotonPoseEstimator::TagCornerToObjectPoint(meter_t cornerX,

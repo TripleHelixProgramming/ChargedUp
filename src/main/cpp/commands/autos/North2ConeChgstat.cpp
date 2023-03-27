@@ -10,6 +10,7 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/WaitCommand.h>
 
+#include "commands/AutoBalance.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
 
@@ -36,6 +37,8 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
+      frc2::InstantCommand(
+          [superstructure]() { superstructure->SetExtenderPosition(true); }),
       DriveTrajectory(drive,
                       TrajectoryManager::GetInstance().GetTrajectory(
                           allianceSidePrefix + "north-2cone-chgstat_2_align7")),
@@ -47,15 +50,13 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
                                        }))),
-      frc2::InstantCommand(
-          [superstructure]() { superstructure->SetExtenderPosition(false); }),
-
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive,
-              TrajectoryManager::GetInstance().GetTrajectory(
-                  allianceSidePrefix + "north-2cone-chgstat_4_chgstat"),
-              false),
+          // DriveTrajectory(
+          //     drive,
+          //     TrajectoryManager::GetInstance().GetTrajectory(
+          //         allianceSidePrefix + "north-2cone-chgstat_4_chgstat"),
+          //     false),
+          AutoBalance(drive),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();

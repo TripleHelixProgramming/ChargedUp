@@ -37,6 +37,8 @@ class SwerveDrive : public frc2::SubsystemBase {
    */
   frc::Pose2d GetPose() const;
 
+  frc::Rotation3d GetGyroRotation();
+
   /**
    * Get the pose only calculated based on odometry.
    */
