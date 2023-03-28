@@ -7,7 +7,6 @@ Using an Ubuntu PC connected to the robot's network, you can analyze coredumps t
 FTP to the robot using [WPILib's tutorial on FileZilla](https://docs.wpilib.org/en/stable/docs/software/roborio-info/roborio-ftp.html),
 but replace `lvuser` with `admin` so we can overwrite system files.
 
-
 We have to edit `/usr/local/natinst/etc/init.d/lvrt-wrapper` on the RIO, but commands like `vim` and `nano` don't work on ssh since the
 OS is pretty barebones. So, we'll use FTP instead.
 
@@ -43,6 +42,8 @@ Open the driverstation and reboot the RIO:
 
 Now, any time your code crashes, the file `/var/local/natinst/log/core_dump.!home!lvuser!frcUserProgram` will be created.
 Don't let the RIO lose power after it happens or you may lose the coredump.
+
+![Core Dump Retrieval](https://github.com/TripleHelixProgramming/ChargedUp/blob/docs/coredump-info/CoreDumpImage.png?raw=true)
 
 Use FileZilla to copy that file from the RIO. It may take a minute or two to download.
 
