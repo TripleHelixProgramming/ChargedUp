@@ -11,7 +11,7 @@ but replace `lvuser` with `admin` so we can overwrite system files.
 We have to edit `/usr/local/natinst/etc/init.d/lvrt-wrapper` on the RIO, but commands like `vim` and `nano` don't work on ssh since the
 OS is pretty barebones. So, we'll use FTP instead.
 
-Download `/usr/local/natinst/etc/init.d/lvrt-wrapper` to your PC. 
+Download `/usr/local/natinst/etc/init.d/lvrt-wrapper` to your PC.
 
 Open your local copy in a text editor. The `ulimit` line needs to be changed to allow full coredumps to be saved:
 
