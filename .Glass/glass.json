@@ -3,9 +3,6 @@
     "Persistent Values": {
       "open": false
     },
-    "Retained Values": {
-      "open": false
-    },
     "Transitory Values": {
       "open": false
     },
@@ -20,12 +17,34 @@
           },
           "Translation": {
             "open": true
-          }
+          },
+          "open": true
         },
         "Drive": {
+          "Modules": {
+            "Front Left": {
+              "open": true
+            },
+            "Front Right": {
+              "open": true
+            },
+            "Rear Left": {
+              "open": true
+            },
+            "Rear Right": {
+              "open": true
+            },
+            "open": true
+          },
           "Pose Estimate": {
             "open": true
           },
+          "open": true
+        },
+        "Pose Est 1": {
+          "open": true
+        },
+        "Pose Est 2": {
           "open": true
         },
         "open": true
@@ -81,7 +100,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

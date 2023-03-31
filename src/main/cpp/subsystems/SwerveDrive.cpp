@@ -29,6 +29,7 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
+#include "frc/DriverStation.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
 
@@ -191,33 +192,65 @@ void SwerveDrive::Periodic() {
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
-  auto visionResult = m_camera.GetResult();
-  if (visionResult.has_value()) {
-    Pose3d pose = visionResult.value().estimatedPose.TransformBy(VisionConstants::kRobotToRightCam.Inverse());
-    // Pose3d pose = visionResult.value().estimatedPose;
-    SmartDashboard::PutNumber("/Cadmia/Translation/X", pose.X().value());
-    SmartDashboard::PutNumber("/Cadmia/Translation/Y", pose.Y().value());
-    SmartDashboard::PutNumber("/Cadmia/Translation/Z", pose.Z().value());
-    SmartDashboard::PutNumber("/Cadmia/Rotation/X", pose.Rotation().X().value());
-    SmartDashboard::PutNumber("/Cadmia/Rotation/Y", pose.Rotation().Y().value());
-    SmartDashboard::PutNumber("/Cadmia/Rotation/Z", pose.Rotation().Z().value());
-    second_t timestamp = visionResult.value().timestamp;
-    if (timestamp != m_lastAppliedTs) {
-      m_poseEstimator.AddVisionMeasurement(pose.ToPose2d(), timestamp);
-      m_lastAppliedTs = timestamp;
-      m_visionPoseEstimateXLog.Append(pose.X().value()); 
-      m_visionPoseEstimateYLog.Append(pose.Y().value());
-      m_visionPoseEstimateThetaLog.Append(pose.ToPose2d().Rotation().Radians().value());
-      m_visionEstField.SetRobotPose(pose.ToPose2d());
+  auto leftVisionResult = m_leftCamera.GetResult();
+  if (leftVisionResult.has_value()) {
+    Pose3d pose = leftVisionResult.value().estimatedPose.TransformBy(VisionConstants::kRobotToLeftCam.Inverse());
+    auto flatpose = pose.ToPose2d();
+    SmartDashboard::PutNumber("/CadmiaLeft/Translation/X", pose.X().value());
+    SmartDashboard::PutNumber("/CadmiaLeft/Translation/Y", pose.Y().value());
+    SmartDashboard::PutNumber("/CadmiaLeft/Translation/Z", pose.Z().value());
+    SmartDashboard::PutNumber("/CadmiaLeft/Rotation/X", pose.Rotation().X().value());
+    SmartDashboard::PutNumber("/CadmiaLeft/Rotation/Y", pose.Rotation().Y().value());
+    SmartDashboard::PutNumber("/CadmiaLeft/Rotation/Z", pose.Rotation().Z().value());
+    second_t timestamp = leftVisionResult.value().timestamp;
+    if (timestamp != m_lastLeftAppliedTs) {
+      m_poseEstimator.AddVisionMeasurement(flatpose, timestamp);
+      m_lastLeftAppliedTs = timestamp;
+      m_visionEstField.SetRobotPose(flatpose);
     }
-
-    m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());
-    m_poseEstimateYLog.Append(m_poseEstimator.GetEstimatedPosition().Y().value());
-    m_poseEstimateThetaLog.Append(
-        m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
-
-    m_poseEstField.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
   }
+
+  auto rightVisionResult = m_rightCamera.GetResult();
+  if (rightVisionResult.has_value()) {
+    Pose3d pose = rightVisionResult.value().estimatedPose.TransformBy(VisionConstants::kRobotToRightCam.Inverse());
+    auto flatpose = pose.ToPose2d();
+    SmartDashboard::PutNumber("/CadmiaRight/Translation/X", pose.X().value());
+    SmartDashboard::PutNumber("/CadmiaRight/Translation/Y", pose.Y().value());
+    SmartDashboard::PutNumber("/CadmiaRight/Translation/Z", pose.Z().value());
+    SmartDashboard::PutNumber("/CadmiaRight/Rotation/X", pose.Rotation().X().value());
+    SmartDashboard::PutNumber("/CadmiaRight/Rotation/Y", pose.Rotation().Y().value());
+    SmartDashboard::PutNumber("/CadmiaRight/Rotation/Z", pose.Rotation().Z().value());
+    second_t timestamp = rightVisionResult.value().timestamp;
+    if (timestamp != m_lastRightAppliedTs) {
+      m_poseEstimator.AddVisionMeasurement(flatpose, timestamp);
+      m_lastRightAppliedTs = timestamp;
+      m_visionEstField.SetRobotPose(flatpose);
+    }
+  }
+
+  auto rearVisionResult = m_rearCamera.GetResult();
+  if (rearVisionResult.has_value()) {
+    Pose3d pose = rearVisionResult.value().estimatedPose.TransformBy(VisionConstants::kRobotToBackCam.Inverse());
+    auto flatpose = pose.ToPose2d();
+    SmartDashboard::PutNumber("/CadmiaRear/Translation/X", pose.X().value());
+    SmartDashboard::PutNumber("/CadmiaRear/Translation/Y", pose.Y().value());
+    SmartDashboard::PutNumber("/CadmiaRear/Translation/Z", pose.Z().value());
+    SmartDashboard::PutNumber("/CadmiaRear/Rotation/X", pose.Rotation().X().value());
+    SmartDashboard::PutNumber("/CadmiaRear/Rotation/Y", pose.Rotation().Y().value());
+    SmartDashboard::PutNumber("/CadmiaRear/Rotation/Z", pose.Rotation().Z().value());
+    second_t timestamp = rearVisionResult.value().timestamp;
+    if (timestamp != m_lastRearAppliedTs) {
+      m_poseEstimator.AddVisionMeasurement(flatpose, timestamp);
+      m_lastRearAppliedTs = timestamp;
+      m_visionEstField.SetRobotPose(flatpose);
+    }
+  }
+
+  SmartDashboard::PutNumber("/Drive/Pose Estimate/X", m_poseEstimator.GetEstimatedPosition().X().value());
+  SmartDashboard::PutNumber("/Drive/Pose Estimate/Y", m_poseEstimator.GetEstimatedPosition().Y().value());
+  SmartDashboard::PutNumber("/Drive/Pose Estimate/Theta", m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
+
+  m_poseEstField.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
 }
 
 void SwerveDrive::SimulationPeriodic() {

@@ -101,7 +101,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   double lastAngle;
 
   /// The camera facing forwar
-  cadmia::CadmiaCamera m_camera{"video0"};
+  cadmia::CadmiaCamera m_rightCamera{"video0"};
+  cadmia::CadmiaCamera m_rearCamera{"video1"};
+  cadmia::CadmiaCamera m_leftCamera{"video2"};
 
   /// Swerve drive kinematics
   frc::SwerveDriveKinematics<4> m_driveKinematics;
@@ -113,7 +115,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   /// The position of the robot based on odometry and vision measurements
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
-  units::second_t m_lastAppliedTs{};
+  units::second_t m_lastLeftAppliedTs{};
+  units::second_t m_lastRightAppliedTs{};
+  units::second_t m_lastRearAppliedTs{};
 
   // Logging
   DoubleTelemetryEntry m_poseEstimateXLog;
