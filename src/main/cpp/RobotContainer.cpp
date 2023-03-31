@@ -346,15 +346,15 @@ void RobotContainer::ApplyLEDSingleStrip(
   bool stripDirection = kStripDirections.at(stripID);
   for (size_t stripBuffIdx = 0; stripBuffIdx < kStripLen; stripBuffIdx++) {
     if (stripDirection) {  // if goes down
-      m_ledBuffer.at(firstLEDIdx + stripBuffIdx).SetRGB(
-          std::get<0>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)),
-          std::get<1>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)),
-          std::get<2>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)));
+      m_ledBuffer.at(firstLEDIdx + stripBuffIdx)
+          .SetRGB(std::get<0>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)),
+                  std::get<1>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)),
+                  std::get<2>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)));
     } else {  // if goes up
-      m_ledBuffer.at(firstLEDIdx + stripBuffIdx).SetRGB(
-          std::get<0>(stripBuffer.at(stripBuffIdx)),
-          std::get<1>(stripBuffer.at(stripBuffIdx)),
-          std::get<2>(stripBuffer.at(stripBuffIdx)));
+      m_ledBuffer.at(firstLEDIdx + stripBuffIdx)
+          .SetRGB(std::get<0>(stripBuffer.at(stripBuffIdx)),
+                  std::get<1>(stripBuffer.at(stripBuffIdx)),
+                  std::get<2>(stripBuffer.at(stripBuffIdx)));
     }
   }
 }
