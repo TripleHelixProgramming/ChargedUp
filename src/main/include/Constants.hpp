@@ -2,12 +2,11 @@
 
 #pragma once
 
-#include <vector>
 #include <array>
 #include <numbers>
+#include <vector>
 
 #include <frc/RobotBase.h>
-#include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Rotation3d.h>
 #include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
