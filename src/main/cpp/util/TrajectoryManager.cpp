@@ -7,6 +7,7 @@
 #include <iostream>
 #include <map>
 #include <sstream>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -28,29 +29,32 @@ const Trajectory& TrajectoryManager::GetTrajectory(
   return m_trajectories.at(name);
 }
 
-void TrajectoryManager::LoadTrajectories() {
+std::map<std::string, Trajectory> TrajectoryManager::LoadTrajectories() {
+  std::map<std::string, Trajectory> trajectories;
   path trajDir =
       path(frc::filesystem::GetDeployDirectory()) / path("trajectories");
   for (const auto& file : directory_iterator(trajDir)) {
-    std::string filepath = file.path().string();
-    std::string filename = filepath.substr(filepath.find_last_of('/') + 1);
+    auto filename = file.path().filename().string();
     if (filename.ends_with(".json")) {
       std::string trajname = filename.substr(0, filename.length() - 5);
-      m_trajectories.insert({trajname, LoadFile(file.path())});
+      trajectories.insert({trajname, LoadFile(file.path())});
     }
   }
+  return trajectories;
 }
 
 Trajectory TrajectoryManager::LoadFile(const path& trajPath) {
   std::ifstream fileStream(trajPath);
-  std::stringstream buffer;
-  buffer << fileStream.rdbuf();
-  auto parsed = json::parse(buffer.str());
-  return json(parsed);
+  if (!fileStream.fail()) {
+    std::stringstream buffer;
+    buffer << fileStream.rdbuf();
+    auto parsed = json::parse(buffer.str());
+    return json(parsed);
+  } else {
+    throw std::runtime_error("Error loading trajectory file.");
+  }
 }
 
-TrajectoryManager::TrajectoryManager() {
-  LoadTrajectories();
-}
+TrajectoryManager::TrajectoryManager() : m_trajectories{LoadTrajectories()} {}
 
 TrajectoryManager TrajectoryManager::s_instance{};
