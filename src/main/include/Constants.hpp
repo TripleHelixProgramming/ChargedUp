@@ -40,16 +40,15 @@ constexpr int kIntakeRightWheelPort = 17;
 constexpr int kArmEncoderPort = 0;
 
 /// Maps rotary switch positions/indices to digital input pins on the RIO
-const std::vector<int> kAutoSwitchPorts = {11, 12, 13, 18, 19, 20, 21, 22};
+constexpr std::array<int, 8> kAutoSwitchPorts = {11, 12, 13, 18, 19, 20, 21, 22};
 constexpr int kRedBlueSwitchPort = 10;
 
 /// LED strip
 constexpr int kLEDStripLength = 22;
 constexpr int kAltLEDStripLength = 18;
 constexpr int kLEDBuffLength = kLEDStripLength * 4 + kAltLEDStripLength;
-const std::vector<bool> kStripDirections = {
+constexpr std::array<bool, 4> kStripDirections = {
     false, true, true, true};  // false means up, true means down
-
 }  // namespace ElectricalConstants
 
 namespace DriveConstants {
