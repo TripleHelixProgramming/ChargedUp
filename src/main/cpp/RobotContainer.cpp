@@ -288,7 +288,7 @@ std::optional<size_t> RobotContainer::GetAutoSwitchIndex() const {
   for (size_t switchIndex = 0;
        switchIndex < ElectricalConstants::kAutoSwitchPorts.size();
        switchIndex++) {
-    if (!m_autoSwitch[switchIndex].Get()) {
+    if (!m_autoSwitch.at(switchIndex).Get()) {
       SmartDashboard::PutNumber("Auto Rotary Switch Index", switchIndex);
       return switchIndex;
     }
@@ -343,25 +343,25 @@ void RobotContainer::ApplyLEDSingleStrip(
 
   static constexpr auto kStripLen = kLEDStripLength;
   size_t firstLEDIdx = stripID * kStripLen;
-  bool stripDirection = kStripDirections[stripID];
+  bool stripDirection = kStripDirections.at(stripID);
   for (size_t stripBuffIdx = 0; stripBuffIdx < kStripLen; stripBuffIdx++) {
     if (stripDirection) {  // if goes down
-      m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
-          std::get<0>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
-          std::get<1>(stripBuffer[kStripLen - 1 - stripBuffIdx]),
-          std::get<2>(stripBuffer[kStripLen - 1 - stripBuffIdx]));
+      m_ledBuffer.at(firstLEDIdx + stripBuffIdx)
+          .SetRGB(std::get<0>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)),
+                  std::get<1>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)),
+                  std::get<2>(stripBuffer.at(kStripLen - 1 - stripBuffIdx)));
     } else {  // if goes up
-      m_ledBuffer[firstLEDIdx + stripBuffIdx].SetRGB(
-          std::get<0>(stripBuffer[stripBuffIdx]),
-          std::get<1>(stripBuffer[stripBuffIdx]),
-          std::get<2>(stripBuffer[stripBuffIdx]));
+      m_ledBuffer.at(firstLEDIdx + stripBuffIdx)
+          .SetRGB(std::get<0>(stripBuffer.at(stripBuffIdx)),
+                  std::get<1>(stripBuffer.at(stripBuffIdx)),
+                  std::get<2>(stripBuffer.at(stripBuffIdx)));
     }
   }
 }
 
 void RobotContainer::ClearLED() {
   for (size_t clrIdx = 0; clrIdx < kLEDBuffLength; clrIdx++) {
-    m_ledBuffer[clrIdx].SetRGB(0, 0, 0);
+    m_ledBuffer.at(clrIdx).SetRGB(0, 0, 0);
   }
 }
 
@@ -376,28 +376,28 @@ void RobotContainer::GamePieceLED() {
       yellow = !yellow;
     }
     if (yellow) {
-      m_ledBuffer[i].SetRGB(255, 100, 0);
+      m_ledBuffer.at(i).SetRGB(255, 100, 0);
     } else {
-      m_ledBuffer[i].SetRGB(150, 0, 255);
+      m_ledBuffer.at(i).SetRGB(150, 0, 255);
     }
   }
 }
 
 void RobotContainer::Yellow() {
   for (int i = 0; i < kLEDBuffLength; i++) {
-    m_ledBuffer[i].SetRGB(255, 100, 0);
+    m_ledBuffer.at(i).SetRGB(255, 100, 0);
   }
 }
 
 void RobotContainer::Green() {
   for (int i = 0; i < kLEDBuffLength; i++) {
-    m_ledBuffer[i].SetRGB(0, 255, 0);
+    m_ledBuffer.at(i).SetRGB(0, 255, 0);
   }
 }
 
 void RobotContainer::Purple() {
   for (int i = 0; i < kLEDBuffLength; i++) {
-    m_ledBuffer[i].SetRGB(150, 0, 255);
+    m_ledBuffer.at(i).SetRGB(150, 0, 255);
   }
 }
 
@@ -408,7 +408,7 @@ void RobotContainer::SnakeBOI() {
   } else {
     m_previousSnakeIndex++;
   }
-  m_ledBuffer[m_previousSnakeIndex].SetRGB(255, 0, 0);
+  m_ledBuffer.at(m_previousSnakeIndex).SetRGB(255, 0, 0);
 }
 
 template <typename TE, typename TT>
@@ -453,7 +453,7 @@ void RobotContainer::AutoLED() {
        selectedAutoIdx++) {
     for (size_t chunkIdx = 0; chunkIdx < 2; chunkIdx++) {
       for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
-        stripBuffers[stripIdx][selectedAutoIdx * 3 + chunkIdx] = {
+        stripBuffers.at(stripIdx).at(selectedAutoIdx * 3 + chunkIdx) = {
             m_isBlue ? 0 : 255, 0, m_isBlue ? 255 : 0};
       }
     }
@@ -485,7 +485,7 @@ void RobotContainer::AutoLED() {
     for (size_t goodPoseIdx = kLEDStripLength - 1;
          goodPoseIdx >= kLEDStripLength - 1 - 4; goodPoseIdx--) {
       for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
-        stripBuffers[stripIdx][goodPoseIdx] = {0, 255, 0};
+        stripBuffers.at(stripIdx).at(goodPoseIdx) = {0, 255, 0};
       }
     }
   }
@@ -493,58 +493,58 @@ void RobotContainer::AutoLED() {
     for (size_t goodPoseIdx = kLEDStripLength - 1 - 3;
          goodPoseIdx >= kLEDStripLength - 1 - 3 - 2; goodPoseIdx--) {
       for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
-        stripBuffers[stripIdx][goodPoseIdx] = {0, 255, 0};
+        stripBuffers.at(stripIdx).at(goodPoseIdx) = {0, 255, 0};
       }
     }
   }
   if (std::get<0>(errors) == +1) {  // if too far right
     for (size_t badPoseIdx = kLEDStripLength - 1;
          badPoseIdx >= kLEDStripLength - 1 - 2; badPoseIdx--) {
-      stripBuffers[1][badPoseIdx] = {255, 0, 0};
-      stripBuffers[2][badPoseIdx] = {255, 0, 0};
+      stripBuffers.at(1).at(badPoseIdx) = {255, 0, 0};
+      stripBuffers.at(2).at(badPoseIdx) = {255, 0, 0};
     }
   }
   if (std::get<0>(errors) == -1) {  // if too far left
     for (size_t badPoseIdx = kLEDStripLength - 1;
          badPoseIdx >= kLEDStripLength - 1 - 2; badPoseIdx--) {
-      stripBuffers[0][badPoseIdx] = {255, 0, 0};
-      stripBuffers[3][badPoseIdx] = {255, 0, 0};
+      stripBuffers.at(0).at(badPoseIdx) = {255, 0, 0};
+      stripBuffers.at(3).at(badPoseIdx) = {255, 0, 0};
     }
   }
   if (std::get<1>(errors) == +1) {  // if too far up
     for (size_t badPoseIdx = kLEDStripLength - 1;
          badPoseIdx >= kLEDStripLength - 1 - 2; badPoseIdx--) {
-      stripBuffers[2][badPoseIdx] = {255, 0, 0};
-      stripBuffers[3][badPoseIdx] = {255, 0, 0};
+      stripBuffers.at(2).at(badPoseIdx) = {255, 0, 0};
+      stripBuffers.at(3).at(badPoseIdx) = {255, 0, 0};
     }
   }
   if (std::get<1>(errors) == -1) {  // if too far down
     for (size_t badPoseIdx = kLEDStripLength - 1;
          badPoseIdx >= kLEDStripLength - 1 - 2; badPoseIdx--) {
-      stripBuffers[0][badPoseIdx] = {255, 0, 0};
-      stripBuffers[1][badPoseIdx] = {255, 0, 0};
+      stripBuffers.at(0).at(badPoseIdx) = {255, 0, 0};
+      stripBuffers.at(1).at(badPoseIdx) = {255, 0, 0};
     }
   }
   if (std::get<2>(errors) == +1) {  // if too far counterclockwise
     for (size_t badPoseIdx = kLEDStripLength - 1 - 3;
          badPoseIdx >= kLEDStripLength - 1 - 3 - 2; badPoseIdx--) {
-      stripBuffers[0][badPoseIdx] = {255, 0, 0};
-      stripBuffers[1][badPoseIdx] = {255, 0, 0};
-      stripBuffers[2][badPoseIdx] = {255, 0, 0};
-      stripBuffers[3][badPoseIdx] = {255, 0, 0};
+      stripBuffers.at(0).at(badPoseIdx) = {255, 0, 0};
+      stripBuffers.at(1).at(badPoseIdx) = {255, 0, 0};
+      stripBuffers.at(2).at(badPoseIdx) = {255, 0, 0};
+      stripBuffers.at(3).at(badPoseIdx) = {255, 0, 0};
     }
   }
   if (std::get<2>(errors) == -1) {  // if too far clockwise
     for (size_t badPoseIdx = kLEDStripLength - 1 - 3;
          badPoseIdx >= kLEDStripLength - 1 - 3 - 2; badPoseIdx--) {
-      stripBuffers[0][badPoseIdx] = {0, 0, 255};
-      stripBuffers[1][badPoseIdx] = {0, 0, 255};
-      stripBuffers[2][badPoseIdx] = {0, 0, 255};
-      stripBuffers[3][badPoseIdx] = {0, 0, 255};
+      stripBuffers.at(0).at(badPoseIdx) = {0, 0, 255};
+      stripBuffers.at(1).at(badPoseIdx) = {0, 0, 255};
+      stripBuffers.at(2).at(badPoseIdx) = {0, 0, 255};
+      stripBuffers.at(3).at(badPoseIdx) = {0, 0, 255};
     }
   }
   // apply to actual LED strips
   for (size_t stripIdx = 0; stripIdx < 4; stripIdx++) {
-    ApplyLEDSingleStrip(stripBuffers[stripIdx], stripIdx);
+    ApplyLEDSingleStrip(stripBuffers.at(stripIdx), stripIdx);
   }
 }

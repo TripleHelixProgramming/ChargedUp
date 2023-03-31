@@ -6,7 +6,6 @@
 #include <numbers>
 
 #include <frc/RobotBase.h>
-#include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Rotation3d.h>
 #include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
@@ -48,9 +47,8 @@ constexpr int kRedBlueSwitchPort = 10;
 constexpr int kLEDStripLength = 22;
 constexpr int kAltLEDStripLength = 18;
 constexpr int kLEDBuffLength = kLEDStripLength * 4 + kAltLEDStripLength;
-constexpr bool kStripDirections[] = {false, true, true,
-                                     true};  // false means up, true means down
-
+constexpr std::array<bool, 4> kStripDirections = {
+    false, true, true, true};  // false means up, true means down
 }  // namespace ElectricalConstants
 
 namespace DriveConstants {
