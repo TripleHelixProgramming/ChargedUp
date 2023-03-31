@@ -4,7 +4,6 @@
 
 #include <array>
 #include <numbers>
-#include <vector>
 
 #include <frc/RobotBase.h>
 #include <frc/geometry/Rotation3d.h>
