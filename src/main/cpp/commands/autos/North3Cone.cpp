@@ -21,7 +21,7 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(0.9_s),
       DriveTrajectory(drive,
-                      &TrajectoryManager::GetInstance().GetTrajectory(
+                      &TrajectoryManager::GetTrajectory(
                           allianceSidePrefix + "north-2cone-chgstat_0_place9")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
@@ -29,19 +29,19 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
-              drive, &TrajectoryManager::GetInstance().GetTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(
                          allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
 
-      DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
+      DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
                                  allianceSidePrefix + "north-3cone_2_align7")),
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetInstance().GetTrajectory(
-                              allianceSidePrefix + "north-3cone_3_place7")),
+          DriveTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                       "north-3cone_3_place7")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.1_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
@@ -51,7 +51,7 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
 
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(drive,
-                          &TrajectoryManager::GetInstance().GetTrajectory(
+                          &TrajectoryManager::GetTrajectory(
                               allianceSidePrefix + "north-3cone_4_pick3"),
                           false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
@@ -62,12 +62,10 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
 
 frc::Pose2d North3Cone::GetStartingPose(bool isBlue) {
   static auto blueStartingPose =
-      TrajectoryManager::GetInstance()
-          .GetTrajectory("blue-north-2cone-chgstat_0_place9")
+      TrajectoryManager::GetTrajectory("blue-north-2cone-chgstat_0_place9")
           .GetInitialPose();
   static auto redStartingPose =
-      TrajectoryManager::GetInstance()
-          .GetTrajectory("red-north-2cone-chgstat_0_place9")
+      TrajectoryManager::GetTrajectory("red-north-2cone-chgstat_0_place9")
           .GetInitialPose();
   if (isBlue)
     return blueStartingPose;

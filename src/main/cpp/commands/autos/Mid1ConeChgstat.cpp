@@ -25,7 +25,7 @@ Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
           [superstructure]() { superstructure->PositionHigh(); }),
       frc2::WaitCommand(1.25_s),
       DriveTrajectory(drive,
-                      &TrajectoryManager::GetInstance().GetTrajectory(
+                      &TrajectoryManager::GetTrajectory(
                           allianceSidePrefix + "mid-1cone-chgstat_0_place6")),
       frc2::InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
@@ -33,8 +33,8 @@ Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
-              &TrajectoryManager::GetInstance().GetTrajectory(
-                  allianceSidePrefix + "mid-1cone-chgstat_1_chgstat"),
+              &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                "mid-1cone-chgstat_1_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
                                        frc2::InstantCommand([superstructure]() {
@@ -49,12 +49,10 @@ Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
 
 frc::Pose2d Mid1ConeChgstat::GetStartingPose(bool isBlue) {
   static auto blueStartingPose =
-      TrajectoryManager::GetInstance()
-          .GetTrajectory("blue-mid-1cone-chgstat_0_place6")
+      TrajectoryManager::GetTrajectory("blue-mid-1cone-chgstat_0_place6")
           .GetInitialPose();
   static auto redStartingPose =
-      TrajectoryManager::GetInstance()
-          .GetTrajectory("red-mid-1cone-chgstat_0_place6")
+      TrajectoryManager::GetTrajectory("red-mid-1cone-chgstat_0_place6")
           .GetInitialPose();
   if (isBlue)
     return blueStartingPose;
