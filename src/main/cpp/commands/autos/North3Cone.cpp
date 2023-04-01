@@ -39,9 +39,9 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
       DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
                                  allianceSidePrefix + "north-3cone_2_align7")),
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetTrajectory(
-                              allianceSidePrefix + "north-3cone_3_place7")),
+          DriveTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                       "north-3cone_3_place7")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.1_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();

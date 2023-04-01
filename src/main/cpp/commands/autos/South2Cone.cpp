@@ -28,17 +28,17 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
       frc2::WaitCommand(0.1_s),
 
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetTrajectory(
-                              allianceSidePrefix + "south-2cone_1_pick1")),
+          DriveTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                       "south-2cone_1_pick1")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
       frc2::ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetTrajectory(
-                              allianceSidePrefix + "south-2cone_2_place3")),
+          DriveTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                       "south-2cone_2_place3")),
           frc2::SequentialCommandGroup(frc2::WaitCommand(4.0_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
@@ -63,10 +63,12 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
 }
 
 frc::Pose2d South2Cone::GetStartingPose(bool isBlue) {
-  static auto blueStartingPose = TrajectoryManager::GetTrajectory("blue-south-2cone_0_place1")
-                                     .GetInitialPose();
-  static auto redStartingPose = TrajectoryManager::GetTrajectory("red-south-2cone_0_place1")
-                                    .GetInitialPose();
+  static auto blueStartingPose =
+      TrajectoryManager::GetTrajectory("blue-south-2cone_0_place1")
+          .GetInitialPose();
+  static auto redStartingPose =
+      TrajectoryManager::GetTrajectory("red-south-2cone_0_place1")
+          .GetInitialPose();
   if (isBlue)
     return blueStartingPose;
   else

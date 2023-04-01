@@ -33,8 +33,8 @@ Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
       frc2::ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
-              &TrajectoryManager::GetTrajectory(
-                  allianceSidePrefix + "mid-1cone-chgstat_1_chgstat"),
+              &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                "mid-1cone-chgstat_1_chgstat"),
               false),
           frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
                                        frc2::InstantCommand([superstructure]() {

@@ -20,8 +20,7 @@ using std::filesystem::directory_iterator;
 using std::filesystem::path;
 using wpi::json;
 
-const Trajectory& TrajectoryManager::GetTrajectory(
-    const std::string& name) {
+const Trajectory& TrajectoryManager::GetTrajectory(const std::string& name) {
   return s_instance.m_trajectories.at(name);
 }
 

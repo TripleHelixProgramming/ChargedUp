@@ -51,9 +51,9 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
                                  allianceSidePrefix + "north-3cube_3_place7")),
       InstantCommand([superstructure]() { superstructure->Outtake(); }),
       ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetTrajectory(
-                              allianceSidePrefix + "north-3cube_4_chgst")),
+          DriveTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                       "north-3cube_4_chgst")),
           SequentialCommandGroup(WaitCommand(0.75_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->PositionLow();
@@ -64,8 +64,7 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
 
 frc::Pose2d North3Cube::GetStartingPose(bool isBlue) {
   static auto blueStartingPose =
-      TrajectoryManager::GetTrajectory(
-        "blue-north-2cone-chgstat_0_place9")
+      TrajectoryManager::GetTrajectory("blue-north-2cone-chgstat_0_place9")
           .GetInitialPose();
   static auto redStartingPose =
       TrajectoryManager::GetTrajectory("red-north-2cone-chgstat_0_place9")
