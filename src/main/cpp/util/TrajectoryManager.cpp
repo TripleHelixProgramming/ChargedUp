@@ -32,7 +32,7 @@ std::map<std::string, Trajectory> TrajectoryManager::LoadTrajectories() {
     auto filename = file.path().filename().string();
     if (filename.ends_with(".json")) {
       std::string trajname = filename.substr(0, filename.length() - 5);
-      trajectories.insert({trajname, LoadFile(file.path())});
+      trajectories.insert({std::move(trajname), LoadFile(file.path())});
     }
   }
   return trajectories;
