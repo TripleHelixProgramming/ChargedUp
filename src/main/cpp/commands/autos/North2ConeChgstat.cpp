@@ -24,7 +24,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       // frc2::WaitCommand(0.9_s),
       DriveTrajectory(
           drive, &trajManager->GetTrajectory(allianceSidePrefix +
-                                             "north-2cone-chgstat_0_place9"), false)
+                                             "north-2cone-chgstat_0_place9"))
       // frc2::InstantCommand(
       //     [superstructure]() { superstructure->SetExtenderPosition(false); }),
       // frc2::WaitCommand(0.1_s),

@@ -101,9 +101,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   double lastAngle;
 
   /// The camera facing forwar
-  cadmia::CadmiaCamera m_rightCamera{"video0"};
+  cadmia::CadmiaCamera m_rightCamera{"video2"};
   cadmia::CadmiaCamera m_rearCamera{"video1"};
-  cadmia::CadmiaCamera m_leftCamera{"video2"};
+  cadmia::CadmiaCamera m_leftCamera{"video0"};
 
   /// Swerve drive kinematics
   frc::SwerveDriveKinematics<4> m_driveKinematics;
