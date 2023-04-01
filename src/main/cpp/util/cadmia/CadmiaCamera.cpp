@@ -18,7 +18,7 @@ using namespace units;
 CadmiaCamera::CadmiaCamera(std::string_view name) : m_name{name} {
   auto inst = nt::NetworkTableInstance::GetDefault();
   auto table = inst.GetTable("cadmia");
-  m_subscriber = table->GetDoubleArrayTopic(m_name).Subscribe({});
+  m_subscriber = table->GetDoubleArrayTopic(m_name).Subscribe({}, {.periodic = 0.01, .sendAll = true});
 }
 
 std::optional<photonlib::EstimatedRobotPose> CadmiaCamera::GetResult() {
