@@ -20,8 +20,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                                      bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
-      InstantCommand(
-          [superstructure]() { superstructure->PositionHigh(); }),
+      InstantCommand([superstructure]() { superstructure->PositionHigh(); }),
       WaitCommand(0.9_s),
       DriveTrajectory(drive,
                       &TrajectoryManager::GetTrajectory(
@@ -35,9 +34,9 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
               drive, &TrajectoryManager::GetTrajectory(
                          allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
           SequentialCommandGroup(WaitCommand(0.25_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->IntakeCone();
-                                       }))),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->IntakeCone();
+                                 }))),
 
       DriveTrajectory(drive,
                       &TrajectoryManager::GetTrajectory(
@@ -47,9 +46,9 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
               drive, &TrajectoryManager::GetTrajectory(
                          allianceSidePrefix + "north-2cone-chgstat_3_place7")),
           SequentialCommandGroup(WaitCommand(0.1_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->PositionHigh();
-                                       }))),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->PositionHigh();
+                                 }))),
       InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
@@ -60,9 +59,9 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                   allianceSidePrefix + "north-2cone-chgstat_4_chgstat"),
               false),
           SequentialCommandGroup(WaitCommand(0.25_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->IntakeCone();
-                                       }))),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->IntakeCone();
+                                 }))),
       RunCommand(
           [drive]() {
             drive->Drive(frc::ChassisSpeeds{0_mps, 0_mps, 0.01_rad_per_s});

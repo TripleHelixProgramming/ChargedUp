@@ -19,8 +19,7 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
                        bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
-      InstantCommand(
-          [superstructure]() { superstructure->PositionHigh(); }),
+      InstantCommand([superstructure]() { superstructure->PositionHigh(); }),
       WaitCommand(0.9_s),
       DriveTrajectory(drive,
                       &TrajectoryManager::GetTrajectory(
@@ -34,9 +33,9 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
               drive, &TrajectoryManager::GetTrajectory(
                          allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
           SequentialCommandGroup(WaitCommand(0.25_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->IntakeCone();
-                                       }))),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->IntakeCone();
+                                 }))),
 
       DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
                                  allianceSidePrefix + "north-3cone_2_align7")),
@@ -45,9 +44,9 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                        "north-3cone_3_place7")),
           SequentialCommandGroup(WaitCommand(0.1_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->PositionHigh();
-                                       }))),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->PositionHigh();
+                                 }))),
       InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
@@ -57,9 +56,9 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
                               allianceSidePrefix + "north-3cone_4_pick3"),
                           false),
           SequentialCommandGroup(WaitCommand(0.5_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->IntakeCone();
-                                       }))));
+                                 InstantCommand([superstructure]() {
+                                   superstructure->IntakeCone();
+                                 }))));
 }
 
 frc::Pose2d North3Cone::GetStartingPose(bool isBlue) {

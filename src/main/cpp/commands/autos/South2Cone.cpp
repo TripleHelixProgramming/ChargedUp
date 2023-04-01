@@ -20,8 +20,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
                        bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
-      InstantCommand(
-          [superstructure]() { superstructure->PositionHigh(); }),
+      InstantCommand([superstructure]() { superstructure->PositionHigh(); }),
       WaitCommand(0.9_s),
       DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
                                  allianceSidePrefix + "south-2cone_0_place1")),
@@ -34,20 +33,19 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                        "south-2cone_1_pick1")),
           SequentialCommandGroup(WaitCommand(0.25_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->IntakeCone();
-                                       }))),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->IntakeCone();
+                                 }))),
       ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                        "south-2cone_2_place3")),
           SequentialCommandGroup(WaitCommand(4.0_s),
-                                       InstantCommand([superstructure]() {
-                                         superstructure->PositionHigh();
-                                       }))),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->PositionHigh();
+                                 }))),
       InstantCommand(
-          [superstructure]() { superstructure->SetExtenderPosition(false); })
-  );
+          [superstructure]() { superstructure->SetExtenderPosition(false); }));
 }
 
 frc::Pose2d South2Cone::GetStartingPose(bool isBlue) {
