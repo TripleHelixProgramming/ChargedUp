@@ -247,7 +247,6 @@ void RobotContainer::RunDisabled() {
       break;
   }
   SmartDashboard::PutBoolean("Vision/Using Left Cam", useLeftCam);
-  m_drive.SetVisionUsingLeftCam(useLeftCam);
 }
 
 void RobotContainer::SuperstructurePeriodic() {

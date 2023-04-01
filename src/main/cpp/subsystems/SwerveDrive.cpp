@@ -29,7 +29,6 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
-#include "subsystems/Vision.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
 
@@ -194,34 +193,51 @@ void SwerveDrive::Periodic() {
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
-  auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
-      Pose3d(m_poseEstimator.GetEstimatedPosition()));
-  if (visionEstimatedPose.has_value() &&
-      visionEstimatedPose->timestamp != m_lastAppliedTs) {
-    m_poseEstimator.AddVisionMeasurement(
-        visionEstimatedPose->estimatedPose.ToPose2d(),
-        visionEstimatedPose->timestamp);
-    m_lastAppliedTs = visionEstimatedPose->timestamp;
-    m_visionPoseEstimateXLog.Append(
-        visionEstimatedPose->estimatedPose.X()
-            .value());  // TODO: add timestamp to this (additional param)
-    m_visionPoseEstimateYLog.Append(
-        visionEstimatedPose->estimatedPose.Y().value());
-    m_visionPoseEstimateThetaLog.Append(
-        visionEstimatedPose->estimatedPose.ToPose2d()
-            .Rotation()
-            .Radians()
-            .value());
-    m_visionEstField.SetRobotPose(
-        visionEstimatedPose->estimatedPose.ToPose2d());
+  auto leftVisionResult = m_leftCamera.GetResult();
+  if (leftVisionResult.has_value()) {
+    auto result = leftVisionResult.value();
+    Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToLeftCam.Inverse()).ToPose2d();
+    second_t timestamp = result.timestamp;
+    if (timestamp > m_lastLeftAppliedTs) {
+      SmartDashboard::PutNumber("Vision/Left latency", (Timer::GetFPGATimestamp() - timestamp).value());
+      m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+      m_lastLeftAppliedTs = timestamp;
+      m_visionEstField.SetRobotPose(pose);
+    }
   }
 
-  m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());
-  m_poseEstimateYLog.Append(m_poseEstimator.GetEstimatedPosition().Y().value());
-  m_poseEstimateThetaLog.Append(
-      m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
+  auto rightVisionResult = m_rightCamera.GetResult();
+  if (rightVisionResult.has_value()) {
+    auto result = rightVisionResult.value();
+    Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToRightCam.Inverse()).ToPose2d();
+    second_t timestamp = result.timestamp;
+    if (timestamp > m_lastRightAppliedTs) {
+      SmartDashboard::PutNumber("Vision/Right latency", (Timer::GetFPGATimestamp() - timestamp).value());
+      m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+      m_lastRightAppliedTs = timestamp;
+      m_visionEstField.SetRobotPose(pose);
+    }
+  }
 
-  m_poseEstField.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+  auto rearVisionResult = m_rearCamera.GetResult();
+  if (rearVisionResult.has_value()) {
+    auto result = rearVisionResult.value();
+    Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToBackCam.Inverse()).ToPose2d();
+    second_t timestamp = result.timestamp;
+    if (timestamp > m_lastRearAppliedTs) {
+      m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+      m_lastRearAppliedTs = timestamp;
+      m_visionEstField.SetRobotPose(pose);
+    }
+  }
+
+  auto pose = m_poseEstimator.GetEstimatedPosition();
+
+  SmartDashboard::PutNumber("Drive/Pose Estimate/X", pose.X().value());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/Y", pose.Y().value());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/Theta", pose.Rotation().Radians().value());
+
+  m_poseEstField.SetRobotPose(pose);
 }
 
 void SwerveDrive::SimulationPeriodic() {
@@ -249,10 +265,6 @@ void SwerveDrive::SyncAbsoluteEncoders() {
   for (auto& _module : m_modules) {
     _module.SyncEncoders();
   }
-}
-
-void SwerveDrive::SetVisionUsingLeftCam(bool usingLeftCam) {
-  m_vision.SetUsingLeftCam(usingLeftCam);
 }
 
 wpi::array<SwerveModulePosition, 4> SwerveDrive::GetModulePositions() const {
