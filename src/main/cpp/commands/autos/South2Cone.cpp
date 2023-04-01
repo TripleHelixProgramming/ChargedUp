@@ -37,7 +37,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
                                        InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
-      frc2::ParallelDeadlineGroup(
+      ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                        "south-2cone_2_place3")),
