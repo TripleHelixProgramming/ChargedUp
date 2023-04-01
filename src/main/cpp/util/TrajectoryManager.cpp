@@ -31,8 +31,8 @@ std::map<std::string, Trajectory> TrajectoryManager::LoadTrajectories() {
   for (const auto& file : directory_iterator(trajDir)) {
     auto filename = file.path().filename().string();
     if (filename.ends_with(".json")) {
-      std::string trajname = filename.substr(0, filename.length() - 5);
-      trajectories.insert({trajname, LoadFile(file.path())});
+      auto trajname = filename.substr(0, filename.length() - 5);
+      trajectories.insert({std::move(trajname), LoadFile(file.path())});
     }
   }
   return trajectories;
