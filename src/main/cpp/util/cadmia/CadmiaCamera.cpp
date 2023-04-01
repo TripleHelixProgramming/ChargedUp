@@ -4,6 +4,7 @@
 
 #include <photonlib/PhotonTrackedTarget.h>
 #include <optional>
+#include <iostream>
 
 #include "frc/geometry/Pose3d.h"
 #include "frc/geometry/Rotation3d.h"
@@ -25,19 +26,19 @@ std::optional<photonlib::EstimatedRobotPose> CadmiaCamera::GetResult() {
   // [x, y, z, roll, pitch, yaw]
   auto result = m_subscriber.GetAtomic();
   auto time = result.time;
-  auto compressedResults = result.value;
 
-  if (result.value.size() == 6) {
+  if (time != 0.0) {
+    auto compressedResults = result.value;
     return photonlib::EstimatedRobotPose{
       frc::Pose3d(frc::Translation3d(
-                    meter_t{compressedResults[0]},
-                    meter_t{compressedResults[1]},
-                    meter_t{compressedResults[2]}),
+                    meter_t{compressedResults.at(0)},
+                    meter_t{compressedResults.at(1)},
+                    meter_t{compressedResults.at(2)}),
                   frc::Rotation3d(
-                    radian_t{compressedResults[3]},
-                    radian_t{compressedResults[4]},
-                    radian_t{compressedResults[5]})),
-      second_t{(double)time / 1.0E6}
+                    radian_t{compressedResults.at(3)},
+                    radian_t{compressedResults.at(4)},
+                    radian_t{compressedResults.at(5)})),
+      second_t{time / 1.0E6}
     };
   } else {
     return std::nullopt;

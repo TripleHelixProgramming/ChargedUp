@@ -115,9 +115,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   /// The position of the robot based on odometry and vision measurements
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
-  units::second_t m_lastLeftAppliedTs{};
-  units::second_t m_lastRightAppliedTs{};
-  units::second_t m_lastRearAppliedTs{};
+  units::second_t m_lastLeftAppliedTs{0};
+  units::second_t m_lastRightAppliedTs{0};
+  units::second_t m_lastRearAppliedTs{0};
 
   // Logging
   DoubleTelemetryEntry m_poseEstimateXLog;

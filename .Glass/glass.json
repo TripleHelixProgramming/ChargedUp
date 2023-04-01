@@ -3,9 +3,6 @@
     "Persistent Values": {
       "open": false
     },
-    "Transitory Values": {
-      "open": false
-    },
     "transitory": {
       "SmartDashboard": {
         "Auto Error": {
@@ -45,6 +42,9 @@
           "open": true
         },
         "Pose Est 2": {
+          "open": true
+        },
+        "Vision Est Field": {
           "open": true
         },
         "open": true
