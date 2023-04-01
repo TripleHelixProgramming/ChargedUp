@@ -48,6 +48,8 @@ Superstructure::Superstructure()
   SmartDashboard::PutNumber("Initial pos", pos);
 
   SmartDashboard::PutNumber("pot", 0.0);
+
+  SyncEncoders();
 }
 
 void Superstructure::SyncEncoders() {
