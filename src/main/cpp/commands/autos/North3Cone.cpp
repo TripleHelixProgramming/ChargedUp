@@ -54,7 +54,7 @@ North3Cone::North3Cone(SwerveDrive* drive, Superstructure* superstructure,
                           &TrajectoryManager::GetInstance().GetTrajectory(
                               allianceSidePrefix + "north-3cone_4_pick3"),
                           false),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
+          frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
                                        frc2::InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))));
