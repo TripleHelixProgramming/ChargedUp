@@ -46,7 +46,7 @@ Attempting to write to a null pointer in AutonomousInit() will cause the code to
 int* myptr = nullptr;
 *myptr = 3;
 ```
-  
+
 ## Retrieving the coredump
 
 Now, any time your code crashes, the file `/var/local/natinst/log/core_dump.!home!lvuser!frcUserProgram` will be created.
