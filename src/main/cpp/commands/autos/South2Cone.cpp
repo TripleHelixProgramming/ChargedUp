@@ -14,51 +14,39 @@
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
 
+using namespace frc2;
+
 South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
                        bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
-      frc2::InstantCommand(
+      InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
-      frc2::WaitCommand(0.9_s),
+      WaitCommand(0.9_s),
       DriveTrajectory(drive, &TrajectoryManager::GetInstance().GetTrajectory(
                                  allianceSidePrefix + "south-2cone_0_place1")),
-      frc2::InstantCommand(
+      InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
-      frc2::WaitCommand(0.1_s),
+      WaitCommand(0.1_s),
 
-      frc2::ParallelDeadlineGroup(
+      ParallelDeadlineGroup(
           DriveTrajectory(drive,
                           &TrajectoryManager::GetInstance().GetTrajectory(
                               allianceSidePrefix + "south-2cone_1_pick1")),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
-                                       frc2::InstantCommand([superstructure]() {
+          SequentialCommandGroup(WaitCommand(0.25_s),
+                                       InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
-      frc2::ParallelDeadlineGroup(
+      ParallelDeadlineGroup(
           DriveTrajectory(drive,
                           &TrajectoryManager::GetInstance().GetTrajectory(
                               allianceSidePrefix + "south-2cone_2_place3")),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(4.0_s),
-                                       frc2::InstantCommand([superstructure]() {
+          SequentialCommandGroup(WaitCommand(4.0_s),
+                                       InstantCommand([superstructure]() {
                                          superstructure->PositionHigh();
                                        }))),
-      frc2::InstantCommand(
+      InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); })
-
-      // frc2::ParallelDeadlineGroup(
-      //     DriveTrajectory(drive,
-      //                     &TrajectoryManager::GetInstance().GetTrajectory(allianceSidePrefix
-      //                     + "north-2cone-chgstat_4_chgstat"), false),
-      //     frc2::SequentialCommandGroup(frc2::WaitCommand(0.25_s),
-      //                                  frc2::InstantCommand([superstructure]()
-      //                                  {
-      //                                    superstructure->IntakeCone();
-      //                                  }))),
-      // frc2::RunCommand(
-      //     [drive]() { drive->Drive(frc::ChassisSpeeds{0_mps, 0_mps,
-      //     0.01_rad_per_s}); }, {drive}
-      // )
   );
 }
 

@@ -17,30 +17,32 @@
 #include "util/Trajectory.hpp"
 #include "util/TrajectoryManager.hpp"
 
+using namespace frc2;
+
 Mid1ConeChgstat::Mid1ConeChgstat(SwerveDrive* drive,
                                  Superstructure* superstructure, bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
-      frc2::InstantCommand(
+      InstantCommand(
           [superstructure]() { superstructure->PositionHigh(); }),
-      frc2::WaitCommand(1.25_s),
+      WaitCommand(1.25_s),
       DriveTrajectory(drive,
                       &TrajectoryManager::GetInstance().GetTrajectory(
                           allianceSidePrefix + "mid-1cone-chgstat_0_place6")),
-      frc2::InstantCommand(
+      InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
-      frc2::ParallelDeadlineGroup(
+      ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
               &TrajectoryManager::GetInstance().GetTrajectory(
                   allianceSidePrefix + "mid-1cone-chgstat_1_chgstat"),
               false),
-          frc2::SequentialCommandGroup(frc2::WaitCommand(0.5_s),
-                                       frc2::InstantCommand([superstructure]() {
+          SequentialCommandGroup(WaitCommand(0.5_s),
+                                       InstantCommand([superstructure]() {
                                          superstructure->IntakeCone();
                                        }))),
-      frc2::RunCommand(
+      RunCommand(
           [drive]() {
             drive->Drive(frc::ChassisSpeeds{0_mps, 0_mps, 0.01_rad_per_s});
           },
