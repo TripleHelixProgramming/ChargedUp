@@ -197,7 +197,7 @@ void SwerveDrive::Periodic() {
   if (leftVisionResult.has_value()) {
     auto result = leftVisionResult.value();
     Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToLeftCam.Inverse()).ToPose2d();
-    second_t timestamp = result.timestamp;
+    second_t timestamp = result.timestamp - second_t{0.5};
     if (timestamp > m_lastLeftAppliedTs) {
       SmartDashboard::PutNumber("Vision/Left latency", (Timer::GetFPGATimestamp() - timestamp).value());
       m_poseEstimator.AddVisionMeasurement(pose, timestamp);
@@ -210,7 +210,7 @@ void SwerveDrive::Periodic() {
   if (rightVisionResult.has_value()) {
     auto result = rightVisionResult.value();
     Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToRightCam.Inverse()).ToPose2d();
-    second_t timestamp = result.timestamp;
+    second_t timestamp = result.timestamp - second_t{0.5};
     if (timestamp > m_lastRightAppliedTs) {
       SmartDashboard::PutNumber("Vision/Right latency", (Timer::GetFPGATimestamp() - timestamp).value());
       m_poseEstimator.AddVisionMeasurement(pose, timestamp);
@@ -223,7 +223,7 @@ void SwerveDrive::Periodic() {
   if (rearVisionResult.has_value()) {
     auto result = rearVisionResult.value();
     Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToBackCam.Inverse()).ToPose2d();
-    second_t timestamp = result.timestamp;
+    second_t timestamp = result.timestamp - second_t{0.5};
     if (timestamp > m_lastRearAppliedTs) {
       m_poseEstimator.AddVisionMeasurement(pose, timestamp);
       m_lastRearAppliedTs = timestamp;
