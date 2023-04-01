@@ -38,6 +38,15 @@ Open the driverstation and reboot the RIO:
 
 ![Driverstation UI](https://mililanirobotics.gitbooks.io/frc-electrical-bible/content/Driver_Station/diagnostics.png)
 
+## Creating a test coredump by intentionally crashing code
+
+Attempting to write to a null pointer in AutonomousInit() will cause the code to crash upon autonomous init. This will result in a core being dumped.
+
+```cpp
+int* myptr = nullptr;
+*myptr = 3;
+```
+  
 ## Retrieving the coredump
 
 Now, any time your code crashes, the file `/var/local/natinst/log/core_dump.!home!lvuser!frcUserProgram` will be created.
