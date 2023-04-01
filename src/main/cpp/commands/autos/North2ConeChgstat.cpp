@@ -24,7 +24,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
           [superstructure]() { superstructure->PositionHigh(); }),
       WaitCommand(0.9_s),
       DriveTrajectory(drive,
-                      &TrajectoryManager::GetInstance().GetTrajectory(
+                      &TrajectoryManager::GetTrajectory(
                           allianceSidePrefix + "north-2cone-chgstat_0_place9")),
       InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
@@ -32,7 +32,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
 
       ParallelDeadlineGroup(
           DriveTrajectory(
-              drive, &TrajectoryManager::GetInstance().GetTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(
                          allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
           SequentialCommandGroup(WaitCommand(0.25_s),
                                        InstantCommand([superstructure]() {
@@ -40,11 +40,11 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
                                        }))),
 
       DriveTrajectory(drive,
-                      &TrajectoryManager::GetInstance().GetTrajectory(
+                      &TrajectoryManager::GetTrajectory(
                           allianceSidePrefix + "north-2cone-chgstat_2_align7")),
       ParallelDeadlineGroup(
           DriveTrajectory(
-              drive, &TrajectoryManager::GetInstance().GetTrajectory(
+              drive, &TrajectoryManager::GetTrajectory(
                          allianceSidePrefix + "north-2cone-chgstat_3_place7")),
           SequentialCommandGroup(WaitCommand(0.1_s),
                                        InstantCommand([superstructure]() {
@@ -56,7 +56,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       ParallelDeadlineGroup(
           DriveTrajectory(
               drive,
-              &TrajectoryManager::GetInstance().GetTrajectory(
+              &TrajectoryManager::GetTrajectory(
                   allianceSidePrefix + "north-2cone-chgstat_4_chgstat"),
               false),
           SequentialCommandGroup(WaitCommand(0.25_s),
@@ -72,12 +72,10 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
 
 frc::Pose2d North2ConeChgstat::GetStartingPose(bool isBlue) {
   static auto blueStartingPose =
-      TrajectoryManager::GetInstance()
-          .GetTrajectory("blue-north-2cone-chgstat_0_place9")
+      TrajectoryManager::GetTrajectory("blue-north-2cone-chgstat_0_place9")
           .GetInitialPose();
   static auto redStartingPose =
-      TrajectoryManager::GetInstance()
-          .GetTrajectory("red-north-2cone-chgstat_0_place9")
+      TrajectoryManager::GetTrajectory("red-north-2cone-chgstat_0_place9")
           .GetInitialPose();
   if (isBlue)
     return blueStartingPose;

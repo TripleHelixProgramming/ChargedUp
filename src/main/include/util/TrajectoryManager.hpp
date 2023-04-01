@@ -14,12 +14,10 @@
 
 class TrajectoryManager {
  public:
-  static TrajectoryManager& GetInstance();
-
-  const Trajectory& GetTrajectory(const std::string& name) const;
+  static const Trajectory& GetTrajectory(const std::string& name);
 
  private:
-  void LoadTrajectories();
+  std::map<std::string, Trajectory> LoadTrajectories();
 
   static Trajectory LoadFile(const std::filesystem::path& trajPath);
 
