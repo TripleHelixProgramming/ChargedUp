@@ -38,7 +38,7 @@ std::optional<photonlib::EstimatedRobotPose> CadmiaCamera::GetResult() {
                     radian_t{compressedResults.at(3)},
                     radian_t{compressedResults.at(4)},
                     radian_t{compressedResults.at(5)})),
-      second_t{time / 1.0E6}
+      second_t{compressedResults.at(6)}
     };
   } else {
     return std::nullopt;

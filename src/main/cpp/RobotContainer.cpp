@@ -79,6 +79,10 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
   m_leds.Start();
 
   m_lastGamePieceIntake.Start();
+
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable("time");
+  m_publisher = table->GetDoubleTopic("timer").Publish({.periodic = 0.01, .sendAll = true});
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {

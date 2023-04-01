@@ -21,6 +21,7 @@
 #include "commands/autos/North3Cone.hpp"
 #include "commands/autos/North3Cube.hpp"
 #include "commands/autos/South2Cone.hpp"
+#include "networktables/DoubleTopic.h"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
@@ -51,6 +52,8 @@ class RobotContainer {
   void UpdateIsBlue();
 
   void LED();
+
+  nt::DoublePublisher m_publisher;
 
  private:
   std::function<bool(void)> m_isDisabled;
