@@ -70,12 +70,12 @@ double Superstructure::RawString() {
 
 void Superstructure::PositionHigh() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 33_deg : 30_deg);
+  SetArmPosition(m_expanded ? 32.00_deg : 26.00_deg);
 }
 
 void Superstructure::PositionMedium() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 25.0_deg : 23.0_deg);
+  SetArmPosition(m_expanded ? 23.25_deg : 14.00_deg);
 }
 
 void Superstructure::PositionLow() {
@@ -96,13 +96,13 @@ void Superstructure::IntakeCube() {
 }
 
 void Superstructure::IntakeCubeStation() {
-  SetArmPosition(25.25_deg);
+  SetArmPosition(24.8_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
 }
 
 void Superstructure::IntakeConeStation() {
-  SetArmPosition(25.25_deg);
+  SetArmPosition(24.8_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(true);
 }
