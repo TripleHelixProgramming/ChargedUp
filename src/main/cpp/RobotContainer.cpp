@@ -169,12 +169,12 @@ void RobotContainer::ConfigureBindings() {
   m_operator.Y().OnFalse((InstantCommand([this]() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
-  m_operator.A().WhileTrue(
-      (RunCommand([this]() { m_superstructure.PositionMedium(); })).ToPtr());
+  m_operator.A().OnTrue(
+      (InstantCommand([this]() { m_superstructure.PositionMedium(); })).ToPtr());
   m_operator.A().OnFalse(
       (InstantCommand([this]() { m_superstructure.PositionLow(); })).ToPtr());
-  m_operator.B().WhileTrue(
-      (RunCommand([this]() { m_superstructure.PositionHigh(); })).ToPtr());
+  m_operator.B().OnTrue(
+      (InstantCommand([this]() { m_superstructure.PositionHigh(); })).ToPtr());
   m_operator.B().OnFalse(
       (InstantCommand([this]() { m_superstructure.PositionLow(); })).ToPtr());
   m_operator.LeftBumper().OnTrue((InstantCommand([this]() {
@@ -267,6 +267,7 @@ void RobotContainer::LED() {
   }
 
   if (m_isDisabled()) {
+    ClearLED();
     // ApplyLEDSingleStrip({std::tuple{255, 255, 255}, {100, 0, 0}, {100, 0, 0},
     // {100, 0, 0}});
     AutoLED();

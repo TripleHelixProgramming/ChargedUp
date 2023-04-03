@@ -11,6 +11,7 @@
 #include "frc/geometry/Translation3d.h"
 #include "photonlib/PhotonPoseEstimator.h"
 #include "units/angle.h"
+#include "units/time.h"
 
 using namespace cadmia;
 using namespace units;
@@ -38,7 +39,7 @@ std::optional<photonlib::EstimatedRobotPose> CadmiaCamera::GetResult() {
                     radian_t{compressedResults.at(3)},
                     radian_t{compressedResults.at(4)},
                     radian_t{compressedResults.at(5)})),
-      second_t{compressedResults.at(6)}
+      microsecond_t{(double) time}
     };
   } else {
     return std::nullopt;

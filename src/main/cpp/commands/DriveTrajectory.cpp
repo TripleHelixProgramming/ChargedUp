@@ -9,10 +9,11 @@
 using namespace units;
 
 DriveTrajectory::DriveTrajectory(SwerveDrive* drive,
-                                 const Trajectory* trajectory, bool useVision)
+                                 const Trajectory* trajectory, bool useVision, bool seedInitialPose)
     : m_drive{drive},
       m_trajectory{trajectory},
       m_useVision(useVision),
+      m_seedInitialPose(seedInitialPose),
       m_timestampLog("Trajectory/Timestamp"),
       m_xSetpointLog("Trajectory/X Setpoint"),
       m_ySetpointLog("Trajectory/Y Setpoint"),
@@ -27,7 +28,7 @@ void DriveTrajectory::Initialize() {
   m_controllerRotation.EnableContinuousInput(-std::numbers::pi,
                                              std::numbers::pi);
 
-  if (!m_useVision) {
+  if (!m_useVision || m_seedInitialPose) {
     m_drive->ResetOdometry(m_trajectory->GetInitialPose());
   }
 }

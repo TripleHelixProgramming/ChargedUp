@@ -3,6 +3,7 @@
 #include "subsystems/SwerveDrive.hpp"
 
 #include <cmath>
+#include <string>
 
 #include <Eigen/src/Core/Matrix.h>
 #include <frc/RobotBase.h>
@@ -29,7 +30,10 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
+#include "frc/estimator/SwerveDrivePoseEstimator.h"
+#include "frc/geometry/Transform3d.h"
 #include "networktables/NetworkTable.h"
+#include "photonlib/PhotonPoseEstimator.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
 
@@ -41,6 +45,8 @@ using namespace units;
 using namespace DriveConstants;
 using namespace ElectricalConstants;
 using namespace ModuleConstants;
+
+using namespace std::string_literals;
 
 SwerveDrive::SwerveDrive()
     : m_modules{{SwerveModule(kDriveMotorPorts[0], kSteerMotorPorts[0],
@@ -184,6 +190,40 @@ void SwerveDrive::Brake() {
   }
 }
 
+bool IsVisionPoseValid(const Pose3d& pose) {
+  bool isOk = units::math::abs(pose.Z()) < 20_cm && pose.X() > 12.5_m;
+  static int countOk = 0;
+  static int countTot = 0;
+  if (isOk) {
+    ++countOk;
+  }
+  ++countTot;
+  SmartDashboard::PutNumber("Vision/Percentage Valid",
+                            (double) countOk / countTot);
+  return isOk;
+}
+
+void ApplyVisionResult(std::optional<photonlib::EstimatedRobotPose> result,
+                       const Transform3d& transform,
+                       second_t& lastTs, 
+                       Field2d& visionField,
+                       SwerveDrivePoseEstimator<4>& poseEstimator,
+                       const char* cameraName) {
+  if (result.has_value()) {
+    Pose3d pose = result->estimatedPose.TransformBy(transform.Inverse());
+    if (!IsVisionPoseValid(pose)) {
+      return;
+    }
+    second_t timestamp = result->timestamp;
+    if (timestamp > lastTs) {
+      SmartDashboard::PutNumber("Vision/"s + cameraName + " latency", (Timer::GetFPGATimestamp() - timestamp).value());
+      poseEstimator.AddVisionMeasurement(pose.ToPose2d(), timestamp);
+      lastTs = timestamp;
+      visionField.SetRobotPose(pose.ToPose2d());
+    }
+  }
+}
+
 void SwerveDrive::Periodic() {
   m_odometry.Update(  // TODO: Remove odometry
       GetGyroHeading(),
@@ -195,45 +235,9 @@ void SwerveDrive::Periodic() {
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
-  auto offset = second_t{0.0};
-
-  auto leftVisionResult = m_leftCamera.GetResult();
-  if (leftVisionResult.has_value()) {
-    auto result = leftVisionResult.value();
-    Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToLeftCam.Inverse()).ToPose2d();
-    second_t timestamp = result.timestamp - offset;
-    if (timestamp > m_lastLeftAppliedTs) {
-      SmartDashboard::PutNumber("Vision/Left latency", (Timer::GetFPGATimestamp() - timestamp).value());
-      m_poseEstimator.AddVisionMeasurement(pose, timestamp);
-      m_lastLeftAppliedTs = timestamp;
-      m_visionEstField.SetRobotPose(pose);
-    }
-  }
-
-  auto rightVisionResult = m_rightCamera.GetResult();
-  if (rightVisionResult.has_value()) {
-    auto result = rightVisionResult.value();
-    Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToRightCam.Inverse()).ToPose2d();
-    second_t timestamp = result.timestamp - offset;
-    if (timestamp > m_lastRightAppliedTs) {
-      SmartDashboard::PutNumber("Vision/Right latency", (Timer::GetFPGATimestamp() - timestamp).value());
-      m_poseEstimator.AddVisionMeasurement(pose, timestamp);
-      m_lastRightAppliedTs = timestamp;
-      m_visionEstField.SetRobotPose(pose);
-    }
-  }
-
-  auto rearVisionResult = m_rearCamera.GetResult();
-  if (rearVisionResult.has_value()) {
-    auto result = rearVisionResult.value();
-    Pose2d pose = result.estimatedPose.TransformBy(VisionConstants::kRobotToBackCam.Inverse()).ToPose2d();
-    second_t timestamp = result.timestamp - offset;
-    if (timestamp > m_lastRearAppliedTs) {
-      m_poseEstimator.AddVisionMeasurement(pose, timestamp);
-      m_lastRearAppliedTs = timestamp;
-      m_visionEstField.SetRobotPose(pose);
-    }
-  }
+  ApplyVisionResult(m_leftCamera.GetResult(), VisionConstants::kRobotToLeftCam, m_lastLeftAppliedTs, m_visionEstField, m_poseEstimator, "Left");
+  ApplyVisionResult(m_rightCamera.GetResult(), VisionConstants::kRobotToRightCam, m_lastRightAppliedTs, m_visionEstField, m_poseEstimator, "Right");
+  ApplyVisionResult(m_rearCamera.GetResult(), VisionConstants::kRobotToBackCam, m_lastRearAppliedTs, m_visionEstField, m_poseEstimator, "Rear");
 
   auto pose = m_poseEstimator.GetEstimatedPosition();
 

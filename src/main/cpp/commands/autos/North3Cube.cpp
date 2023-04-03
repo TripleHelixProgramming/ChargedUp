@@ -26,7 +26,7 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
               WaitCommand(0.0_s),
               DriveTrajectory(drive,
                               &TrajectoryManager::GetTrajectory(
-                                  allianceSidePrefix + "north-3cube_0_pick4"))),
+                                  allianceSidePrefix + "north-3cube_0_pick4"), true, true)),
           SequentialCommandGroup(InstantCommand([superstructure]() {
                                    superstructure->SetIntakeWheelSpeed(-0.5);
                                  }),
@@ -49,15 +49,15 @@ North3Cube::North3Cube(SwerveDrive* drive, Superstructure* superstructure,
               }))),
       DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
                                  allianceSidePrefix + "north-3cube_3_place7")),
-      InstantCommand([superstructure]() { superstructure->Outtake(); }),
-      ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                       "north-3cube_4_chgst")),
-          SequentialCommandGroup(WaitCommand(0.75_s),
-                                 InstantCommand([superstructure]() {
-                                   superstructure->PositionLow();
-                                 })))
+      InstantCommand([superstructure]() { superstructure->Outtake(); })
+      // ParallelDeadlineGroup(
+      //     DriveTrajectory(
+      //         drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
+      //                                                  "north-3cube_4_chgst"), false),
+      //     SequentialCommandGroup(WaitCommand(0.75_s),
+      //                            InstantCommand([superstructure]() {
+      //                              superstructure->PositionLow();
+      //                            })))
 
   );
 }

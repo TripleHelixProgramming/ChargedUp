@@ -32,7 +32,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                        "south-2cone_1_pick1")),
-          SequentialCommandGroup(WaitCommand(0.25_s),
+          SequentialCommandGroup(WaitCommand(0.5_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->IntakeCone();
                                  }))),
@@ -40,7 +40,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                        "south-2cone_2_place3")),
-          SequentialCommandGroup(WaitCommand(4.0_s),
+          SequentialCommandGroup(WaitCommand(3.8_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->PositionHigh();
                                  }))),
