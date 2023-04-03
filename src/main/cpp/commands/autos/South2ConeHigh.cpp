@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "commands/autos/South2Cone.hpp"
+#include "commands/autos/South2ConeHigh.hpp"
 
 #include <string>
 
@@ -16,14 +16,14 @@
 
 using namespace frc2;
 
-South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
+South2ConeHigh::South2ConeHigh(SwerveDrive* drive, Superstructure* superstructure,
                        bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       InstantCommand([superstructure]() { superstructure->PositionHigh(); }),
       WaitCommand(0.9_s),
       DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
-                                 allianceSidePrefix + "south-2cone_0_place1")),
+                                 allianceSidePrefix + "south-2cone-high_0_place1")),
       InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       WaitCommand(0.1_s),
@@ -31,7 +31,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
       ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                       "south-2cone_1_pick1")),
+                                                       "south-2cone-high_1_pick1")),
           SequentialCommandGroup(WaitCommand(0.5_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->IntakeCone();
@@ -39,7 +39,7 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
       ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                       "south-2cone_2_place3")),
+                                                       "south-2cone-high_2_place3")),
           SequentialCommandGroup(WaitCommand(3.8_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->PositionHigh();
@@ -48,12 +48,12 @@ South2Cone::South2Cone(SwerveDrive* drive, Superstructure* superstructure,
           [superstructure]() { superstructure->SetExtenderPosition(false); }));
 }
 
-frc::Pose2d South2Cone::GetStartingPose(bool isBlue) {
+frc::Pose2d South2ConeHigh::GetStartingPose(bool isBlue) {
   static auto blueStartingPose =
-      TrajectoryManager::GetTrajectory("blue-south-2cone_0_place1")
+      TrajectoryManager::GetTrajectory("blue-south-2cone-high_0_place1")
           .GetInitialPose();
   static auto redStartingPose =
-      TrajectoryManager::GetTrajectory("red-south-2cone_0_place1")
+      TrajectoryManager::GetTrajectory("red-south-2cone-high_0_place1")
           .GetInitialPose();
   if (isBlue)
     return blueStartingPose;

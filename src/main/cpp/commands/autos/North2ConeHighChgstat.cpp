@@ -1,6 +1,6 @@
 // Copyright (c) FRC Team 2363. All Rights Reserved.
 
-#include "commands/autos/North2ConeChgstat.hpp"
+#include "commands/autos/North2ConeHighChgstat.hpp"
 
 #include <string>
 
@@ -15,7 +15,7 @@
 
 using namespace frc2;
 
-North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
+North2ConeHighChgstat::North2ConeHighChgstat(SwerveDrive* drive,
                                      Superstructure* superstructure,
                                      bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
@@ -24,7 +24,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       WaitCommand(0.9_s),
       DriveTrajectory(drive,
                       &TrajectoryManager::GetTrajectory(
-                          allianceSidePrefix + "north-2cone-chgstat_0_place9")),
+                          allianceSidePrefix + "north-2cone-high-chgstat_0_place9")),
       InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       WaitCommand(0.1_s),
@@ -32,7 +32,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
       ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(
-                         allianceSidePrefix + "north-2cone-chgstat_1_pick4")),
+                         allianceSidePrefix + "north-2cone-high-chgstat_1_pick4")),
           SequentialCommandGroup(WaitCommand(0.25_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->IntakeCone();
@@ -40,11 +40,11 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
 
       DriveTrajectory(drive,
                       &TrajectoryManager::GetTrajectory(
-                          allianceSidePrefix + "north-2cone-chgstat_2_align7")),
+                          allianceSidePrefix + "north-2cone-high-chgstat_2_align6")),
       ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(
-                         allianceSidePrefix + "north-2cone-chgstat_3_place7")),
+                         allianceSidePrefix + "north-2cone-high-chgstat_3_place6")),
           SequentialCommandGroup(WaitCommand(0.1_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->PositionHigh();
@@ -56,7 +56,7 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
           DriveTrajectory(
               drive,
               &TrajectoryManager::GetTrajectory(
-                  allianceSidePrefix + "north-2cone-chgstat_4_chgstat"),
+                  allianceSidePrefix + "north-2cone-high-chgstat_4_chgstat"),
               false),
           SequentialCommandGroup(WaitCommand(0.25_s),
                                  InstantCommand([superstructure]() {
@@ -69,12 +69,12 @@ North2ConeChgstat::North2ConeChgstat(SwerveDrive* drive,
           {drive}));
 }
 
-frc::Pose2d North2ConeChgstat::GetStartingPose(bool isBlue) {
+frc::Pose2d North2ConeHighChgstat::GetStartingPose(bool isBlue) {
   static auto blueStartingPose =
-      TrajectoryManager::GetTrajectory("blue-north-2cone-chgstat_0_place9")
+      TrajectoryManager::GetTrajectory("blue-north-2cone-high-chgstat_0_place9")
           .GetInitialPose();
   static auto redStartingPose =
-      TrajectoryManager::GetTrajectory("red-north-2cone-chgstat_0_place9")
+      TrajectoryManager::GetTrajectory("red-north-2cone-high-chgstat_0_place9")
           .GetInitialPose();
   if (isBlue)
     return blueStartingPose;

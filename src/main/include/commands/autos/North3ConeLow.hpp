@@ -9,10 +9,10 @@
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
 
-class North3Cube
-    : public frc2::CommandHelper<frc2::SequentialCommandGroup, North3Cube> {
+class North3ConeLow
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup, North3ConeLow> {
  public:
-  North3Cube(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
+  North3ConeLow(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
 
   static frc::Pose2d GetStartingPose(bool isBlue);
 };

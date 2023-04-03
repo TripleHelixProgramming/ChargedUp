@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <frc/geometry/Pose2d.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
@@ -10,11 +9,12 @@
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
 
-class Mid1ConeChgstat : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                                   Mid1ConeChgstat> {
+class North2ConeHighChgstat
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup,
+                                 North2ConeHighChgstat> {
  public:
-  Mid1ConeChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                  bool isBlue);
+  North2ConeHighChgstat(SwerveDrive* drive, Superstructure* superstructure,
+                    bool isBlue);
 
   static frc::Pose2d GetStartingPose(bool isBlue);
 };

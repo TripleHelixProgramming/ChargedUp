@@ -9,10 +9,10 @@
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"
 
-class South2Cone
-    : public frc2::CommandHelper<frc2::SequentialCommandGroup, South2Cone> {
+class South2ConeHigh
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup, South2ConeHigh> {
  public:
-  South2Cone(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
+  South2ConeHigh(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
 
   static frc::Pose2d GetStartingPose(bool isBlue);
 };

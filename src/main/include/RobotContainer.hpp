@@ -16,11 +16,10 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.hpp"
-#include "commands/autos/Mid1ConeChgstat.hpp"
-#include "commands/autos/North2ConeChgstat.hpp"
-#include "commands/autos/North3Cone.hpp"
-#include "commands/autos/North3Cube.hpp"
-#include "commands/autos/South2Cone.hpp"
+#include "commands/autos/North2ConeHighChgstat.hpp"
+#include "commands/autos/North2ConeHighPick1Cone.hpp"
+#include "commands/autos/North3ConeLow.hpp"
+#include "commands/autos/South2ConeHigh.hpp"
 #include "networktables/DoubleTopic.h"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
@@ -73,15 +72,14 @@ class RobotContainer {
    */
   enum class SelectedAuto {
     kNoAuto = 0,  // In case we can't find an auto that works with our alliance
-    kNorth2ConeChgstat = 1,
-    kSouth2Cone = 2,
-    kNorth3Cone = 3,
-    kNorth3Cube = 4,
-    kMid1ConeChgstat = 5,
+    kNorth2ConeHighChgstat = 1,
+    kSouth2ConeHigh = 2,
+    kNorth2ConeHighPick1Cone = 3,
+    kNorth3ConeLow = 4,
     kNumberOfAutos
   };
 
-  SelectedAuto m_currentSelectedAuto = SelectedAuto::kNorth2ConeChgstat;
+  SelectedAuto m_currentSelectedAuto = SelectedAuto::kNorth2ConeHighChgstat;
   bool m_isBlue = true;
 
   const std::array<frc::DigitalInput, 8> m_autoSwitch = {
@@ -97,17 +95,15 @@ class RobotContainer {
   const frc::DigitalInput m_redBlueSwitch{
       ElectricalConstants::kRedBlueSwitchPort};
 
-  North2ConeChgstat m_blueNorth2ConeChgstat;
-  South2Cone m_blueSouth2Cone;
-  North3Cone m_blueNorth3Cone;
-  North3Cube m_blueNorth3Cube;
-  Mid1ConeChgstat m_blueMid1ConeChgstat;
+  North2ConeHighChgstat m_blueNorth2ConeHighChgstat;
+  North2ConeHighPick1Cone m_blueNorth2ConeHighPick1Cone;
+  South2ConeHigh m_blueSouth2ConeHigh;
+  North3ConeLow m_blueNorth3ConeLow;
 
-  North2ConeChgstat m_redNorth2ConeChgstat;
-  South2Cone m_redSouth2Cone;
-  North3Cone m_redNorth3Cone;
-  North3Cube m_redNorth3Cube;
-  Mid1ConeChgstat m_redMid1ConeChgstat;
+  North2ConeHighChgstat m_redNorth2ConeHighChgstat;
+  North2ConeHighPick1Cone m_redNorth2ConeHighPick1Cone;
+  South2ConeHigh m_redSouth2ConeHigh;
+  North3ConeLow m_redNorth3ConeLow;
 
   void ConfigureBindings();
 
