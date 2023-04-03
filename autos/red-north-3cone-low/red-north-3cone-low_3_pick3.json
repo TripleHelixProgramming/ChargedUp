@@ -3,7 +3,7 @@
         "default": "Charged Up"
     },
     "paths": {
-        "pick4": {
+        "pick3": {
             "obstacles": [
                 {
                     "center_x": 12.989277248377185,
@@ -39,7 +39,7 @@
                     "control_interval_count": 25,
                     "heading": 0.0,
                     "heading_constrained": true,
-                    "name": "Custom Waypoint 5",
+                    "name": "stay aligned",
                     "velocity_magnitude_constrained": false,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": false,
@@ -57,7 +57,7 @@
                     "control_interval_count": 30,
                     "heading": -2.3561944901923457,
                     "heading_constrained": true,
-                    "name": "align",
+                    "name": "align pick",
                     "velocity_magnitude_constrained": true,
                     "velocity_x": -0.4499999999999993,
                     "velocity_x_constrained": false,

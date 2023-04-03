@@ -48,7 +48,7 @@
                     "control_interval_count": 30,
                     "heading": 0.0,
                     "heading_constrained": false,
-                    "name": "Custom Waypoint 3",
+                    "name": "avoid chgstat",
                     "velocity_magnitude_constrained": false,
                     "velocity_x": 0.0,
                     "velocity_x_constrained": false,
