@@ -19,7 +19,7 @@ using namespace frc2;
 North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
                        bool isBlue) {
   std::string allianceSidePrefix =
-      isBlue ? "red-" : "red-";  // TODO until we have a blue one
+      isBlue ? "blue-" : "red-";  // TODO until we have a blue one
   AddCommands(
       DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
                                  allianceSidePrefix + "north-2cone-high-chgstat_0_place9")),
