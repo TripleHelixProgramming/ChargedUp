@@ -6,10 +6,9 @@
 #include <string_view>
 
 #include <networktables/DoubleArrayTopic.h>
+#include <photonlib/PhotonPoseEstimator.h>
 #include <photonlib/PhotonTrackedTarget.h>
 #include <units/time.h>
-
-#include "photonlib/PhotonPoseEstimator.h"
 
 namespace cadmia {
 

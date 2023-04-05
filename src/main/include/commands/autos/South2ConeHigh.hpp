@@ -12,7 +12,8 @@
 class South2ConeHigh
     : public frc2::CommandHelper<frc2::SequentialCommandGroup, South2ConeHigh> {
  public:
-  South2ConeHigh(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
+  South2ConeHigh(SwerveDrive* drive, Superstructure* superstructure,
+                 bool isBlue);
 
   static frc::Pose2d GetStartingPose(bool isBlue);
 };

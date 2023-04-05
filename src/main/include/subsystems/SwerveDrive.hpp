@@ -25,8 +25,8 @@
 
 #include "subsystems/SwerveModule.hpp"
 #include "util/SimSwervePoseTracker.hpp"
-#include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/cadmia/CadmiaCamera.hpp"
+#include "util/log/DoubleTelemetryEntry.hpp"
 
 class SwerveDrive : public frc2::SubsystemBase {
  public:
@@ -93,7 +93,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   // Subsystems:
   /// The four swerve modules.
   std::array<SwerveModule, 4> m_modules;
-  
+
   // Properties:
   /**
    * @brief NAVX gyro sensor for heading

@@ -16,30 +16,31 @@
 
 using namespace frc2;
 
-South2ConeHigh::South2ConeHigh(SwerveDrive* drive, Superstructure* superstructure,
-                       bool isBlue) {
+South2ConeHigh::South2ConeHigh(SwerveDrive* drive,
+                               Superstructure* superstructure, bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       InstantCommand([superstructure]() { superstructure->PositionHigh(); }),
       WaitCommand(0.9_s),
-      DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
-                                 allianceSidePrefix + "south-2cone-high_0_place1")),
+      DriveTrajectory(drive,
+                      &TrajectoryManager::GetTrajectory(
+                          allianceSidePrefix + "south-2cone-high_0_place1")),
       InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       WaitCommand(0.1_s),
 
       ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                       "south-2cone-high_1_pick1")),
+          DriveTrajectory(drive,
+                          &TrajectoryManager::GetTrajectory(
+                              allianceSidePrefix + "south-2cone-high_1_pick1")),
           SequentialCommandGroup(WaitCommand(0.5_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->IntakeCone();
                                  }))),
       ParallelDeadlineGroup(
           DriveTrajectory(
-              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                       "south-2cone-high_2_place3")),
+              drive, &TrajectoryManager::GetTrajectory(
+                         allianceSidePrefix + "south-2cone-high_2_place3")),
           SequentialCommandGroup(WaitCommand(3.8_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->PositionHigh();

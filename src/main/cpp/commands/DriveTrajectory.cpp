@@ -9,7 +9,8 @@
 using namespace units;
 
 DriveTrajectory::DriveTrajectory(SwerveDrive* drive,
-                                 const Trajectory* trajectory, bool useVision, bool seedInitialPose)
+                                 const Trajectory* trajectory, bool useVision,
+                                 bool seedInitialPose)
     : m_drive{drive},
       m_trajectory{trajectory},
       m_useVision(useVision),

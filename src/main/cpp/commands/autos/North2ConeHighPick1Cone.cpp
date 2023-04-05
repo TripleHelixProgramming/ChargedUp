@@ -15,34 +15,36 @@
 
 using namespace frc2;
 
-North2ConeHighPick1Cone::North2ConeHighPick1Cone(SwerveDrive* drive, Superstructure* superstructure,
-                       bool isBlue) {
+North2ConeHighPick1Cone::North2ConeHighPick1Cone(SwerveDrive* drive,
+                                                 Superstructure* superstructure,
+                                                 bool isBlue) {
   std::string allianceSidePrefix = isBlue ? "blue-" : "red-";
   AddCommands(
       InstantCommand([superstructure]() { superstructure->PositionHigh(); }),
       WaitCommand(0.9_s),
-      DriveTrajectory(drive,
-                      &TrajectoryManager::GetTrajectory(
-                          allianceSidePrefix + "north-2cone-high-chgstat_0_place9")),
+      DriveTrajectory(
+          drive, &TrajectoryManager::GetTrajectory(
+                     allianceSidePrefix + "north-2cone-high-chgstat_0_place9")),
       InstantCommand(
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
       WaitCommand(0.1_s),
 
       ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive, &TrajectoryManager::GetTrajectory(
-                         allianceSidePrefix + "north-2cone-high-chgstat_1_pick4")),
+          DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
+                                     allianceSidePrefix +
+                                     "north-2cone-high-chgstat_1_pick4")),
           SequentialCommandGroup(WaitCommand(0.25_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->IntakeCone();
                                  }))),
 
       DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
-                                 allianceSidePrefix + "north-2cone-high-pick-1cone_2_align7")),
+                                 allianceSidePrefix +
+                                 "north-2cone-high-pick-1cone_2_align7")),
       ParallelDeadlineGroup(
-          DriveTrajectory(
-              drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                       "north-2cone-high-pick-1cone_3_place7")),
+          DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
+                                     allianceSidePrefix +
+                                     "north-2cone-high-pick-1cone_3_place7")),
           SequentialCommandGroup(WaitCommand(0.1_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->PositionHigh();
@@ -51,10 +53,11 @@ North2ConeHighPick1Cone::North2ConeHighPick1Cone(SwerveDrive* drive, Superstruct
           [superstructure]() { superstructure->SetExtenderPosition(false); }),
 
       ParallelDeadlineGroup(
-          DriveTrajectory(drive,
-                          &TrajectoryManager::GetTrajectory(
-                              allianceSidePrefix + "north-2cone-high-pick-1cone_4_pick3"),
-                          false),
+          DriveTrajectory(
+              drive,
+              &TrajectoryManager::GetTrajectory(
+                  allianceSidePrefix + "north-2cone-high-pick-1cone_4_pick3"),
+              false),
           SequentialCommandGroup(WaitCommand(0.5_s),
                                  InstantCommand([superstructure]() {
                                    superstructure->IntakeCone();

@@ -8,8 +8,10 @@
 #include <Eigen/src/Core/Matrix.h>
 #include <frc/RobotBase.h>
 #include <frc/Timer.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
+#include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Twist2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
@@ -20,7 +22,9 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 #include <hal/SimDevice.h>
+#include <networktables/NetworkTable.h>
 #include <photonlib/PhotonCamera.h>
+#include <photonlib/PhotonPoseEstimator.h>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <units/base.h>
@@ -30,10 +34,6 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
-#include "frc/estimator/SwerveDrivePoseEstimator.h"
-#include "frc/geometry/Transform3d.h"
-#include "networktables/NetworkTable.h"
-#include "photonlib/PhotonPoseEstimator.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
 
@@ -191,7 +191,8 @@ void SwerveDrive::Brake() {
 }
 
 bool IsVisionPoseValid(const Pose3d& pose) {
-  bool isOk = units::math::abs(pose.Z()) < 20_cm && (pose.X() > 11.5_m || pose.X() < 5_m);
+  bool isOk = units::math::abs(pose.Z()) < 20_cm &&
+              (pose.X() > 11.5_m || pose.X() < 5_m);
   static int countOk = 0;
   static int countTot = 0;
   if (isOk) {
@@ -199,30 +200,37 @@ bool IsVisionPoseValid(const Pose3d& pose) {
   }
   ++countTot;
   SmartDashboard::PutNumber("Vision/Percentage Valid",
-                            (double) countOk / countTot);
+                            (double)countOk / countTot);
   return isOk;
 }
 
 void ApplyVisionResult(std::optional<photonlib::EstimatedRobotPose> result,
-                       const Transform3d& transform,
-                       second_t& lastTs, 
+                       const Transform3d& transform, second_t& lastTs,
                        Field2d& visionField,
                        SwerveDrivePoseEstimator<4>& poseEstimator,
                        const char* cameraName) {
   if (result.has_value()) {
     Pose3d pose = result->estimatedPose.TransformBy(transform.Inverse());
-    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X", pose.X().value());
-    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y", pose.Y().value());
-    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z", pose.Z().value());
-    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X rot", pose.Rotation().X().value());
-    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y rot", pose.Rotation().Y().value());
-    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z rot", pose.Rotation().Z().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X",
+                              pose.X().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y",
+                              pose.Y().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z",
+                              pose.Z().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X rot",
+                              pose.Rotation().X().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y rot",
+                              pose.Rotation().Y().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z rot",
+                              pose.Rotation().Z().value());
     if (!IsVisionPoseValid(pose)) {
       return;
     }
     second_t timestamp = result->timestamp;
     if (timestamp > lastTs) {
-      SmartDashboard::PutNumber("Vision/"s + cameraName + " latency", (Timer::GetFPGATimestamp() - timestamp).value());
+      SmartDashboard::PutNumber(
+          "Vision/"s + cameraName + " latency",
+          (Timer::GetFPGATimestamp() - timestamp).value());
       poseEstimator.AddVisionMeasurement(pose.ToPose2d(), timestamp);
       lastTs = timestamp;
       visionField.SetRobotPose(pose.ToPose2d());
@@ -236,20 +244,26 @@ void SwerveDrive::Periodic() {
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
   m_poseEstimator.UpdateWithTime(
-      Timer::GetFPGATimestamp(),
-      GetGyroHeading(),
+      Timer::GetFPGATimestamp(), GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
-  ApplyVisionResult(m_leftCamera.GetResult(), VisionConstants::kRobotToLeftCam, m_lastLeftAppliedTs, m_visionEstField, m_poseEstimator, "Left");
-  ApplyVisionResult(m_rightCamera.GetResult(), VisionConstants::kRobotToRightCam, m_lastRightAppliedTs, m_visionEstField, m_poseEstimator, "Right");
-  ApplyVisionResult(m_rearCamera.GetResult(), VisionConstants::kRobotToBackCam, m_lastRearAppliedTs, m_visionEstField, m_poseEstimator, "Rear");
+  ApplyVisionResult(m_leftCamera.GetResult(), VisionConstants::kRobotToLeftCam,
+                    m_lastLeftAppliedTs, m_visionEstField, m_poseEstimator,
+                    "Left");
+  ApplyVisionResult(m_rightCamera.GetResult(),
+                    VisionConstants::kRobotToRightCam, m_lastRightAppliedTs,
+                    m_visionEstField, m_poseEstimator, "Right");
+  ApplyVisionResult(m_rearCamera.GetResult(), VisionConstants::kRobotToBackCam,
+                    m_lastRearAppliedTs, m_visionEstField, m_poseEstimator,
+                    "Rear");
 
   auto pose = m_poseEstimator.GetEstimatedPosition();
 
   SmartDashboard::PutNumber("Drive/Pose Estimate/X", pose.X().value());
   SmartDashboard::PutNumber("Drive/Pose Estimate/Y", pose.Y().value());
-  SmartDashboard::PutNumber("Drive/Pose Estimate/Theta", pose.Rotation().Radians().value());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/Theta",
+                            pose.Rotation().Radians().value());
 
   m_poseEstField.SetRobotPose(pose);
 }

@@ -14,13 +14,13 @@
 #include <frc/geometry/Rotation2d.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
+#include <networktables/DoubleTopic.h>
 
 #include "Constants.hpp"
 #include "commands/autos/North2ConeHighChgstat.hpp"
 #include "commands/autos/North2ConeHighPick1Cone.hpp"
 #include "commands/autos/North3ConeLow.hpp"
 #include "commands/autos/South2ConeHigh.hpp"
-#include "networktables/DoubleTopic.h"
 #include "subsystems/Superstructure.hpp"
 #include "subsystems/SwerveDrive.hpp"
 #include "util/TrajectoryManager.hpp"

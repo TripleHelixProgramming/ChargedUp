@@ -80,7 +80,8 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
 
   auto inst = nt::NetworkTableInstance::GetDefault();
   auto table = inst.GetTable("time");
-  m_publisher = table->GetDoubleTopic("timer").Publish({.periodic = 0.01, .sendAll = true});
+  m_publisher = table->GetDoubleTopic("timer").Publish(
+      {.periodic = 0.01, .sendAll = true});
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
@@ -162,8 +163,9 @@ void RobotContainer::ConfigureBindings() {
   m_operator.Y().OnFalse((InstantCommand([this]() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
-  m_operator.A().OnTrue(
-      (InstantCommand([this]() { m_superstructure.PositionMedium(); })).ToPtr());
+  m_operator.A().OnTrue((InstantCommand([this]() {
+                          m_superstructure.PositionMedium();
+                        })).ToPtr());
   m_operator.A().OnFalse(
       (InstantCommand([this]() { m_superstructure.PositionLow(); })).ToPtr());
   m_operator.B().OnTrue(
@@ -447,10 +449,12 @@ void RobotContainer::AutoLED() {
                            North2ConeHighChgstat::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kSouth2ConeHigh:
-      errors = _poseWithin(currentPose, South2ConeHigh::GetStartingPose(m_isBlue));
+      errors =
+          _poseWithin(currentPose, South2ConeHigh::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kNorth2ConeHighPick1Cone:
-      errors = _poseWithin(currentPose, North2ConeHighPick1Cone::GetStartingPose(m_isBlue));
+      errors = _poseWithin(currentPose,
+                           North2ConeHighPick1Cone::GetStartingPose(m_isBlue));
       break;
     case SelectedAuto::kNorth3ConeLow:
       errors =

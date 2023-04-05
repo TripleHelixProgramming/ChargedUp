@@ -14,7 +14,7 @@ class North2ConeHighChgstat
                                  North2ConeHighChgstat> {
  public:
   North2ConeHighChgstat(SwerveDrive* drive, Superstructure* superstructure,
-                    bool isBlue);
+                        bool isBlue);
 
   static frc::Pose2d GetStartingPose(bool isBlue);
 };

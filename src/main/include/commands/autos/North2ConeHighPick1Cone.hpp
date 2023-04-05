@@ -10,9 +10,11 @@
 #include "util/TrajectoryManager.hpp"
 
 class North2ConeHighPick1Cone
-    : public frc2::CommandHelper<frc2::SequentialCommandGroup, North2ConeHighPick1Cone> {
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup,
+                                 North2ConeHighPick1Cone> {
  public:
-  North2ConeHighPick1Cone(SwerveDrive* drive, Superstructure* superstructure, bool isBlue);
+  North2ConeHighPick1Cone(SwerveDrive* drive, Superstructure* superstructure,
+                          bool isBlue);
 
   static frc::Pose2d GetStartingPose(bool isBlue);
 };
