@@ -3,12 +3,15 @@
 #include "subsystems/SwerveDrive.hpp"
 
 #include <cmath>
+#include <string>
 
 #include <Eigen/src/Core/Matrix.h>
 #include <frc/RobotBase.h>
 #include <frc/Timer.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
+#include <frc/geometry/Transform3d.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Twist2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
@@ -19,7 +22,9 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 #include <hal/SimDevice.h>
+#include <networktables/NetworkTable.h>
 #include <photonlib/PhotonCamera.h>
+#include <photonlib/PhotonPoseEstimator.h>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <units/base.h>
@@ -29,7 +34,6 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
-#include "subsystems/Vision.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
 
@@ -41,6 +45,8 @@ using namespace units;
 using namespace DriveConstants;
 using namespace ElectricalConstants;
 using namespace ModuleConstants;
+
+using std::string_literals::operator""s;
 
 SwerveDrive::SwerveDrive()
     : m_modules{{SwerveModule(kDriveMotorPorts[0], kSteerMotorPorts[0],
@@ -72,7 +78,7 @@ SwerveDrive::SwerveDrive()
                        m_modules[2].GetPosition(), m_modules[3].GetPosition()},
                       Pose2d(),
                       {0.1, 0.1, 0.1},
-                      {0.3, 0.3, 0.3}},
+                      {0.1, 0.1, 0.1}},
       m_poseEstimateXLog("Drive/Pose Estimate/X", TelemetryLevel::kCompetition),
       m_poseEstimateYLog("Drive/Pose Estimate/Y", TelemetryLevel::kCompetition),
       m_poseEstimateThetaLog("Drive/Pose Estimate/Theta",
@@ -184,44 +190,82 @@ void SwerveDrive::Brake() {
   }
 }
 
+bool IsVisionPoseValid(const Pose3d& pose) {
+  bool isOk = units::math::abs(pose.Z()) < 20_cm &&
+              (pose.X() > 11.5_m || pose.X() < 5_m);
+  static int countOk = 0;
+  static int countTot = 0;
+  if (isOk) {
+    ++countOk;
+  }
+  ++countTot;
+  SmartDashboard::PutNumber("Vision/Percentage Valid",
+                            static_cast<double>(countOk) / countTot);
+  return isOk;
+}
+
+void ApplyVisionResult(std::optional<photonlib::EstimatedRobotPose> result,
+                       const Transform3d& transform, second_t& lastTs,
+                       Field2d& visionField,
+                       SwerveDrivePoseEstimator<4>& poseEstimator,
+                       const char* cameraName) {
+  if (result.has_value()) {
+    Pose3d pose = result->estimatedPose.TransformBy(transform.Inverse());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X",
+                              pose.X().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y",
+                              pose.Y().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z",
+                              pose.Z().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X rot",
+                              pose.Rotation().X().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y rot",
+                              pose.Rotation().Y().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z rot",
+                              pose.Rotation().Z().value());
+    if (!IsVisionPoseValid(pose)) {
+      return;
+    }
+    second_t timestamp = result->timestamp;
+    if (timestamp > lastTs) {
+      SmartDashboard::PutNumber(
+          "Vision/"s + cameraName + " latency",
+          (Timer::GetFPGATimestamp() - timestamp).value());
+      poseEstimator.AddVisionMeasurement(pose.ToPose2d(), timestamp);
+      lastTs = timestamp;
+      visionField.SetRobotPose(pose.ToPose2d());
+    }
+  }
+}
+
 void SwerveDrive::Periodic() {
   m_odometry.Update(  // TODO: Remove odometry
       GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
-  m_poseEstimator.Update(
-      GetGyroHeading(),
+  m_poseEstimator.UpdateWithTime(
+      Timer::GetFPGATimestamp(), GetGyroHeading(),
       {m_modules[0].GetPosition(), m_modules[1].GetPosition(),
        m_modules[2].GetPosition(), m_modules[3].GetPosition()});
 
-  auto visionEstimatedPose = m_vision.GetEstimatedGlobalPose(
-      Pose3d(m_poseEstimator.GetEstimatedPosition()));
-  if (visionEstimatedPose.has_value() &&
-      visionEstimatedPose->timestamp != m_lastAppliedTs) {
-    m_poseEstimator.AddVisionMeasurement(
-        visionEstimatedPose->estimatedPose.ToPose2d(),
-        visionEstimatedPose->timestamp);
-    m_lastAppliedTs = visionEstimatedPose->timestamp;
-    m_visionPoseEstimateXLog.Append(
-        visionEstimatedPose->estimatedPose.X()
-            .value());  // TODO: add timestamp to this (additional param)
-    m_visionPoseEstimateYLog.Append(
-        visionEstimatedPose->estimatedPose.Y().value());
-    m_visionPoseEstimateThetaLog.Append(
-        visionEstimatedPose->estimatedPose.ToPose2d()
-            .Rotation()
-            .Radians()
-            .value());
-    m_visionEstField.SetRobotPose(
-        visionEstimatedPose->estimatedPose.ToPose2d());
-  }
+  ApplyVisionResult(m_leftCamera.GetResult(), VisionConstants::kRobotToLeftCam,
+                    m_lastLeftAppliedTs, m_visionEstField, m_poseEstimator,
+                    "Left");
+  ApplyVisionResult(m_rightCamera.GetResult(),
+                    VisionConstants::kRobotToRightCam, m_lastRightAppliedTs,
+                    m_visionEstField, m_poseEstimator, "Right");
+  ApplyVisionResult(m_rearCamera.GetResult(), VisionConstants::kRobotToBackCam,
+                    m_lastRearAppliedTs, m_visionEstField, m_poseEstimator,
+                    "Rear");
 
-  m_poseEstimateXLog.Append(m_poseEstimator.GetEstimatedPosition().X().value());
-  m_poseEstimateYLog.Append(m_poseEstimator.GetEstimatedPosition().Y().value());
-  m_poseEstimateThetaLog.Append(
-      m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
+  auto pose = m_poseEstimator.GetEstimatedPosition();
 
-  m_poseEstField.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/X", pose.X().value());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/Y", pose.Y().value());
+  SmartDashboard::PutNumber("Drive/Pose Estimate/Theta",
+                            pose.Rotation().Radians().value());
+
+  m_poseEstField.SetRobotPose(pose);
 }
 
 void SwerveDrive::SimulationPeriodic() {
@@ -249,10 +293,6 @@ void SwerveDrive::SyncAbsoluteEncoders() {
   for (auto& _module : m_modules) {
     _module.SyncEncoders();
   }
-}
-
-void SwerveDrive::SetVisionUsingLeftCam(bool usingLeftCam) {
-  m_vision.SetUsingLeftCam(usingLeftCam);
 }
 
 wpi::array<SwerveModulePosition, 4> SwerveDrive::GetModulePositions() const {

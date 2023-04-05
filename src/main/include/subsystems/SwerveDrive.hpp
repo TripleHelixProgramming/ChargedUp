@@ -24,8 +24,8 @@
 #include <units/angle.h>
 
 #include "subsystems/SwerveModule.hpp"
-#include "subsystems/Vision.hpp"
 #include "util/SimSwervePoseTracker.hpp"
+#include "util/cadmia/CadmiaCamera.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 class SwerveDrive : public frc2::SubsystemBase {
@@ -93,8 +93,6 @@ class SwerveDrive : public frc2::SubsystemBase {
   // Subsystems:
   /// The four swerve modules.
   std::array<SwerveModule, 4> m_modules;
-  /// Vision system
-  Vision m_vision;
 
   // Properties:
   /**
@@ -107,7 +105,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   double lastAngle;
 
   /// The camera facing forwar
-  photonlib::PhotonCamera m_camera{"front"};
+  cadmia::CadmiaCamera m_rightCamera{"video0"};
+  cadmia::CadmiaCamera m_rearCamera{"video1"};
+  cadmia::CadmiaCamera m_leftCamera{"video2"};
 
   /// Swerve drive kinematics
   frc::SwerveDriveKinematics<4> m_driveKinematics;
@@ -119,7 +119,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   /// The position of the robot based on odometry and vision measurements
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
-  units::second_t m_lastAppliedTs{};
+  units::second_t m_lastLeftAppliedTs{0};
+  units::second_t m_lastRightAppliedTs{0};
+  units::second_t m_lastRearAppliedTs{0};
 
   // Logging
   DoubleTelemetryEntry m_poseEstimateXLog;

@@ -24,10 +24,10 @@
 #include "Robot.hpp"
 #include "commands/DriveTrajectory.hpp"
 #include "commands/ResetAbsoluteEncoders.hpp"
-#include "commands/autos/Mid1ConeChgstat.hpp"
-#include "commands/autos/North2ConeChgstat.hpp"
-#include "commands/autos/North3Cone.hpp"
-#include "commands/autos/South2Cone.hpp"
+#include "commands/autos/North2ConeHighChgstat.hpp"
+#include "commands/autos/North2ConeHighPick1Cone.hpp"
+#include "commands/autos/North3ConeLow.hpp"
+#include "commands/autos/South2ConeHigh.hpp"
 #include "util/log/DoubleTelemetryEntry.hpp"
 
 using namespace ElectricalConstants;
@@ -38,16 +38,14 @@ using namespace units;
 
 RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
     : m_isDisabled(isDisabled),
-      m_blueNorth2ConeChgstat(&m_drive, &m_superstructure, true),
-      m_blueSouth2Cone(&m_drive, &m_superstructure, true),
-      m_blueNorth3Cone(&m_drive, &m_superstructure, true),
-      m_blueNorth3Cube(&m_drive, &m_superstructure, true),
-      m_blueMid1ConeChgstat(&m_drive, &m_superstructure, true),
-      m_redNorth2ConeChgstat(&m_drive, &m_superstructure, false),
-      m_redSouth2Cone(&m_drive, &m_superstructure, false),
-      m_redNorth3Cone(&m_drive, &m_superstructure, false),
-      m_redNorth3Cube(&m_drive, &m_superstructure, false),
-      m_redMid1ConeChgstat(&m_drive, &m_superstructure, false),
+      m_blueNorth2ConeHighChgstat(&m_drive, &m_superstructure, true),
+      m_blueNorth2ConeHighPick1Cone(&m_drive, &m_superstructure, true),
+      m_blueSouth2ConeHigh(&m_drive, &m_superstructure, true),
+      m_blueNorth3ConeLow(&m_drive, &m_superstructure, true),
+      m_redNorth2ConeHighChgstat(&m_drive, &m_superstructure, false),
+      m_redNorth2ConeHighPick1Cone(&m_drive, &m_superstructure, false),
+      m_redSouth2ConeHigh(&m_drive, &m_superstructure, false),
+      m_redNorth3ConeLow(&m_drive, &m_superstructure, false),
       m_oiDriverLeftXLog("OI/Driver/Left X"),
       m_oiDriverRightXLog("OI/Driver/Right X"),
       m_oiDriverRightYLog("OI/Driver/Right Y"),
@@ -79,37 +77,37 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
   m_leds.Start();
 
   m_lastGamePieceIntake.Start();
+
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable("time");
+  m_publisher = table->GetDoubleTopic("timer").Publish(
+      {.periodic = 0.01, .sendAll = true});
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
   UpdateAutoSelected();
   UpdateIsBlue();
   switch (m_currentSelectedAuto) {
-    case SelectedAuto::kNorth2ConeChgstat:
+    case SelectedAuto::kNorth2ConeHighChgstat:
       if (m_isBlue)
-        return &m_blueNorth2ConeChgstat;
+        return &m_blueNorth2ConeHighChgstat;
       else
-        return &m_redNorth2ConeChgstat;
-    case SelectedAuto::kSouth2Cone:
+        return &m_redNorth2ConeHighChgstat;
+    case SelectedAuto::kSouth2ConeHigh:
       if (m_isBlue)
-        return &m_blueSouth2Cone;
+        return &m_blueSouth2ConeHigh;
       else
-        return &m_redSouth2Cone;
-    case SelectedAuto::kNorth3Cone:
+        return &m_redSouth2ConeHigh;
+    case SelectedAuto::kNorth2ConeHighPick1Cone:
       if (m_isBlue)
-        return &m_blueNorth3Cone;
+        return &m_blueNorth2ConeHighPick1Cone;
       else
-        return &m_redNorth3Cone;
-    case SelectedAuto::kNorth3Cube:
+        return &m_redNorth2ConeHighPick1Cone;
+    case SelectedAuto::kNorth3ConeLow:
       if (m_isBlue)
-        return &m_blueNorth3Cube;
+        return &m_blueNorth3ConeLow;
       else
-        return &m_redNorth3Cube;
-    case SelectedAuto::kMid1ConeChgstat:
-      if (m_isBlue)
-        return &m_blueMid1ConeChgstat;
-      else
-        return &m_redMid1ConeChgstat;
+        return &m_redNorth3ConeLow;
     default:
       return std::nullopt;
   }
@@ -165,12 +163,13 @@ void RobotContainer::ConfigureBindings() {
   m_operator.Y().OnFalse((InstantCommand([this]() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
-  m_operator.A().WhileTrue(
-      (RunCommand([this]() { m_superstructure.PositionMedium(); })).ToPtr());
+  m_operator.A().OnTrue((InstantCommand([this]() {
+                          m_superstructure.PositionMedium();
+                        })).ToPtr());
   m_operator.A().OnFalse(
       (InstantCommand([this]() { m_superstructure.PositionLow(); })).ToPtr());
-  m_operator.B().WhileTrue(
-      (RunCommand([this]() { m_superstructure.PositionHigh(); })).ToPtr());
+  m_operator.B().OnTrue(
+      (InstantCommand([this]() { m_superstructure.PositionHigh(); })).ToPtr());
   m_operator.B().OnFalse(
       (InstantCommand([this]() { m_superstructure.PositionLow(); })).ToPtr());
   m_operator.LeftBumper().OnTrue((InstantCommand([this]() {
@@ -236,18 +235,17 @@ void RobotContainer::RunDisabled() {
   bool useLeftCam;
 
   switch (m_currentSelectedAuto) {
-    case SelectedAuto::kNorth2ConeChgstat:
-    case SelectedAuto::kNorth3Cone:
-    case SelectedAuto::kNorth3Cube:
+    case SelectedAuto::kNorth2ConeHighChgstat:
+    case SelectedAuto::kNorth2ConeHighPick1Cone:
+    case SelectedAuto::kNorth3ConeLow:
     default:
       useLeftCam = !m_isBlue;
       break;
-    case SelectedAuto::kSouth2Cone:
+    case SelectedAuto::kSouth2ConeHigh:
       useLeftCam = m_isBlue;
       break;
   }
   SmartDashboard::PutBoolean("Vision/Using Left Cam", useLeftCam);
-  m_drive.SetVisionUsingLeftCam(useLeftCam);
 }
 
 void RobotContainer::SuperstructurePeriodic() {
@@ -264,6 +262,7 @@ void RobotContainer::LED() {
   }
 
   if (m_isDisabled()) {
+    ClearLED();
     // ApplyLEDSingleStrip({std::tuple{255, 255, 255}, {100, 0, 0}, {100, 0, 0},
     // {100, 0, 0}});
     AutoLED();
@@ -300,36 +299,18 @@ void RobotContainer::UpdateAutoSelected() {
   auto selectionOpt = GetAutoSwitchIndex();
   // std::optional<size_t> selectionOpt =
   // static_cast<size_t>(SmartDashboard::GetNumber("Selected Auto", 0.0));
-  SelectedAuto newSelectedAuto;
   using enum SelectedAuto;
   if (!selectionOpt) {
-    newSelectedAuto = kNoAuto;
+    m_currentSelectedAuto = kNoAuto;
+    return;
   }
-  switch (*selectionOpt) {
-    case static_cast<int64_t>(kNoAuto):
-      newSelectedAuto = kNoAuto;
-      break;
-    case static_cast<int64_t>(kNorth2ConeChgstat):
-      newSelectedAuto = kNorth2ConeChgstat;
-      break;
-    case static_cast<int64_t>(kSouth2Cone):
-      newSelectedAuto = kSouth2Cone;
-      break;
-    case static_cast<int64_t>(kNorth3Cone):
-      newSelectedAuto = kNorth3Cone;
-      break;
-    case static_cast<int64_t>(kNorth3Cube):
-      newSelectedAuto = kNorth3Cube;
-      break;
-    case static_cast<int64_t>(kMid1ConeChgstat):
-      newSelectedAuto = kMid1ConeChgstat;
-      break;
-    default:
-      newSelectedAuto = kNoAuto;
-      break;
+  int64_t switchIdx = *selectionOpt;
+  constexpr auto kMaxAutoIdx = static_cast<int64_t>(kNumberOfAutos) - 1;
+  if (switchIdx >= 0 && switchIdx <= kMaxAutoIdx) {
+    m_currentSelectedAuto = static_cast<SelectedAuto>(switchIdx);
+    return;
   }
-
-  m_currentSelectedAuto = newSelectedAuto;
+  m_currentSelectedAuto = kNoAuto;
 }
 
 void RobotContainer::UpdateIsBlue() {
@@ -463,19 +444,21 @@ void RobotContainer::AutoLED() {
   // -2 makes sure lights aren't green if no auto selected
   std::tuple<int, int, int> errors{-2, -2, -2};
   switch (m_currentSelectedAuto) {
-    case SelectedAuto::kNorth2ConeChgstat:
+    case SelectedAuto::kNorth2ConeHighChgstat:
       errors = _poseWithin(currentPose,
-                           North2ConeChgstat::GetStartingPose(m_isBlue));
+                           North2ConeHighChgstat::GetStartingPose(m_isBlue));
       break;
-    case SelectedAuto::kSouth2Cone:
-      errors = _poseWithin(currentPose, South2Cone::GetStartingPose(m_isBlue));
-      break;
-    case SelectedAuto::kNorth3Cone:
-      errors = _poseWithin(currentPose, North3Cone::GetStartingPose(m_isBlue));
-      break;
-    case SelectedAuto::kMid1ConeChgstat:
+    case SelectedAuto::kSouth2ConeHigh:
       errors =
-          _poseWithin(currentPose, Mid1ConeChgstat::GetStartingPose(m_isBlue));
+          _poseWithin(currentPose, South2ConeHigh::GetStartingPose(m_isBlue));
+      break;
+    case SelectedAuto::kNorth2ConeHighPick1Cone:
+      errors = _poseWithin(currentPose,
+                           North2ConeHighPick1Cone::GetStartingPose(m_isBlue));
+      break;
+    case SelectedAuto::kNorth3ConeLow:
+      errors =
+          _poseWithin(currentPose, North3ConeLow::GetStartingPose(m_isBlue));
       break;
     default:
       break;
