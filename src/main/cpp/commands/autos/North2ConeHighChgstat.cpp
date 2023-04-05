@@ -60,7 +60,7 @@ North2ConeHighChgstat::North2ConeHighChgstat(SwerveDrive* drive,
               false),
           SequentialCommandGroup(WaitCommand(0.25_s),
                                  InstantCommand([superstructure]() {
-                                   superstructure->IntakeCone();
+                                   superstructure->IntakeCube();
                                  }))),
       RunCommand(
           [drive]() {

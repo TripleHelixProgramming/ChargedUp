@@ -191,7 +191,7 @@ void SwerveDrive::Brake() {
 }
 
 bool IsVisionPoseValid(const Pose3d& pose) {
-  bool isOk = units::math::abs(pose.Z()) < 20_cm && pose.X() > 12.5_m;
+  bool isOk = units::math::abs(pose.Z()) < 20_cm && (pose.X() > 11.5_m || pose.X() < 5_m);
   static int countOk = 0;
   static int countTot = 0;
   if (isOk) {
@@ -211,6 +211,12 @@ void ApplyVisionResult(std::optional<photonlib::EstimatedRobotPose> result,
                        const char* cameraName) {
   if (result.has_value()) {
     Pose3d pose = result->estimatedPose.TransformBy(transform.Inverse());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X", pose.X().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y", pose.Y().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z", pose.Z().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose X rot", pose.Rotation().X().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Y rot", pose.Rotation().Y().value());
+    SmartDashboard::PutNumber("Vision/"s + cameraName + " pose Z rot", pose.Rotation().Z().value());
     if (!IsVisionPoseValid(pose)) {
       return;
     }

@@ -55,16 +55,16 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 4.328822015244953,
+                    "x": 4.4554105586734725,
                     "x_constrained": true,
-                    "y": 4.604382704977186,
+                    "y": 4.776149488444492,
                     "y_constrained": true
                 },
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
                     "control_interval_count": 30,
-                    "heading": 6.283185307179586,
+                    "heading": 0.0,
                     "heading_constrained": true,
                     "name": "orient",
                     "velocity_magnitude_constrained": false,
@@ -75,14 +75,14 @@
                     "waypoint_type": "custom",
                     "x": 6.019548984000004,
                     "x_constrained": true,
-                    "y": 4.35,
+                    "y": 4.7056,
                     "y_constrained": true
                 },
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
                     "control_interval_count": 20,
-                    "heading": 6.283185307179586,
+                    "heading": 0.0,
                     "heading_constrained": true,
                     "name": "pick",
                     "velocity_magnitude_constrained": true,
@@ -93,7 +93,7 @@
                     "waypoint_type": "custom",
                     "x": 7.105535650412877,
                     "x_constrained": true,
-                    "y": 4.35,
+                    "y": 4.7056,
                     "y_constrained": true
                 }
             ]
