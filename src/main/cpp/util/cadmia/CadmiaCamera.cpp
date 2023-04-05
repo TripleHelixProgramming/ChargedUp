@@ -38,7 +38,7 @@ std::optional<photonlib::EstimatedRobotPose> CadmiaCamera::GetResult() {
                     frc::Rotation3d(radian_t{compressedResults.at(3)},
                                     radian_t{compressedResults.at(4)},
                                     radian_t{compressedResults.at(5)})),
-        microsecond_t{(double)time}};
+        microsecond_t{static_cast<double>(time)}};
   } else {
     return std::nullopt;
   }

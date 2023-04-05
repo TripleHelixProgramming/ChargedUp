@@ -46,7 +46,7 @@ using namespace DriveConstants;
 using namespace ElectricalConstants;
 using namespace ModuleConstants;
 
-using namespace std::string_literals;
+using std::string_literals::operator""s;
 
 SwerveDrive::SwerveDrive()
     : m_modules{{SwerveModule(kDriveMotorPorts[0], kSteerMotorPorts[0],
@@ -200,7 +200,7 @@ bool IsVisionPoseValid(const Pose3d& pose) {
   }
   ++countTot;
   SmartDashboard::PutNumber("Vision/Percentage Valid",
-                            (double)countOk / countTot);
+                            static_cast<double>(countOk) / countTot);
   return isOk;
 }
 

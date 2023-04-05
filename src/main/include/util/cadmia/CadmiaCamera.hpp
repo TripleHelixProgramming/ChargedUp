@@ -14,7 +14,7 @@ namespace cadmia {
 
 class CadmiaCamera {
  public:
-  CadmiaCamera(std::string_view name);
+  explicit CadmiaCamera(std::string_view name);
 
   std::optional<photonlib::EstimatedRobotPose> GetResult();
 
