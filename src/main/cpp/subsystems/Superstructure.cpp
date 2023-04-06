@@ -77,7 +77,7 @@ void Superstructure::PositionHigh() {
 
 void Superstructure::PositionMedium() {
   // Cone angle is higher than cube placing angle
-  SetArmPosition(m_expanded ? 23.25_deg : 22.00_deg);
+  SetArmPosition(m_expanded ? 23.25_deg : 21.00_deg);
 }
 
 void Superstructure::PositionLow() {

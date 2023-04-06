@@ -52,8 +52,6 @@ class RobotContainer {
 
   void LED();
 
-  nt::DoublePublisher m_publisher;
-
  private:
   std::function<bool(void)> m_isDisabled;
 
