@@ -13,6 +13,7 @@
 
 #include "commands/DriveTrajectory.hpp"
 #include "subsystems/Superstructure.hpp"
+#include "util/TrajectoryManager.hpp"
 
 using namespace frc2;
 
@@ -37,9 +38,16 @@ North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
                                  InstantCommand([superstructure]() {
                                    superstructure->IntakeCone();
                                  }))),
-      DriveTrajectory(
+      ParallelDeadlineGroup(
+        DriveTrajectory(
           drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                    "north-3cone-low_2_place8")),
+        SequentialCommandGroup(
+          WaitCommand(TrajectoryManager::GetTrajectory(allianceSidePrefix +
+                                                   "north-3cone-low_2_place8").GetTotalTime() - 0.1_s),
+          InstantCommand([superstructure]() { superstructure->Outtake(); })
+        )
+      ),
       ParallelDeadlineGroup(
           SequentialCommandGroup(
               WaitCommand(0.1_s),
@@ -47,24 +55,14 @@ North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
                   drive, &TrajectoryManager::GetTrajectory(
                              allianceSidePrefix + "north-3cone-low_3_pick3"))),
           SequentialCommandGroup(
-              InstantCommand([superstructure]() { superstructure->Outtake(); }),
-              WaitCommand(1_s), InstantCommand([superstructure]() {
+              WaitCommand(1_s), 
+              InstantCommand([superstructure]() {
                 superstructure->IntakeCone();
               }))),
       DriveTrajectory(
           drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                    "north-3cone-low_4_place7")),
       InstantCommand([superstructure]() { superstructure->Outtake(); })
-      // ParallelDeadlineGroup(
-      //     DriveTrajectory(
-      //         drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-      //                                                  "north-3cube_4_chgst"),
-      //                                                  false),
-      //     SequentialCommandGroup(WaitCommand(0.75_s),
-      //                            InstantCommand([superstructure]() {
-      //                              superstructure->PositionLow();
-      //                            })))
-
   );
 }
 

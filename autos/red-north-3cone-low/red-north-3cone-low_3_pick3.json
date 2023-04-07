@@ -4,16 +4,7 @@
     },
     "paths": {
         "pick3": {
-            "obstacles": [
-                {
-                    "center_x": 12.989277248377185,
-                    "center_y": 1.6264701001203439,
-                    "name": "chgstat",
-                    "obstacle_type": "circle",
-                    "radius": 2.5,
-                    "safety_distance": 0.0
-                }
-            ],
+            "obstacles": [],
             "waypoints": [
                 {
                     "angular_velocity": 0.0,
@@ -28,7 +19,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 14.460557623914534,
+                    "x": 14.53675762391453,
                     "x_constrained": true,
                     "y": 4.483030936467877,
                     "y_constrained": true
@@ -36,7 +27,7 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": false,
-                    "control_interval_count": 25,
+                    "control_interval_count": 35,
                     "heading": 0.0,
                     "heading_constrained": true,
                     "name": "stay aligned",
@@ -59,14 +50,14 @@
                     "heading_constrained": true,
                     "name": "align pick",
                     "velocity_magnitude_constrained": true,
-                    "velocity_x": -0.4499999999999993,
+                    "velocity_x": 0.3,
                     "velocity_x_constrained": false,
-                    "velocity_y": -0.4500000000000002,
+                    "velocity_y": 0.3,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 10.313646639887583,
+                    "x": 10.389846639887583,
                     "x_constrained": true,
-                    "y": 3.5327814971674347,
+                    "y": 3.6089814971674348,
                     "y_constrained": true
                 },
                 {
