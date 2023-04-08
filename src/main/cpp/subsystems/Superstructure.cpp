@@ -162,7 +162,7 @@ void Superstructure::SuperstructurePeriodic() {
     armPosition = m_flipConeUp ? 11_deg : 6_deg;
   }
 
-  m_intakePop.Set(m_armPosition != kMinArmPosition
+  m_intakePop.Set(m_armPosition != kMinArmPosition && !m_stealth
                       ? frc::DoubleSolenoid::kForward
                       : frc::DoubleSolenoid::kReverse);  // pop out intake
 
