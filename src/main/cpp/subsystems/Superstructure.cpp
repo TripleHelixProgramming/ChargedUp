@@ -98,13 +98,13 @@ void Superstructure::IntakeCube() {
 }
 
 void Superstructure::IntakeCubeStation() {
-  SetArmPosition(24.8_deg);
+  SetArmPosition(24.4_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(false);
 }
 
 void Superstructure::IntakeConeStation() {
-  SetArmPosition(24.8_deg);
+  SetArmPosition(24.4_deg);
   SetIntakeWheelSpeed(0.5);
   SetExtenderPosition(true);
 }

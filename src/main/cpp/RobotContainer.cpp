@@ -10,6 +10,7 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/CommandPtr.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
@@ -145,7 +146,7 @@ void RobotContainer::ConfigureBindings() {
 
   m_operator.X().OnTrue(
       (InstantCommand([this]() { m_superstructure.IntakeCone(); })).ToPtr());
-  m_operator.X().OnFalse((InstantCommand([this]() {
+  m_operator.X().OnFalse((frc2:: InstantCommand([this]() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
   m_operator.Y().OnTrue(

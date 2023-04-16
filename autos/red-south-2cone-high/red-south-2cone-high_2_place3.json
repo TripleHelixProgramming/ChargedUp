@@ -9,7 +9,7 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 0,
+                    "control_interval_count": 30,
                     "heading": 3.141592653589793,
                     "heading_constrained": true,
                     "name": "Custom Waypoint 2",
@@ -19,9 +19,9 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 9.525424871438899,
+                    "x": 9.322224871438898,
                     "x_constrained": true,
-                    "y": 1.1955276831648531,
+                    "y": 1.119327683164853,
                     "y_constrained": true
                 },
                 {
