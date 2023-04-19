@@ -10,6 +10,7 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/CommandPtr.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
@@ -77,11 +78,6 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
   m_leds.Start();
 
   m_lastGamePieceIntake.Start();
-
-  auto inst = nt::NetworkTableInstance::GetDefault();
-  auto table = inst.GetTable("time");
-  m_publisher = table->GetDoubleTopic("timer").Publish(
-      {.periodic = 0.01, .sendAll = true});
 }
 
 std::optional<Command*> RobotContainer::GetAutonomousCommand() {
@@ -120,11 +116,6 @@ void RobotContainer::UpdateTelemetry() {
   m_compressor.IsEnabled();
   SmartDashboard::PutNumber("Arm absolute position",
                             m_superstructure.GetAbsoluteArmPosition().value());
-  // SmartDashboard::PutNumber("String position", m_superstructure.RawString());
-  // SmartDashboard::PutNumber("Estimated string position",
-  //                           m_superstructure.GetAbsoluteStringPosition());
-  // SmartDashboard::PutNumber("Estimated angle",
-  //                           m_superstructure.GetStringAngle().value());
   SmartDashboard::PutNumber("Relative angle",
                             m_superstructure.GetRelativePosition());
   SmartDashboard::PutNumber("Raw relative angle",
@@ -155,7 +146,7 @@ void RobotContainer::ConfigureBindings() {
 
   m_operator.X().OnTrue(
       (InstantCommand([this]() { m_superstructure.IntakeCone(); })).ToPtr());
-  m_operator.X().OnFalse((InstantCommand([this]() {
+  m_operator.X().OnFalse((frc2::InstantCommand([this]() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
   m_operator.Y().OnTrue(
@@ -214,38 +205,11 @@ void RobotContainer::ConfigureBindings() {
       InstantCommand([this]() { m_superstructure.m_stealth = true; }).ToPtr());
   operatorView.OnFalse(
       InstantCommand([this]() { m_superstructure.m_stealth = false; }).ToPtr());
-
-  // m_operator.().OnTrue((InstantCommand([this]() { return
-  // m_superstructure.SetIntakeWheelSpeed(0.5); })).ToPtr());
-  // m_operator.RightBumper().OnFalse((InstantCommand([this]() { return
-  // m_superstructure.SetIntakeWheelSpeed(0.0); })).ToPtr());
 }
 
 void RobotContainer::RunDisabled() {
   m_drive.SyncAbsoluteEncoders();
   m_superstructure.SyncEncoders();
-
-  // RED:
-  // auto 1 and 3 use left cam
-  // auto 2 use right cam
-  // BLUE:
-  // auto 1 and 3 use right cam
-  // auto 2 use left cam
-
-  bool useLeftCam;
-
-  switch (m_currentSelectedAuto) {
-    case SelectedAuto::kNorth2ConeHighChgstat:
-    case SelectedAuto::kNorth2ConeHighPick1Cone:
-    case SelectedAuto::kNorth3ConeLow:
-    default:
-      useLeftCam = !m_isBlue;
-      break;
-    case SelectedAuto::kSouth2ConeHigh:
-      useLeftCam = m_isBlue;
-      break;
-  }
-  SmartDashboard::PutBoolean("Vision/Using Left Cam", useLeftCam);
 }
 
 void RobotContainer::SuperstructurePeriodic() {

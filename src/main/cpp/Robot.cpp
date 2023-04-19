@@ -46,8 +46,6 @@ void Robot::RobotPeriodic() {
   m_container.UpdateTelemetry();
 
   m_container.LED();
-
-  m_container.m_publisher.Set(Timer::GetFPGATimestamp().value());
 }
 
 void Robot::DisabledInit() {}

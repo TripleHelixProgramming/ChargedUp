@@ -39,7 +39,7 @@
                     "waypoint_type": "custom",
                     "x": 11.099898115248727,
                     "x_constrained": true,
-                    "y": 4.328113208809491,
+                    "y": 4.150313208809491,
                     "y_constrained": true
                 },
                 {
@@ -55,9 +55,9 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 13.678765414409886,
+                    "x": 13.884522559120708,
                     "x_constrained": true,
-                    "y": 4.334742687727643,
+                    "y": 4.291635173710526,
                     "y_constrained": true
                 },
                 {
@@ -73,7 +73,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 14.339402978792302,
+                    "x": 14.644202978792306,
                     "x_constrained": true,
                     "y": 3.8920396181197687,
                     "y_constrained": true
