@@ -146,7 +146,7 @@ void RobotContainer::ConfigureBindings() {
 
   m_operator.X().OnTrue(
       (InstantCommand([this]() { m_superstructure.IntakeCone(); })).ToPtr());
-  m_operator.X().OnFalse((frc2:: InstantCommand([this]() {
+  m_operator.X().OnFalse((frc2::InstantCommand([this]() {
                            m_superstructure.SetIntakeWheelSpeed(0.0);
                          })).ToPtr());
   m_operator.Y().OnTrue(

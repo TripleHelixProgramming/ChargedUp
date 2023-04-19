@@ -39,31 +39,30 @@ North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
                                    superstructure->IntakeCone();
                                  }))),
       ParallelDeadlineGroup(
-        DriveTrajectory(
-          drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                   "north-3cone-low_2_place8")),
-        SequentialCommandGroup(
-          WaitCommand(TrajectoryManager::GetTrajectory(allianceSidePrefix +
-                                                   "north-3cone-low_2_place8").GetTotalTime() - 0.1_s),
-          InstantCommand([superstructure]() { superstructure->Outtake(); })
-        )
-      ),
+          DriveTrajectory(drive,
+                          &TrajectoryManager::GetTrajectory(
+                              allianceSidePrefix + "north-3cone-low_2_place8")),
+          SequentialCommandGroup(
+              WaitCommand(TrajectoryManager::GetTrajectory(
+                              allianceSidePrefix + "north-3cone-low_2_place8")
+                              .GetTotalTime() -
+                          0.1_s),
+              InstantCommand(
+                  [superstructure]() { superstructure->Outtake(); }))),
       ParallelDeadlineGroup(
           SequentialCommandGroup(
               WaitCommand(0.1_s),
               DriveTrajectory(
                   drive, &TrajectoryManager::GetTrajectory(
                              allianceSidePrefix + "north-3cone-low_3_pick3"))),
-          SequentialCommandGroup(
-              WaitCommand(1_s), 
-              InstantCommand([superstructure]() {
-                superstructure->IntakeCone();
-              }))),
+          SequentialCommandGroup(WaitCommand(1_s),
+                                 InstantCommand([superstructure]() {
+                                   superstructure->IntakeCone();
+                                 }))),
       DriveTrajectory(
           drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                    "north-3cone-low_4_place7")),
-      InstantCommand([superstructure]() { superstructure->Outtake(); })
-  );
+      InstantCommand([superstructure]() { superstructure->Outtake(); }));
 }
 
 frc::Pose2d North3ConeLow::GetStartingPose(bool isBlue) {
