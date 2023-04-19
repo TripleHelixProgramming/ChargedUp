@@ -35,8 +35,19 @@ South2ConeHigh::South2ConeHigh(SwerveDrive* drive,
                               allianceSidePrefix + "south-2cone-high_1_pick1")),
           SequentialCommandGroup(WaitCommand(0.5_s),
                                  InstantCommand([superstructure]() {
-                                   superstructure->IntakeCone();
-                                 }))),
+                                   superstructure->IntakeCube();
+                                   superstructure->m_stealth = true;
+                                 })),
+          SequentialCommandGroup(
+              WaitCommand(TrajectoryManager::GetTrajectory(
+                              allianceSidePrefix + "south-2cone-high_1_pick1")
+                              .GetTotalTime() -
+                          0.2_s),
+              InstantCommand(
+                  [superstructure]() { superstructure->IntakeCone(); }),
+              WaitCommand(0.1_s), InstantCommand([superstructure]() {
+                superstructure->m_stealth = false;
+              }))),
       ParallelDeadlineGroup(
           DriveTrajectory(
               drive, &TrajectoryManager::GetTrajectory(
