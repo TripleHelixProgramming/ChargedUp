@@ -35,8 +35,19 @@ North2ConeHighChgstat::North2ConeHighChgstat(SwerveDrive* drive,
                                      "north-2cone-high-chgstat_1_pick4")),
           SequentialCommandGroup(WaitCommand(0.25_s),
                                  InstantCommand([superstructure]() {
-                                   superstructure->IntakeCone();
-                                 }))),
+                                   superstructure->IntakeCube();
+                                   superstructure->m_stealth = true;
+                                 })),
+          SequentialCommandGroup(
+              WaitCommand(TrajectoryManager::GetTrajectory(
+                              allianceSidePrefix + "north-2cone-high-chgstat_1_pick4")
+                              .GetTotalTime() -
+                          0.2_s),
+              InstantCommand(
+                  [superstructure]() { superstructure->IntakeCone(); }),
+              WaitCommand(0.1_s), InstantCommand([superstructure]() {
+                superstructure->m_stealth = false;
+              }))),
 
       DriveTrajectory(
           drive, &TrajectoryManager::GetTrajectory(

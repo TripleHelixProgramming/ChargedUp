@@ -4,16 +4,7 @@
     },
     "paths": {
         "pick3": {
-            "obstacles": [
-                {
-                    "center_x": 3.5524717356228166,
-                    "center_y": 1.6264701001203439,
-                    "name": "chgstat",
-                    "obstacle_type": "circle",
-                    "radius": 2.5,
-                    "safety_distance": 0.0
-                }
-            ],
+            "obstacles": [],
             "waypoints": [
                 {
                     "angular_velocity": 0.0,
@@ -28,7 +19,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 2.0811913600854677,
+                    "x": 1.9795913600854675,
                     "x_constrained": true,
                     "y": 4.483030936467877,
                     "y_constrained": true
@@ -64,9 +55,9 @@
                     "velocity_y": 0.25,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 6.228102344112418,
+                    "x": 6.126502344112418,
                     "x_constrained": true,
-                    "y": 3.5327814971674347,
+                    "y": 3.6343814971674333,
                     "y_constrained": true
                 },
                 {
@@ -94,7 +85,7 @@
         "bumper_length": 0.954,
         "bumper_width": 0.903,
         "mass": 90.718474,
-        "moment_of_inertia": 5.0,
+        "moment_of_inertia": 8.0,
         "motor_max_angular_speed": 83.7758040957278,
         "motor_max_torque": 4.0,
         "team_number": 2363,
