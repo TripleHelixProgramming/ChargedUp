@@ -9,8 +9,8 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 20,
-                    "heading": 5.4836733810242855,
+                    "control_interval_count": 0,
+                    "heading": 5.497787143782138,
                     "heading_constrained": true,
                     "name": "pick",
                     "velocity_magnitude_constrained": true,
@@ -19,9 +19,9 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 6.782564399253481,
+                    "x": 7.112764399253481,
                     "x_constrained": true,
-                    "y": 2.9700968481329495,
+                    "y": 3.0716968481329494,
                     "y_constrained": true
                 },
                 {
@@ -63,7 +63,7 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 40,
+                    "control_interval_count": 20,
                     "heading": 3.141592653589793,
                     "heading_constrained": true,
                     "name": "place",
