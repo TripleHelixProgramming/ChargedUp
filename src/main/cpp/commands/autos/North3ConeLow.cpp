@@ -57,9 +57,14 @@ North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
               WaitCommand(TrajectoryManager::GetTrajectory(
                               allianceSidePrefix + "north-3cone-low_2_place8")
                               .GetTotalTime() -
-                          0.1_s),
+                          0.2_s),
               InstantCommand(
-                  [superstructure]() { superstructure->Outtake(); }))),
+                  [superstructure]() { superstructure->m_flipConeMode = true; }))),
+      InstantCommand(
+                  [superstructure]() { superstructure->Outtake(); }),
+      WaitCommand(0.25_s),
+      InstantCommand(
+                  [superstructure]() { superstructure->m_flipConeMode = false; }),
       ParallelDeadlineGroup(
           SequentialCommandGroup(
               WaitCommand(0.1_s),

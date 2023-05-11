@@ -9,7 +9,7 @@
                 {
                     "angular_velocity": 0.0,
                     "angular_velocity_constrained": true,
-                    "control_interval_count": 20,
+                    "control_interval_count": 0,
                     "heading": -2.3420807274344924,
                     "heading_constrained": true,
                     "name": "pick",
@@ -19,9 +19,9 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 9.75918458474652,
+                    "x": 9.379773460947565,
                     "x_constrained": true,
-                    "y": 2.9700968481329495,
+                    "y": 3.212008275929226,
                     "y_constrained": true
                 },
                 {
