@@ -34,6 +34,7 @@
 #include <wpi/array.h>
 
 #include "Constants.hpp"
+#include "frc/kinematics/ChassisSpeeds.h"
 #include "util/log/DoubleTelemetryEntry.hpp"
 #include "util/log/TelemetryEntry.hpp"
 
@@ -139,7 +140,23 @@ void SwerveDrive::ResetOdometry(const Pose2d& pose) {
 
 void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
                                 double joystickRotate, bool fieldRelative,
-                                bool isBlue) {
+                                bool isBlue, double armPosition) {
+  double a1 = -5.0;
+  meter_t d1 = 16_in;
+  double a2 = 8.3;
+  meter_t d2 = 45_in;
+  double a3 = 30;
+  meter_t d3 = 65_in;
+
+  meter_t d;
+  if (armPosition < a2) {
+    double scale = (armPosition - a1) / (a2 - a1);
+    d = d1 + scale * (d2 - d1);
+  } else {
+    double scale = (armPosition - a2) / (a3 - a2);
+    d = d2 + scale * (d3 - d2);
+  }
+
   ChassisSpeeds speeds =
       fieldRelative
           ? ChassisSpeeds::FromFieldRelativeSpeeds(
@@ -150,6 +167,7 @@ void SwerveDrive::JoystickDrive(double joystickDrive, double joystickStrafe,
           : ChassisSpeeds{joystickDrive * kMaxVelocityX,
                           joystickStrafe * kMaxVelocityY,
                           joystickRotate * kMaxVelocityAngular};
+  speeds = ChassisSpeeds{speeds.vx, speeds.vy - meters_per_second_t{speeds.omega.value()} * d.value(), speeds.omega};
   auto states = m_driveKinematics.ToSwerveModuleStates(speeds);
 
   // use most extreme axis as scale factor

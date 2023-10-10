@@ -59,10 +59,14 @@ RobotContainer::RobotContainer(std::function<bool(void)> isDisabled)
         double rightXAxis = -m_driver.GetRawAxis(kZorroRightYAxis);
         double rightYAxis = -m_driver.GetRawAxis(kZorroRightXAxis);
         double leftXAxis = -m_driver.GetRawAxis(kZorroLeftXAxis);
+        double x = std::abs(rightXAxis) < 0.025 ? 0.0 : rightXAxis;
+        double y = std::abs(rightYAxis) < 0.025 ? 0.0 : rightYAxis;
+        double omega = std::abs(leftXAxis) < 0.025 ? 0.0 : leftXAxis;
         return m_drive.JoystickDrive(
-            std::abs(rightXAxis) < 0.025 ? 0.0 : rightXAxis,
-            std::abs(rightYAxis) < 0.025 ? 0.0 : rightYAxis,
-            std::abs(leftXAxis) < 0.025 ? 0.0 : leftXAxis, true, m_isBlue);
+            x,
+            y,
+            omega,
+            true, m_isBlue, m_superstructure.GetAbsoluteArmPosition().value());
       },
       {&m_drive}  // requirements
       ));

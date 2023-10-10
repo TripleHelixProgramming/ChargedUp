@@ -11,6 +11,7 @@
 #include <units/math.h>
 
 #include "Constants.hpp"
+#include "frc2/command/InstantCommand.h"
 
 using namespace frc;
 using namespace rev;

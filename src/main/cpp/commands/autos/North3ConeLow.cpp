@@ -27,17 +27,28 @@ North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
                      allianceSidePrefix + "north-2cone-high-chgstat_0_place9")),
       ParallelDeadlineGroup(
           SequentialCommandGroup(
-              WaitCommand(0.0_s),
               DriveTrajectory(drive, &TrajectoryManager::GetTrajectory(
                                          allianceSidePrefix +
                                          "north-2cone-high-chgstat_1_pick4"))),
-          SequentialCommandGroup(InstantCommand([superstructure]() {
-                                   superstructure->SetIntakeWheelSpeed(-0.5);
-                                 }),
-                                 WaitCommand(1_s),
-                                 InstantCommand([superstructure]() {
-                                   superstructure->IntakeCone();
-                                 }))),
+          SequentialCommandGroup(
+            InstantCommand([superstructure]() {
+              superstructure->SetIntakeWheelSpeed(-0.5);
+            }),
+            WaitCommand(1_s),
+            InstantCommand([superstructure]() {
+              superstructure->IntakeCube();
+              superstructure->m_stealth = true;
+            })),
+          SequentialCommandGroup(
+            WaitCommand(TrajectoryManager::GetTrajectory(
+                            allianceSidePrefix + "north-2cone-high-chgstat_1_pick4")
+                            .GetTotalTime() -
+                        0.2_s),
+            InstantCommand(
+                [superstructure]() { superstructure->IntakeCone(); }),
+            WaitCommand(0.1_s), InstantCommand([superstructure]() {
+              superstructure->m_stealth = false;
+            }))),
       ParallelDeadlineGroup(
           DriveTrajectory(drive,
                           &TrajectoryManager::GetTrajectory(
@@ -46,9 +57,14 @@ North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
               WaitCommand(TrajectoryManager::GetTrajectory(
                               allianceSidePrefix + "north-3cone-low_2_place8")
                               .GetTotalTime() -
-                          0.1_s),
+                          0.2_s),
               InstantCommand(
-                  [superstructure]() { superstructure->Outtake(); }))),
+                  [superstructure]() { superstructure->m_flipConeMode = true; }))),
+      InstantCommand(
+                  [superstructure]() { superstructure->Outtake(); }),
+      WaitCommand(0.25_s),
+      InstantCommand(
+                  [superstructure]() { superstructure->m_flipConeMode = false; }),
       ParallelDeadlineGroup(
           SequentialCommandGroup(
               WaitCommand(0.1_s),
@@ -57,8 +73,19 @@ North3ConeLow::North3ConeLow(SwerveDrive* drive, Superstructure* superstructure,
                              allianceSidePrefix + "north-3cone-low_3_pick3"))),
           SequentialCommandGroup(WaitCommand(1_s),
                                  InstantCommand([superstructure]() {
-                                   superstructure->IntakeCone();
-                                 }))),
+                                   superstructure->IntakeCube();
+                                   superstructure->m_stealth = true;
+                                 })),
+          SequentialCommandGroup(
+              WaitCommand(TrajectoryManager::GetTrajectory(
+                              allianceSidePrefix + "north-3cone-low_3_pick3")
+                              .GetTotalTime() -
+                          0.2_s),
+              InstantCommand(
+                  [superstructure]() { superstructure->IntakeCone(); }),
+              WaitCommand(0.1_s), InstantCommand([superstructure]() {
+                superstructure->m_stealth = false;
+              }))),
       DriveTrajectory(
           drive, &TrajectoryManager::GetTrajectory(allianceSidePrefix +
                                                    "north-3cone-low_4_place7")),

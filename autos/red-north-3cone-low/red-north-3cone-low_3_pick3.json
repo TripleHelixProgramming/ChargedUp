@@ -19,7 +19,7 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 14.53675762391453,
+                    "x": 14.63835762391453,
                     "x_constrained": true,
                     "y": 4.483030936467877,
                     "y_constrained": true
@@ -55,9 +55,9 @@
                     "velocity_y": 0.3,
                     "velocity_y_constrained": false,
                     "waypoint_type": "custom",
-                    "x": 10.389846639887583,
+                    "x": 10.010435516088627,
                     "x_constrained": true,
-                    "y": 3.6089814971674348,
+                    "y": 3.8508929249637114,
                     "y_constrained": true
                 },
                 {
@@ -73,9 +73,9 @@
                     "velocity_y": 0.0,
                     "velocity_y_constrained": true,
                     "waypoint_type": "custom",
-                    "x": 9.75918458474652,
+                    "x": 9.379773460947565,
                     "x_constrained": true,
-                    "y": 2.9700968481329495,
+                    "y": 3.212008275929226,
                     "y_constrained": true
                 }
             ]
@@ -85,7 +85,7 @@
         "bumper_length": 0.954,
         "bumper_width": 0.903,
         "mass": 90.718474,
-        "moment_of_inertia": 5.0,
+        "moment_of_inertia": 8.0,
         "motor_max_angular_speed": 83.7758040957278,
         "motor_max_torque": 4.0,
         "team_number": 2363,
